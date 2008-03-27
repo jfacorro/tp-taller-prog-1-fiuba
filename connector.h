@@ -1,7 +1,7 @@
 #ifndef __CONNECTOR_INCLUDED
 #define __CONNECTOR_INCLUDED
 
-#include "transferencias.h"
+#include "transferencia.h"
 #include "windows.h"
 
 
@@ -20,7 +20,7 @@ typedef struct _Connector
 	Connector;
 
 
-void InitializeConnector ( Connector* connector );
-void FinalizeConnector   ( Connector* connector );
+void InitializeConnector ( Connector* connector , CONEXION* pConexion );
+void WaitConnector   ( Connector* connector );
 
 #endif
