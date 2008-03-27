@@ -12,6 +12,19 @@
 #define TYPE_STR		"Error! Invalid type.\n"
 
 
+int _GetDataSize ( enum tr_tipo_dato tipo )
+{
+	if ( tipo == td_int ) 
+		return sizeof(int);
+	else if (tipo == td_double)
+		return sizeof(double);
+	else if (tipo == td_char)
+		return sizeof(char);
+	else
+		return 0;
+}
+
+
 void __Print ( Connector* connector , enum tr_tipo_dato tipo , int cant , void* data )
 {
 	char* c;
@@ -38,7 +51,7 @@ void __Print ( Connector* connector , enum tr_tipo_dato tipo , int cant , void* 
 		printf ( "< INT " );
 		i = (int*) data;
 		for ( z = 0 ; z < cant ; z++ )
-			printf ( "%lf " , i[z] );
+			printf ( "%d " , i[z] );
 		printf ( "\n" );
 	}
 	else 
@@ -71,7 +84,7 @@ DWORD WINAPI __ThreadReceive ( LPVOID p )
 			else
 			{
 				// Una guarda de un byte por si es un string
-				data = malloc ( cant + 1 );
+				data = malloc ( cant * _GetDataSize (tipo) + 1 );
 				retval = trRecibir ( connector->pConexion , tipo , cant , data );
 				__Print ( connector , tipo , cant , data );
 				free ( data );
@@ -133,6 +146,7 @@ DWORD WINAPI __ThreadSend ( LPVOID p )
 
 			free ( str );
 			str = NULL;
+			size = 0;
 		}			
 	}
 
@@ -140,9 +154,10 @@ DWORD WINAPI __ThreadSend ( LPVOID p )
 }
 
 
-void InitializeConnector ( Connector* connector )
+void InitializeConnector ( Connector* connector , CONEXION* pConexion )
 {
 	connector->salir = FALSE;
+	connector->pConexion = pConexion;
 
 	connector->hThrReceive = CreateThread ( NULL , 0 , __ThreadReceive , 
 		(void*) connector , 0 , NULL );

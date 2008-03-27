@@ -1,7 +1,13 @@
+#include "stdafx.h"
 #include "transferencia.h"
+#include "stdlib.h"
+
+void obtenerDirIP(char* dirIP, const struct sockaddr_in sockAddress);
 
 /* Constante utilizada como valor nulo de referencias */
+#ifndef NULL
 #define NULL  0
+#endif
 
 /* Constantes utilizadas para valores de la conexion */
 #define PUERTO_NULO -1 /* Se utiliza como valor nulo de puerto */
@@ -20,7 +26,7 @@ int trEscuchar(int Puerto, CONEXION *pConexion) {
    WORD wVersionReq = MAKEWORD(2, 2); /* Contiene la version */
    SOCKET sock; /* Contiene la informacion del socket */
    SOCKET sockAceptado; /* Contiene la informacion del socket que acepto */   
-   struct hostent* hostInfo; /* Se utiliza para convertir el nombre del host a su direccion IP */
+   //struct hostent* hostInfo; /* Se utiliza para convertir el nombre del host a su direccion IP */
    struct sockaddr_in sockAddrIn; /* Direccion de socket */
    int tamSockAddrIn; /* Se utiliza para aceptar el mensaje y obtener su info */
    int codError = 0; /* Codigo de error que se evalua dentro de la funcion */
@@ -64,7 +70,7 @@ int trEscuchar(int Puerto, CONEXION *pConexion) {
                   (*pConexion).cxPuerto = Puerto;
                   (*pConexion).cxIP = (char*) malloc(TAMANIO_IP);
                   obtenerDirIP((*pConexion).cxIP, sockAddrIn);
-                  (*pConexion).cxSocket = sock;
+                  (*pConexion).cxSocket = sockAceptado;
                   resultado = RES_OK;
                }
             }
@@ -87,7 +93,7 @@ int trConectar(const char *pDireccion, int Puerto, CONEXION *pConexion) {
    WSADATA wsaData; /* Utilizada para inicializacion del winsock */
    WORD wVersionReq = MAKEWORD(2, 2); /* Contiene la version */
    SOCKET sock; /* Contiene la informacion del socket */
-   SOCKET tempSock; /* Se utiliza para no sobreescribir informacion al aceptar la conexion */   
+   //SOCKET tempSock; /* Se utiliza para no sobreescribir informacion al aceptar la conexion */   
    struct hostent* hostInfo; /* Se utiliza para convertir el nombre del host a su direccion IP */
    struct sockaddr_in sockAddrIn; /* Direccion de socket */
    int codError = 0; /* Codigo de error que se evalua dentro de la funcion */
@@ -129,6 +135,20 @@ int trConectar(const char *pDireccion, int Puerto, CONEXION *pConexion) {
     return resultado;
 }
 
+
+int __GetDataSize ( enum tr_tipo_dato tipo )
+{
+	if ( tipo == td_int ) 
+		return sizeof(int);
+	else if (tipo == td_double)
+		return sizeof(double);
+	else if (tipo == td_char)
+		return sizeof(char);
+	else
+		return 0;
+}
+
+
 /*****************************************************************/
 /* trEnviar: Envia a traves de la conexion una cantidad de 	     */
 /* 	         datos de un tipo de datos especificado 		     */
@@ -136,11 +156,13 @@ int trConectar(const char *pDireccion, int Puerto, CONEXION *pConexion) {
 /* 	         devuelve un codigo de error. 			             */
 /*****************************************************************/ 
 int trEnviar(CONEXION *pConexion, enum tr_tipo_dato tipo, int cantItems, const void *datos) {
+	int tmp;
    int resultado = RES_ERROR_UNKNOWN;
    int cantEnviada = 0;
    
-   cantEnviada = send((*pConexion).cxSocket, datos, cantItems, 0);
-   if (cantEnviada != cantItems) { /* No envio la cantidad indicada */
+   tmp = __GetDataSize(tipo);
+   cantEnviada = send((*pConexion).cxSocket, datos, cantItems * tmp, 0);
+   if (cantEnviada != cantItems * tmp) { /* No envio la cantidad indicada */
       resultado = RES_ERROR_SEND;
    } else {
       resultado = RES_OK;
@@ -156,11 +178,13 @@ int trEnviar(CONEXION *pConexion, enum tr_tipo_dato tipo, int cantItems, const v
 /* 	          devuelve un codigo de error. 			             */
 /*****************************************************************/ 
 int trRecibir(CONEXION *pConexion, enum tr_tipo_dato tipo, int cantItems, void *datos) {
+   int tmp;
    int resultado = RES_ERROR_UNKNOWN;
    int cantRecibida = 0;   
 
-   cantRecibida = recv ((*pConexion).cxSocket, datos, cantItems, 0);
-   if (cantRecibida != cantItems) { /* No recibio la cantidad indicada */
+   tmp = __GetDataSize(tipo);
+   cantRecibida = recv ((*pConexion).cxSocket, datos, cantItems * tmp, 0);
+   if (cantRecibida != cantItems * tmp) { /* No recibio la cantidad indicada */
       resultado = RES_ERROR_RECEIVE;
    } else {
       resultado = RES_OK;
