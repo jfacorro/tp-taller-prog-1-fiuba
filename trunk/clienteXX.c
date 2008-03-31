@@ -1,11 +1,13 @@
 // clienteXX.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
-#include "../servidorXX/connector.h"
-#include "../servidorXX/transferencia.h"
+//#include "stdafx.h"
+#include "connector.h"
+#include "transferencia.h"
+#include "stdio.h"
+#include "conio.h"
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, CHAR* argv[])
 {
 	CONEXION c;
 	Connector conn;
@@ -18,4 +20,5 @@ int _tmain(int argc, _TCHAR* argv[])
 	WaitConnector ( &conn );
 	return 0;
 }
+
 

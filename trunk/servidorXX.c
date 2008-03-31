@@ -1,15 +1,16 @@
 // servidorXX.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "parser.h"
 #include "conio.h"
+#include "stdio.h"
 #include "connector.h"
 #include "windows.h"
 #include "transferencia.h"
 
 
-int _tmain(int argc, _TCHAR* argv[])
+int _tmain(int argc, CHAR* argv[])
 {
 	CONEXION c;
 	Connector conn;
