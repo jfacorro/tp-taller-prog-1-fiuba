@@ -1,7 +1,8 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "connector.h"
 #include "parser.h"
 #include "stdlib.h"
+#include "stdio.h"
 #include "string.h"
 
 #define QUIT_STR		"QUIT"
