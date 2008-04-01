@@ -116,7 +116,9 @@ enum ParseResult __ParseFloat ( char* line , ParserData* result )
 	return PARSER_OK;
 }
 
+/********************************************************************
 
+********************************************************************/
 enum ParseResult __ParseInt ( char* line , ParserData* result )
 {
 	int i, len, firstSpace;
