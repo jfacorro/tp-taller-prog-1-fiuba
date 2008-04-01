@@ -220,7 +220,9 @@ int trCerrarConexion(CONEXION *pConexion) {
    
    if (trConexionActiva(pConexion) == RES_OK) { /* La conexion esta activa */
       /* Cierra el socket y quita los valores de la conexion */
-      //free ((*pConexion).cxIP);
+      if ((*pConexion).cxIP != NULL) {
+          free((*pConexion).cxIP);
+      }
       (*pConexion).cxPuerto = PUERTO_NULO;
       closesocket((*pConexion).cxSocket);
       (*pConexion).cxSocket = INVALID_SOCKET; // NULL;      

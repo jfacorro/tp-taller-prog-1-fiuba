@@ -7,7 +7,7 @@
 #define QUIT_STR		"QUIT"
 #define EMPTY_STR		"Error! Command not found (STRING, DOUBLE, FLOAT, INT).\n"
 #define INCOMPLETE_STR	"Error! Missing parameters.\n"
-#define ERROR_STR		"Error! Syntax error. {STRING str, DOUBLE [dn ]+, FLOAT [dn ]+, INT [in ]+}.\n"
+#define ERROR_STR		"Error! Syntax error. {STRING str, DOUBLE [dn ]+, FLOAT [fn ]+, INT [in ]+}.\n"
 #define OK_STR			"Data sent\n"
 #define TYPE_STR		"Error! Invalid type.\n"
 
