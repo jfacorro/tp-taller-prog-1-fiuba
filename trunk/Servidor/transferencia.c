@@ -62,7 +62,7 @@ int trEscuchar(int Puerto, CONEXION *pConexion) {
                /* Acepta la conexion */
                sockAceptado = SOCKET_ERROR;
                tamSockAddrIn = sizeof(sockAddrIn);
-               sockAceptado = accept(sock, (struct SOCKADDR*)&sockAddrIn, &tamSockAddrIn);
+               sockAceptado = accept(sock, (struct sockaddr*)&sockAddrIn, &tamSockAddrIn);
 
                if (sockAceptado == SOCKET_ERROR) {
                   resultado = RES_ERROR_ACCEPT;
@@ -144,6 +144,8 @@ int __GetDataSize ( enum tr_tipo_dato tipo )
 		return sizeof(double);
 	else if (tipo == td_char)
 		return sizeof(char);
+	else if (tipo == td_float)
+		return sizeof(float);
 	else
 		return 0;
 }
@@ -203,10 +205,10 @@ int trCerrarConexion(CONEXION *pConexion) {
    
    if (trConexionActiva(pConexion) == RES_OK) { /* La conexion esta activa */
       /* Cierra el socket y quita los valores de la conexion */
-      free ((*pConexion).cxIP);
+      //free ((*pConexion).cxIP);
       (*pConexion).cxPuerto = PUERTO_NULO;
       closesocket((*pConexion).cxSocket);
-      (*pConexion).cxSocket = NULL;      
+      (*pConexion).cxSocket = INVALID_SOCKET; // NULL;      
       resultado = RES_OK;
    } else { /* La conexion no esta activa */
       resultado = RES_INACTIVE;
@@ -224,7 +226,7 @@ int trConexionActiva(CONEXION *pConexion) {
    int resultado = RES_ERROR_UNKNOWN;
    
    if (pConexion != NULL) { /* La conexion no es nula */
-      if ((*pConexion).cxSocket != NULL) { /* La conexion esta activa */
+      if ((*pConexion).cxSocket != INVALID_SOCKET /*NULL*/) { /* La conexion esta activa */
          resultado = RES_OK;
       } else { /* La conexion no esta activa */
          resultado = RES_INACTIVE;      
