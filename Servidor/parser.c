@@ -6,6 +6,7 @@
 
 #define STRING_STR	"STRING"
 #define DOUBLE_STR	"DOUBLE"
+#define FLOAT_STR	"FLOAT"
 #define INT_STR		"INT"
 
 
@@ -67,6 +68,46 @@ enum ParseResult __ParseDouble ( char* line , ParserData* result )
 		}
 
 		((double*) result->dato)[result->cantItems] = tmp;
+		result->cantItems++;
+		i = firstSpace + 1;
+	}
+	while ( firstSpace != -1 );
+
+	return PARSER_OK;
+}
+
+
+enum ParseResult __ParseFloat ( char* line , ParserData* result )
+{
+	int i, len, firstSpace;
+	float tmp;
+	
+	i = 0;
+	len = (int) strlen(line);
+	result->cantItems = 0;
+	result->tipo = td_float;
+	if ( len == 0 )
+		return PARSER_INCOMPLETE;
+
+	do
+	{
+		firstSpace = __FindFirstSpace ( line , len , i );
+		
+		if ( result->dato == NULL )
+			result->dato = malloc ( sizeof(float) );
+		else
+		{
+			result->dato = realloc ( result->dato , 
+					sizeof(float) * (result->cantItems + 1) );
+		}
+
+		if ( !sscanf ( line + i , "%f" , &tmp ) )
+		{
+			free ( result->dato );
+			return PARSER_ERROR;
+		}
+
+		((float*) result->dato)[result->cantItems] = tmp;
 		result->cantItems++;
 		i = firstSpace + 1;
 	}
@@ -148,6 +189,8 @@ enum ParseResult ParseLine ( char* line , ParserData* result )
 		retval = __ParseString ( line + strlen(STRING_STR) + 1 , result );
 	else if ( !strncmp ( line , DOUBLE_STR , firstSpace ) )
 		retval = __ParseDouble ( line + strlen(DOUBLE_STR) + 1 , result );
+	else if ( !strncmp ( line , FLOAT_STR , firstSpace ) )
+		retval = __ParseFloat ( line + strlen(FLOAT_STR) + 1 , result );
 	else if ( !strncmp ( line , INT_STR , firstSpace ) )
 		retval = __ParseInt ( line + strlen(INT_STR) + 1 , result );
 	else
