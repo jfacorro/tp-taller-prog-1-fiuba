@@ -87,11 +87,11 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\connector.c
+SOURCE=..\includes\connector.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\parser.c
+SOURCE=..\includes\parser.c
 # End Source File
 # Begin Source File
 
@@ -99,7 +99,7 @@ SOURCE=.\servidorXX.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\transferencia.c
+SOURCE=..\includes\transferencia.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -107,15 +107,15 @@ SOURCE=.\transferencia.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\connector.h
+SOURCE=..\includes\connector.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\parser.h
+SOURCE=..\includes\parser.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\transferencia.h
+SOURCE=..\includes\transferencia.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

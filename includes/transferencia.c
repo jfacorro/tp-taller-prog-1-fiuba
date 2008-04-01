@@ -1,4 +1,3 @@
-//#include "stdafx.h"
 #include "transferencia.h"
 #include "stdlib.h"
 
