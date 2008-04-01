@@ -11,7 +11,6 @@
 
 
 int main(int argc, char* argv[])
-//int _tmain(int argc, _TCHAR* argv[])
 {
 	CONEXION c;
 	Connector conn;

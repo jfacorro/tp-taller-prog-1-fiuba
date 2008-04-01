@@ -12,7 +12,6 @@
 #define MSG_SYNTAX		"servidor06.exe {puerto}\n"
 #define MSG_ABNORMAL	"Abnormal program termination: Error code %d\n"
 
-//int _tmain(int argc, _TCHAR* argv[])
 int main(int argc, char* argv[])
 {
 	CONEXION c;
