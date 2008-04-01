@@ -181,15 +181,31 @@ int trEnviar(CONEXION *pConexion, enum tr_tipo_dato tipo, int cantItems, const v
 /*****************************************************************/ 
 int trRecibir(CONEXION *pConexion, enum tr_tipo_dato tipo, int cantItems, void *datos) {
    int tmp;
+   int cantARecibir;
    int resultado = RES_ERROR_UNKNOWN;
-   int cantRecibida = 0;   
+   int cantRecibida = 0;
 
    tmp = __GetDataSize(tipo);
-   cantRecibida = recv ((*pConexion).cxSocket, datos, cantItems * tmp, 0);
-   if (cantRecibida != cantItems * tmp) { /* No recibio la cantidad indicada */
-      resultado = RES_ERROR_RECEIVE;
-   } else {
-      resultado = RES_OK;
+
+   while(cantRecibida != cantItems * tmp)
+   {
+	   cantARecibir = cantItems * tmp - cantRecibida;
+
+	   cantRecibida = recv ((*pConexion).cxSocket, datos, cantARecibir, 0) + cantRecibida;
+
+	   if(cantRecibida == SOCKET_ERROR)
+	   {
+		   break;
+	   }
+   }
+
+   if (cantRecibida != cantItems * tmp) /* No recibio la cantidad indicada */
+   { 
+	  resultado = RES_ERROR_RECEIVE;
+   } 
+   else 
+   {
+	  resultado = RES_OK;
    }
 
    return resultado;
