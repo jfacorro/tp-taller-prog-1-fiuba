@@ -25,7 +25,6 @@ int trEscuchar(int Puerto, CONEXION *pConexion) {
    WORD wVersionReq = MAKEWORD(2, 2); /* Contiene la version */
    SOCKET sock; /* Contiene la informacion del socket */
    SOCKET sockAceptado; /* Contiene la informacion del socket que acepto */   
-   //struct hostent* hostInfo; /* Se utiliza para convertir el nombre del host a su direccion IP */
    struct sockaddr_in sockAddrIn; /* Direccion de socket */
    int tamSockAddrIn; /* Se utiliza para aceptar el mensaje y obtener su info */
    int codError = 0; /* Codigo de error que se evalua dentro de la funcion */
@@ -92,7 +91,6 @@ int trConectar(const char *pDireccion, int Puerto, CONEXION *pConexion) {
    WSADATA wsaData; /* Utilizada para inicializacion del winsock */
    WORD wVersionReq = MAKEWORD(2, 2); /* Contiene la version */
    SOCKET sock; /* Contiene la informacion del socket */
-   //SOCKET tempSock; /* Se utiliza para no sobreescribir informacion al aceptar la conexion */   
    struct hostent* hostInfo; /* Se utiliza para convertir el nombre del host a su direccion IP */
    struct sockaddr_in sockAddrIn; /* Direccion de socket */
    int codError = 0; /* Codigo de error que se evalua dentro de la funcion */
@@ -180,34 +178,24 @@ int trEnviar(CONEXION *pConexion, enum tr_tipo_dato tipo, int cantItems, const v
 /*****************************************************************/ 
 int trRecibir(CONEXION *pConexion, enum tr_tipo_dato tipo, int cantItems, void *datos) {
    int tmp;
-   int cantARecibir;
    int resultado = RES_ERROR_UNKNOWN;
-   int cantRecibida = 0;
+   int cantRecibida = 0, totalRecibido = 0, tamano, falta;   
 
    tmp = __GetDataSize(tipo);
-
-   while(cantRecibida != cantItems * tmp)
+   tamano = cantItems * tmp;
+   while ( totalRecibido < tamano )
    {
-	   cantARecibir = cantItems * tmp - cantRecibida;
+		cantRecibida = recv ((*pConexion).cxSocket, (int) datos + totalRecibido, tamano - totalRecibido, 0);
+	
+		if ( cantRecibida == 0 || cantRecibida == -1 )
+			return RES_ERROR_RECEIVE;
 
-	   cantRecibida = recv ((*pConexion).cxSocket, datos, cantARecibir, 0) + cantRecibida;
-
-	   if(cantRecibida == SOCKET_ERROR)
-	   {
-		   break;
-	   }
+		totalRecibido += cantRecibida;
+		if (totalRecibido >= tamano) 
+			break;
    }
 
-   if (cantRecibida != cantItems * tmp) /* No recibio la cantidad indicada */
-   { 
-	  resultado = RES_ERROR_RECEIVE;
-   } 
-   else 
-   {
-	  resultado = RES_OK;
-   }
-
-   return resultado;
+   return RES_OK;
 }
 
 /*****************************************************************/
@@ -220,12 +208,12 @@ int trCerrarConexion(CONEXION *pConexion) {
    
    if (trConexionActiva(pConexion) == RES_OK) { /* La conexion esta activa */
       /* Cierra el socket y quita los valores de la conexion */
-      if ((*pConexion).cxIP != NULL) {
-          free((*pConexion).cxIP);
-      }
+	  if ((*pConexion).cxIP != NULL) {
+		  free((*pConexion).cxIP); 
+	  }
       (*pConexion).cxPuerto = PUERTO_NULO;
       closesocket((*pConexion).cxSocket);
-      (*pConexion).cxSocket = INVALID_SOCKET; // NULL;      
+      (*pConexion).cxSocket = INVALID_SOCKET;
       resultado = RES_OK;
    } else { /* La conexion no esta activa */
       resultado = RES_INACTIVE;
@@ -243,7 +231,7 @@ int trConexionActiva(CONEXION *pConexion) {
    int resultado = RES_ERROR_UNKNOWN;
    
    if (pConexion != NULL) { /* La conexion no es nula */
-      if ((*pConexion).cxSocket != INVALID_SOCKET /*NULL*/) { /* La conexion esta activa */
+      if ((*pConexion).cxSocket != INVALID_SOCKET) { /* La conexion esta activa */
          resultado = RES_OK;
       } else { /* La conexion no esta activa */
          resultado = RES_INACTIVE;      
