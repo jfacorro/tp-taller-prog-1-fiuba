@@ -12,10 +12,6 @@
 #define TYPE_STR		"Error! Invalid type.\n"
 
 
-/************************************************************************
- _GetDataSize:	Resuelve el tamaño de los datos a recibir (enviados)
-				en base al tipo.
-************************************************************************/
 int _GetDataSize ( enum tr_tipo_dato tipo )
 {
 	if ( tipo == td_int ) 
@@ -31,9 +27,6 @@ int _GetDataSize ( enum tr_tipo_dato tipo )
 }
 
 
-/************************************************************************
- __Print: Imprime a pantalla los datos que se le pasan.
-************************************************************************/
 void __Print ( Connector* connector , enum tr_tipo_dato tipo , int cant , void* data )
 {
 	char* c;
@@ -76,9 +69,7 @@ void __Print ( Connector* connector , enum tr_tipo_dato tipo , int cant , void* 
 		printf ( TYPE_STR );
 }
 
-/************************************************************************
- __Quit: Método de salida. Setea lo s
-************************************************************************/
+
 void __Quit ( Connector* connector , BOOL isReceive )
 {
 	trCerrarConexion ( connector->pConexion );
@@ -91,45 +82,28 @@ void __Quit ( Connector* connector , BOOL isReceive )
 }
 
 
-/************************************************************************
- __ThreadReceive:	Metodo asociado al thread de recpcion de datos.
-************************************************************************/
-DWORD WINAPI __ThreadReceive ( LPVOID conn )
+DWORD WINAPI __ThreadReceive ( LPVOID p )
 {
-	int retval; // Contiene el resultado de la recepcio de datos
-	int tipo; // Contiene el tipo de datos que se recibe
-	int cant; // Contiene la cantidad de items a recibir
-	void* data; // Contiene los datos recibidos
-	
-	Connector* connector = (Connector*) conn; // Contiene el connector previamente inicializado
+	int retval, tipo, cant;
+	void* data;
+	Connector* connector = (Connector*) p;
 
-	// Antes de recibir cualquier dato verificar que 
-	// no se recibio el comando de salida.
 	while ( !connector->salir ) 
 	{
-		// Recibir el tipo de dato
 		retval = trRecibir ( connector->pConexion , td_int , 1 , &tipo );
-		// Si hubo algun error, lamar al método de salida.
 		if ( retval != RES_OK )
 			__Quit ( connector , TRUE );
 		else
 		{
-			// Recibir la cantidad de items enviados
 			retval = trRecibir ( connector->pConexion , td_int , 1 , &cant );
-			// Si hubo algun error, lamar al método de salida.
 			if ( cant <= 0 || retval != RES_OK )
 				__Quit ( connector , TRUE );
 			else
 			{
-				// Reservar el espacio correspondiente para la cantidad
-				// y el tipo de datos a recibir, con una guarda de un byte 
-				// por si el tipo es STRING
+				/* Una guarda de un byte por si es un string */
 				data = malloc ( cant * _GetDataSize (tipo) + 1 );
-				// Recibir los datos enviados
 				retval = trRecibir ( connector->pConexion , tipo , cant , data );
-				// Imprimirlos a pantalla
 				__Print ( connector , tipo , cant , data );
-				// Liberar memoria
 				free ( data );
 			}
 		}
@@ -139,22 +113,12 @@ DWORD WINAPI __ThreadReceive ( LPVOID conn )
 }
 
 
-/************************************************************************
- __Parse:	Asegura que la cadena ingresada tenga un formato
-			válido, interpreta los datos de ésta y los envia por medio
-			del connector.
-************************************************************************/
 void __Parse ( Connector* connector , char* str )
 {
-	enum ParserResult retval;	// Contiene el resultado de la operacion
-								// de validacion y parseo
-	ParserData	result;			// Contiene los datos parseados
-								// de la cadena ingresada
+	enum ParserResult retval;
+	ParserData	result;
 
-	// Parsear cadena de caracteres
 	retval = ParseLine ( str , &result );
-
-	// Manejar resultado
 	if ( retval == PARSER_EMPTY )
 		printf ( EMPTY_STR );
 	else if ( retval == PARSER_INCOMPLETE )
@@ -163,55 +127,40 @@ void __Parse ( Connector* connector , char* str )
 		printf ( ERROR_STR );
 	else if ( retval == PARSER_OK )
 	{
-		// Enviar datos:
-		trEnviar ( connector->pConexion , td_int , 1 , &result.tipo ); // Enviar tipo de dato
-		trEnviar ( connector->pConexion , td_int , 1 , &result.cantItems ); // Enviar cantidad de items
-		trEnviar ( connector->pConexion , result.tipo , result.cantItems , result.dato ); // Enviar cantidad de items
+		trEnviar ( connector->pConexion , td_int , 1 , &result.tipo );
+		trEnviar ( connector->pConexion , td_int , 1 , &result.cantItems );
+		trEnviar ( connector->pConexion , result.tipo , result.cantItems , result.dato );
 		printf ( OK_STR );
 	}
 }
 
-/************************************************************************
- __ThreadSend: Metodo asociado al thread para el envio de datos.
-************************************************************************/
-DWORD WINAPI __ThreadSend ( LPVOID conn )
-{
-	char* str; // Contiene los datos a enviar
-	int tmp, size;
-	Connector* connector; // Contiene el connector previamente inicializado
 
-	connector = (Connector*) conn;
+DWORD WINAPI __ThreadSend ( LPVOID p )
+{
+	char* str;
+	int tmp, size;
+	Connector* connector;
+
+	connector = (Connector*) p;
 	str = NULL;
 	size = 0;
-
-	// Antes de enviar cualquier dato verificar que 
-	// no se recibio el comando de salida.
 	while ( !connector->salir )
 	{
-		// Leer caracter del input del usuario
-		tmp = getchar();
+		tmp = getchar();	
 
-		// Resevar el espacio de memoria correspondiente
-		if ( str == NULL )
-			str = malloc ( 1 );
-		else
-			str = realloc ( str , size + 1 );
+		if ( str == NULL )	str = malloc ( 1 );
+		else				str = realloc ( str , size + 1 );
 
-		// Mientras que el caracter no sea EOL seguir leyendo 
 		if ( tmp != 0x0A )	{
 			str[size] = (char) tmp;
-			size = size + 1;
+			size++;
 		} else {
 			str[size] = 0;
-			// Si la cadena ingresada es el comando
-			// QUIT, llamar al metodo de cierre del connector
 			if ( !strcmp ( str , QUIT_STR ) )
 				__Quit ( connector , FALSE );
 			else
 				__Parse ( connector , str );
 
-			// Liberar memoria y resetear 
-			// valores de las variables
 			free ( str );
 			str = NULL;
 			size = 0;
@@ -222,34 +171,21 @@ DWORD WINAPI __ThreadSend ( LPVOID conn )
 }
 
 
-/************************************************************************
- InitializeConnector:	Inicializa el connector, asignandole la conexion
-						de escucha establecida previamente para el
-						servidor; y creando los threadspara recibir
-						y enviar datos.
-************************************************************************/
 void InitializeConnector ( Connector* connector , CONEXION* pConexion )
-{		
+{
 	connector->salir = FALSE;
 	connector->pConexion = pConexion;
 
-	/* Crear thread de recepcion de datos */
 	connector->hThrReceive = CreateThread ( NULL , 0 , __ThreadReceive , 
 		(void*) connector , 0 , NULL );
 
-	/* Crear thread de envio de datos */
 	connector->hThrSend = CreateThread ( NULL , 0 , __ThreadSend ,
 		(void*) connector , 0 , NULL );
 }
 
-/************************************************************************
- WaitConnector:	Activa los threads previamente creados para recibir
-				y enviar datos.
-************************************************************************/
+
 void WaitConnector   ( Connector* connector )
 {
-	/* Activar thread de recepcion de datos */
 	WaitForSingleObject ( connector->hThrReceive , INFINITE );
-	/* Activar thread de envio de datos */
 	WaitForSingleObject ( connector->hThrSend , INFINITE );
 }

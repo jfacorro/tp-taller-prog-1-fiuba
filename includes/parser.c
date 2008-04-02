@@ -9,12 +9,17 @@
 #define INT_STR		"INT"
 
 
+#define ISSPACE(x) (x == ' ' || x == '\t')
+
 int __FindFirstSpace ( char* line , int len , int offset )
 {
 	int i;
 	for ( i = offset ; i < len ; i++ )
-		if ( line[i] == ' ' || line[i] == '\t' )
-			return i;
+		if ( ISSPACE(line[i]) )
+		{
+			while ( ISSPACE(line[i]) ) i++;
+			return i - 1;
+		}
 
 	return -1;
 }
@@ -33,6 +38,30 @@ enum ParseResult __ParseString ( char* line , ParserData* result )
 	result->dato = malloc ( len );
 	memcpy ( result->dato , line , len );
 	return PARSER_OK;
+}
+
+#define ISNUMBER(x) (x>='0'&&x<='9')
+int ValidNumber ( char* line , int end , int isFloat )
+{
+	int j, firstPoint;
+	firstPoint = 1;
+
+	for ( j = 0 ; j < end ; j++ )
+	{
+		if ( line[j] == '.' )
+		{
+			if ( !isFloat )
+				return 0;
+			else if ( firstPoint )
+				firstPoint = 0;
+			else 
+				return 0;
+		}
+		else if ( !ISSPACE(line[j]) && !ISNUMBER(line[j]) )
+			return 0;
+	}
+
+	return 1;
 }
 
 
@@ -60,7 +89,9 @@ enum ParseResult __ParseDouble ( char* line , ParserData* result )
 					sizeof(double) * (result->cantItems + 1) );
 		}
 
-		if ( !sscanf ( line + i , "%lf" , &tmp ) )
+		if ( (firstSpace != -1 && !ValidNumber(line+i,firstSpace-i,1)) ||
+			 (firstSpace == -1 && !ValidNumber(line+i,len-i,1))	|| 
+			 !sscanf ( line + i , "%lf" , &tmp ) )
 		{
 			free ( result->dato );
 			return PARSER_ERROR;
@@ -100,7 +131,9 @@ enum ParseResult __ParseFloat ( char* line , ParserData* result )
 					sizeof(float) * (result->cantItems + 1) );
 		}
 
-		if ( !sscanf ( line + i , "%f" , &tmp ) )
+		if ( (firstSpace != -1 && !ValidNumber(line+i,firstSpace-i,1)) ||
+			 (firstSpace == -1 && !ValidNumber(line+i,len-i,1))	|| 
+			 !sscanf ( line + i , "%f" , &tmp ) )
 		{
 			free ( result->dato );
 			return PARSER_ERROR;
@@ -115,9 +148,7 @@ enum ParseResult __ParseFloat ( char* line , ParserData* result )
 	return PARSER_OK;
 }
 
-/********************************************************************
 
-********************************************************************/
 enum ParseResult __ParseInt ( char* line , ParserData* result )
 {
 	int i, len, firstSpace;
@@ -142,7 +173,9 @@ enum ParseResult __ParseInt ( char* line , ParserData* result )
 					sizeof(int) * (result->cantItems + 1) );
 		}
 
-		if ( !sscanf ( line + i , "%d" , &tmp ) )
+		if ( (firstSpace != -1 && !ValidNumber(line+i,firstSpace-i,0)) ||
+			 (firstSpace == -1 && !ValidNumber(line+i,len-i,0))	||
+			 !sscanf ( line + i , "%d" , &tmp ) )
 		{
 			free ( result->dato );
 			return PARSER_ERROR;
