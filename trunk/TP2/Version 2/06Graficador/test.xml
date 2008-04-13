@@ -1,0 +1,113 @@
+<Root>
+  <Folder id="56" type="site">
+    <DefaultContentId>420</DefaultContentId>
+    <FooterMenuContentId>422</FooterMenuContentId>
+    <SearchContentId>424</SearchContentId>
+    <ContactFolderId>0</ContactFolderId>
+    <ProductCategoryFolderId>80</ProductCategoryFolderId>
+    <ProductFamilyFolderId>82</ProductFamilyFolderId>
+    <EventsFolderId>66</EventsFolderId>
+    <NewsFolderId>64</NewsFolderId>
+    <EventsFolderId>66</EventsFolderId>
+    <DocumentsFolderId>72</DocumentsFolderId>
+    <ImagesFolderId>74</ImagesFolderId>
+    <ContactFormId>0</ContactFormId>
+    <ContactUsFormId>0</ContactUsFormId>
+    <LiteratureRequestFormId>0</LiteratureRequestFormId>
+    <ContactTypeMetadataId>122</ContactTypeMetadataId>
+    <DocumentTypeMetadataId>124</DocumentTypeMetadataId>
+    <DocumentsFileTypeMetadataId>126</DocumentsFileTypeMetadataId>
+    <ImagesFileTypeMetadataId>128</ImagesFileTypeMetadataId>
+    <ContentTypeMetadataId>116</ContentTypeMetadataId>
+    <HeaderMenuId>0</HeaderMenuId>
+    <FooterMenuId>0</FooterMenuId>
+    <UtilityLinkMenuId>0</UtilityLinkMenuId>
+    <LanguageMenuId>0</LanguageMenuId>
+    <TaxonomyId>64</TaxonomyId>
+    <FaqTaxonomyId>62</FaqTaxonomyId>
+    <FaqFolderId>68</FaqFolderId>
+    <UsesAndAppsTaxId>System.Collections.Generic.Dictionary`2[System.Int32,System.Int32]</UsesAndAppsTaxId>
+    <ImagesThumbSize>50x50</ImagesThumbSize>
+    <AdvancedSearchResultsPerPage>10</AdvancedSearchResultsPerPage>
+    <Languages>
+      <Language id="1031" />
+      <Language id="1029" />
+      <Language id="1036" />
+      Language id="1033" default="true" />
+    </Languages>
+    <AdvSearch>
+      <SiteSections>
+        <Languages>
+          <Language id="1031" taxonomyId="724" />
+          <Language id="1029" taxonomyId="782" />
+          <Language id="1036" taxonomyId="840" />
+          <Language id="1033" taxonomyId="898" />
+        </Languages>
+      </SiteSections>
+      <ProductsAndServices>
+        <Languages>
+          <Language id="1031" taxonomyId="726" />
+          <Language id="1029" taxonomyId="784" />
+          <Language id="1036" taxonomyId="842" />
+          <Language id="1033" taxonomyId="900" />
+        </Languages>
+      </ProductsAndServices>
+      <UsesAndApplications>
+        <Languages>
+          <Language id="1031" taxonomyId="748" />
+          <Language id="1029" taxonomyId="806" />
+          <Language id="1036" taxonomyId="864" />
+          <Language id="1033" taxonomyId="922" />
+        </Languages>
+      </UsesAndApplications>
+      <DocumentTypes>
+        <Languages>
+          <Language id="1031" taxonomyId="770" />
+          <Language id="1029" taxonomyId="828" />
+          <Language id="1036" taxonomyId="886" />
+          <Language id="1033" taxonomyId="944" />
+        </Languages>
+      </DocumentTypes>
+      <ImageTypes>
+        <Languages>
+          <Language id="1031" taxonomyId="772" />
+          <Language id="1029" taxonomyId="830" />
+          <Language id="1036" taxonomyId="888" />
+          <Language id="1033" taxonomyId="946" />
+        </Languages>
+      </ImageTypes>
+      <ImageClassification>
+        <Languages>
+          <Language id="1031" taxonomyId="774" />
+          <Language id="1029" taxonomyId="832" />
+          <Language id="1036" taxonomyId="890" />
+          <Language id="1033" taxonomyId="948" />
+        </Languages>
+      </ImageClassification>
+      <DocumentClassification>
+        <Languages>
+          <Language id="1031" taxonomyId="776" />
+          <Language id="1029" taxonomyId="834" />
+          <Language id="1036" taxonomyId="892" />
+          <Language id="1033" taxonomyId="950" />
+        </Languages>
+      </DocumentClassification>
+      <ContactTypes>
+        <Languages>
+          <Language id="1031" taxonomyId="778" />
+          <Language id="1029" taxonomyId="836" />
+          <Language id="1036" taxonomyId="894" />
+          <Language id="1033" taxonomyId="952" />
+        </Languages>
+      </ContactTypes>
+      <Regions>
+        <Languages>
+          <Language id="1031" taxonomyId="780" />
+          <Language id="1029" taxonomyId="838" />
+          <Language id="1036" taxonomyId="896" />
+          <Language id="1033" taxonomyId="954" />
+        </Languages>
+      </Regions>
+    </AdvSearch>
+  </Folder>
+</Root>
