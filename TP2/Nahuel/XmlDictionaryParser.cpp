@@ -73,5 +73,6 @@ void XmlDictionaryParser::OnParseError(XmlParserErrors error, size_t pos)
 cout << "XmlDictionaryParser::OnParseError(" << error << "," << pos << ")" << endl;
 #endif
 
+	root.children = NULL;
 	// TODO: Limpiar el diccionario en caso de error
 }
