@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "XMLParser.h"
 #include "Exception.h"
+#include "SDL.h"
 
 #define DEBUG 1
 
