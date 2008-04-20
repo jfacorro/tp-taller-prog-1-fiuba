@@ -64,7 +64,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I "SDL\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x400a /d "_DEBUG"
 # ADD RSC /l 0x400a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -138,6 +138,18 @@ SOURCE=.\XMLParser.cpp
 # Begin Source File
 
 SOURCE=.\XMLParser.h
+# End Source File
+# End Group
+# Begin Group "Lib files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\SDL\SDL.lib
+# End Source File
+# Begin Source File
+
+SOURCE=.\SDL\SDLmain.lib
 # End Source File
 # End Group
 # Begin Source File
