@@ -101,6 +101,14 @@ SOURCE=.\Exception.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\SDLHelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SDLHelper.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Stack.cpp
 # End Source File
 # Begin Source File
