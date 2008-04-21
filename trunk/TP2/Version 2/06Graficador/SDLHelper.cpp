@@ -2,6 +2,11 @@
 #include "iostream.h"
 #include "Math.h"
 
+#ifndef SDLHelper_cpp
+
+#define SDLHelper_cpp
+
+
 SDLHelper::SDLHelper()
 {
 	this->screen = NULL;
@@ -255,3 +260,5 @@ void SDLHelper::Refresh()
 {
 	SDL_UpdateRect(this->screen, 0, 0, this->screen->w, this->screen->h);
 }
+
+#endif
