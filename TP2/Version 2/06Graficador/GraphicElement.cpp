@@ -20,6 +20,4 @@ void Line::Print(SDLHelper * sdlHelper)
 	sdlHelper->DrawSegment(this->position.x, this->position.y, this->end.x, this->end.y, this->color, 0);
 }
 
-
-
 #endif
