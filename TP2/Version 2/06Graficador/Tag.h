@@ -1,6 +1,7 @@
 #include <string.h>
 #include "Common.h"
 #include "ArrayList.h"
+#include "TagProperty.h"
 
 #ifndef Tag_h
 
@@ -53,6 +54,10 @@ class Tag
 		/// Properties
 		ArrayList properties;
 		ArrayList childTags;
+
+		TagProperty * GetAttribute(char * attName);
+		Tag * GetChildTag(char * tagName);
+		
 };
 
 #endif

@@ -101,6 +101,22 @@ SOURCE=.\Exception.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\GraphicElement.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\GraphicElement.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModelValidator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModelValidator.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\SDLHelper.cpp
 # End Source File
 # Begin Source File

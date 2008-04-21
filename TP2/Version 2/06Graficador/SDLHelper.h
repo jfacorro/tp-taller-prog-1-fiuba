@@ -2,6 +2,10 @@
 #include "Common.h"
 #include "Exception.h"
 
+#ifndef SDLHelper_h
+
+#define SDLHelper_h
+
 typedef struct _Color
 {
 	Uint8 R;
@@ -31,3 +35,5 @@ class SDLHelper
 
 		void Refresh();
 };
+
+#endif

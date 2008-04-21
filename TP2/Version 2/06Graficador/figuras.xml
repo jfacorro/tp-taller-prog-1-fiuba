@@ -1,0 +1,8 @@
+<Root>
+	<circulo id="circulo0" radio="10" colorFigura="255001254">
+		<posicion x="10" y="10" />
+	</circulo>		
+	<cuadrado id="cuadrado0" lado="30">
+		<posicion x="35" y="100" />
+	</cuadrado>	
+</Root>

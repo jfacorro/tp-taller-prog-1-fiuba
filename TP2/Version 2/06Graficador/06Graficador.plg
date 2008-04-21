@@ -6,16 +6,28 @@
 --------------------Configuration: 06Graficador - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP184.tmp" with contents
+Creating temporary file "C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP5FA.tmp" with contents
 [
 /nologo /MD /W3 /Gm /GX /ZI /Od /I "SDL\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Debug/" /Fp"Debug/06Graficador.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\ArrayList.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\GraphicElement.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\ModelValidator.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\SDLHelper.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\Stack.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\StringHelper.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\Tag.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\TagProperty.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\XMLParser.cpp"
 "C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TP Nº2\Version 2\06Graficador\06graficador.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP184.tmp" 
-Creating temporary file "C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP185.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP5FA.tmp" 
+Creating temporary file "C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP5FB.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/06Graficador.pdb" /debug /machine:I386 /out:"Debug/06Graficador.exe" /pdbtype:sept 
 ".\Debug\ArrayList.obj"
+".\Debug\GraphicElement.obj"
+".\Debug\ModelValidator.obj"
+".\Debug\SDLHelper.obj"
 ".\Debug\Stack.obj"
 ".\Debug\StringHelper.obj"
 ".\Debug\Tag.obj"
@@ -24,21 +36,45 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 ".\Debug\06graficador.obj"
 ".\SDL\SDL.lib"
 ".\SDL\SDLmain.lib"
-".\Debug\SDLHelper.obj"
 ]
-Creating command line "link.exe @C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP185.tmp"
+Creating command line "link.exe @C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP5FB.tmp"
 <h3>Output Window</h3>
 Compiling...
+ArrayList.cpp
+GraphicElement.cpp
+ModelValidator.cpp
+SDLHelper.cpp
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tp nº2\version 2\06graficador\sdlhelper.cpp(61) : warning C4244: '=' : conversion from 'unsigned __int32' to 'unsigned __int8', possible loss of data
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tp nº2\version 2\06graficador\sdlhelper.cpp(69) : warning C4244: '=' : conversion from 'unsigned __int32' to 'unsigned __int16', possible loss of data
+Stack.cpp
+StringHelper.cpp
+Tag.cpp
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tp nº2\version 2\06graficador\tag.cpp(19) : warning C4018: '<' : signed/unsigned mismatch
+TagProperty.cpp
+XMLParser.cpp
 06graficador.cpp
 Linking...
-Creating command line "bscmake.exe /nologo /o"Debug/06Graficador.bsc"  ".\Debug\ArrayList.sbr" ".\Debug\Stack.sbr" ".\Debug\StringHelper.sbr" ".\Debug\Tag.sbr" ".\Debug\TagProperty.sbr" ".\Debug\XMLParser.sbr" ".\Debug\06graficador.sbr" ".\Debug\SDLHelper.sbr""
+Creating temporary file "C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP5FD.tmp" with contents
+[
+/nologo /o"Debug/06Graficador.bsc" 
+".\Debug\ArrayList.sbr"
+".\Debug\GraphicElement.sbr"
+".\Debug\ModelValidator.sbr"
+".\Debug\SDLHelper.sbr"
+".\Debug\Stack.sbr"
+".\Debug\StringHelper.sbr"
+".\Debug\Tag.sbr"
+".\Debug\TagProperty.sbr"
+".\Debug\XMLParser.sbr"
+".\Debug\06graficador.sbr"]
+Creating command line "bscmake.exe @C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP5FD.tmp"
 Creating browse info file...
 <h3>Output Window</h3>
 
 
 
 <h3>Results</h3>
-06Graficador.exe - 0 error(s), 0 warning(s)
+06Graficador.exe - 0 error(s), 3 warning(s)
 </pre>
 </body>
 </html>

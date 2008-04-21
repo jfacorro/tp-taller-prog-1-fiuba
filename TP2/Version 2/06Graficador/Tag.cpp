@@ -232,4 +232,53 @@ void Tag::Print()
 
 }
 
+TagProperty * Tag::GetAttribute(char * attName)
+{
+	TagProperty * att = NULL;
+
+	if(!this->properties.IsEmpty())
+	{
+		this->properties.MoveFirst();
+
+		bool found = false;
+
+		do
+		{
+			att = (TagProperty * )this->properties.GetCurrent();
+
+			found = (strcmp(att->GetName(), attName) == 0);
+		}
+		while(this->properties.MoveNext() && !found);
+
+		if(!found)
+		{
+			att = NULL;
+		}
+	}
+
+	return att;
+}
+
+Tag * Tag::GetChildTag(char * tagName)
+{
+	Tag * childTag = NULL;
+
+	if(!this->childTags.IsEmpty())
+	{
+		this->childTags.MoveFirst();
+
+		bool found = false;
+
+		do
+		{
+			childTag = (Tag *)this->childTags.GetCurrent();
+
+			found = (strcmp(childTag->GetName(), tagName) == 0);
+		}
+		while(this->childTags.MoveNext() && !found);
+	}
+
+	return childTag;
+}
+
 #endif
