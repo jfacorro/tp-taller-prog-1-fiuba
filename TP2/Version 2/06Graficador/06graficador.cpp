@@ -60,6 +60,33 @@ int main(int argc, char* argv[] )
 			Tag * rootNode = parser.ParseFile(fileName);
 
 			rootNode->Print();
+
+			ModelValidator modelVal;
+			
+			modelVal.ParseAndValidate(rootNode);
+
+			SDLHelper sdlHelper;
+
+			sdlHelper.Initialize(800, 600, 32);
+
+			if(!modelVal.graphicElements.IsEmpty())
+			{
+				modelVal.graphicElements.MoveFirst();
+
+				do
+				{
+					GraphicElement * graphElem = (GraphicElement *)modelVal.graphicElements.GetCurrent();
+
+					graphElem->Print(&sdlHelper);
+
+				}while(modelVal.graphicElements.MoveNext());
+			}
+
+			sdlHelper.Refresh();
+
+			sdlHelper.WaitForKey();
+
+			sdlHelper.Quit();
 		}
 		else
 		{
@@ -74,22 +101,4 @@ int main(int argc, char* argv[] )
 	}
 
 	return 0;
-}
-
-void TestSDLHelper()
-{
-	SDLHelper sdlHelper;
-	sdlHelper.Initialize(800, 600, 32);
-
-	Color color;
-	color.R = 255;
-	color.G = 255;
-	color.B = 255;
-
-	sdlHelper.DrawCircle(10, 10, 10, color, 500);
-	sdlHelper.Refresh();
-
-	getch();
-
-	sdlHelper.Quit();
 }
