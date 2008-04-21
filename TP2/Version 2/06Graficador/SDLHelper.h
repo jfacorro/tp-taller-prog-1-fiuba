@@ -34,6 +34,8 @@ class SDLHelper
 		void DrawSegment ( int x1 , int y1 , int x2 , int y2 , Color color , int nodeId );
 
 		void Refresh();
+
+		void WaitForKey();
 };
 
 #endif
