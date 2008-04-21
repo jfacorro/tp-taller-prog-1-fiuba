@@ -14,7 +14,6 @@ void display_bmp(char *file_name, SDL_Surface *screen);
 
 int main(int argc, char* argv[] ) 
 {
-
 	XMLParser parser;
 
 	try
@@ -48,7 +47,7 @@ int main(int argc, char* argv[] )
 
 		sdlHelper.Refresh();
 
-		getch();
+		sdlHelper.WaitForKey();
 
 		sdlHelper.Quit();
 
@@ -73,8 +72,6 @@ int main(int argc, char* argv[] )
 	{
 		printf("\nAn Exception ocurred: %s", ex.GetMessage());
 	}
-
-	//TestSDLHelper();
 
 	return 0;
 }

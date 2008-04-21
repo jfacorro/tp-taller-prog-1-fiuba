@@ -261,4 +261,24 @@ void SDLHelper::Refresh()
 	SDL_UpdateRect(this->screen, 0, 0, this->screen->w, this->screen->h);
 }
 
+void SDLHelper::WaitForKey()
+{
+	SDL_Event event;
+
+	bool keyPress = false;
+
+	while(!keyPress)
+	{
+		SDL_PollEvent( &event );
+        switch( event.type ){
+            /* Keyboard event */
+            /* Pass the event data onto PrintKeyInfo() */
+            case SDL_KEYDOWN:
+            case SDL_KEYUP:
+				keyPress = true;
+                break;
+        }
+    }
+}
+
 #endif
