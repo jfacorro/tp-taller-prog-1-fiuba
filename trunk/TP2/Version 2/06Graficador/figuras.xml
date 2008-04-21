@@ -1,8 +1,15 @@
 <Root>
-	<circulo id="circulo0" radio="10" colorFigura="255001254">
+	<circulo id="circulo0" radio="10">
 		<posicion x="10" y="10" />
 	</circulo>		
-	<cuadrado id="cuadrado0" lado="30">
+	<cuadrado id="cuadrado0" lado="30" colorFigura="255000000">
 		<posicion x="35" y="100" />
-	</cuadrado>	
+	</cuadrado>		
+	<rectangulo id="rectangulo0" base="80" altura="30"colorFigura="255001100">
+		<posicion x="100" y="30" />
+	</rectangulo>	
+	<segmento id="segmento0" colorLinea="000000255">
+		<inicio x="100" y="30" />
+		<fin x="350" y="300" />
+	</segmento>
 </Root>

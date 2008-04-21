@@ -81,7 +81,7 @@ GraphicElement * ModelValidator::GetGraphicElement(Tag * tag)
 			throw Exception("Width missing for rectangle figure.");
 		}
 
-		rectangle->SetWidth(atoi(widthAtt ->GetValue()));
+		rectangle->SetWidth(atoi(widthAtt->GetValue()));
 
 		TagProperty * heightAtt =  tag->GetAttribute("altura");
 
