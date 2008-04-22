@@ -28,10 +28,10 @@ class SDLHelper
 		void Initialize(int widthRes, int heightRes, int colorDepth);
 		void Quit();
 
-		void DrawSquare ( int x , int y , int l , Color color , SDL_Surface* texture , int nodeId );
-		void DrawCircle ( int x , int y , int r , Color color , int nodeId );
-		void DrawRectangle ( int x , int y , int b , int h , Color color , int nodeId );
-		void DrawSegment ( int x1 , int y1 , int x2 , int y2 , Color color , int nodeId );
+		void DrawSquare ( int x , int y , int l , Color color , SDL_Surface* texture , char * nodeId );
+		void DrawCircle ( int x , int y , int r , Color color , SDL_Surface* texture , char * nodeId );
+		void DrawRectangle ( int x , int y , int b , int h , Color color , SDL_Surface* texture , char * nodeId );
+		void DrawSegment ( int x1 , int y1 , int x2 , int y2 , Color color , char * nodeId );
 
 		static SDL_Surface * LoadBitmap(char * bitmap);
 

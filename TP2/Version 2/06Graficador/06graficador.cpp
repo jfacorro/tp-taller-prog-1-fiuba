@@ -30,7 +30,7 @@ int main(int argc, char* argv[] )
 
 		SDLHelper sdlHelper;
 
-		sdlHelper.Initialize(800, 600, 32);
+		sdlHelper.Initialize(800, 600, 16);
 
 		if(!modelVal.graphicElements.IsEmpty())
 		{
@@ -67,7 +67,7 @@ int main(int argc, char* argv[] )
 
 			SDLHelper sdlHelper;
 
-			sdlHelper.Initialize(800, 600, 32);
+			sdlHelper.Initialize(800, 600, 16);
 
 			if(!modelVal.graphicElements.IsEmpty())
 			{

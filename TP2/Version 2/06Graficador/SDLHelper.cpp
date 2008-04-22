@@ -135,7 +135,7 @@ void SDLHelper::GetPixel(SDL_Surface * screen, int x, int y, Uint8* R, Uint8* G,
     }
 }
 
-void SDLHelper::DrawSquare ( int x , int y , int l , Color color , SDL_Surface* texture , int nodeId )
+void SDLHelper::DrawSquare ( int x , int y , int l , Color color , SDL_Surface* texture , char * nodeId )
 {
 	if ( x < 0 || y < 0 || l <= 0 )
 	{
@@ -154,7 +154,7 @@ void SDLHelper::DrawSquare ( int x , int y , int l , Color color , SDL_Surface* 
 		}
 }
 
-void SDLHelper::DrawCircle ( int x , int y , int r , Color color , int nodeId )
+void SDLHelper::DrawCircle ( int x , int y , int r , Color color , SDL_Surface* texture , char * nodeId )
 {
 	if ( x < 0 || y < 0 || r <= 0 )
 	{
@@ -169,11 +169,16 @@ void SDLHelper::DrawCircle ( int x , int y , int r , Color color , int nodeId )
 		int dX = (int) sqrt ( (double) (r * r - dY * dY) );
 
 		for ( int posX = x - dX ; posX <= (x + dX) ; posX++ )
+		{
+			if ( texture != NULL )
+				GetPixel ( texture , posX - x + r , posY - y + r , &color.R , &color.G , &color.B );
+
 			DrawPixel ( screen , posX , posY , color.R , color.G , color.B );
+		}
 	}
 }
 
-void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , int nodeId )
+void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , SDL_Surface* texture , char * nodeId )
 {
 	if ( x < 0 || y < 0 || b <= 0 || h <= 0 )
 	{
@@ -184,7 +189,12 @@ void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , in
 
 	for ( int posY = y ; posY < (y + h) ; posY++ )
 		for ( int posX = x ; posX < (x + b) ; posX++ )
+		{
+			if ( texture != NULL )
+				GetPixel ( texture , posX - x , posY - y , &color.R , &color.G , &color.B );
+
 			DrawPixel ( screen , posX , posY , color.R , color.G , color.B );
+		}
 }
 
 #define USE_ANTIALIASING	
@@ -201,7 +211,7 @@ void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , in
 	c2 = (int) (corr * (double) c2);
 #endif
 
-void SDLHelper::DrawSegment ( int x1 , int y1 , int x2 , int y2 , Color color , int nodeId )
+void SDLHelper::DrawSegment ( int x1 , int y1 , int x2 , int y2 , Color color , char * nodeId )
 {
 	if ( x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0 )
 	{
