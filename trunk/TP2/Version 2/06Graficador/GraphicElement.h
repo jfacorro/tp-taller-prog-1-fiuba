@@ -44,6 +44,7 @@ class Circle : public GraphicElement
 	private:		
 		int radius;		
 		char * idTextura;
+		SDL_Surface * textura;
 	public:
 		Circle(int radius, Position pos, Color color)
 		{
@@ -55,14 +56,21 @@ class Circle : public GraphicElement
 		{
 			this->radius = radius;
 			this->position = pos;
+			Circle();
 		};
 
-		Circle() {};
+		Circle() 
+		{
+			this->textura = NULL;
+		};
 
 		virtual void Print(SDLHelper * sdlHelper);
 
 		int GetRadius() { return this->radius; };
 		void SetRadius(int radius) { this->radius = radius; };
+
+		SDL_Surface * GetTextura() { return this->textura; };
+		void SetTextura(SDL_Surface * textura) { this->textura = textura; };
 };
 
 class Rectangle : public GraphicElement
@@ -71,6 +79,7 @@ class Rectangle : public GraphicElement
 		int width;
 		int height;
 		char * idTextura;
+		SDL_Surface * textura;
 	public:
 		Rectangle(int width, int height, Position pos, Color color)
 		{
@@ -83,9 +92,13 @@ class Rectangle : public GraphicElement
 			this->width = width;
 			this->height = height;
 			this->position = pos;
+			Rectangle();
 		};
 
-		Rectangle() {};
+		Rectangle() 
+		{
+			this->textura = NULL;
+		};
 
 		virtual void Print(SDLHelper * sdlHelper);
 
@@ -94,6 +107,9 @@ class Rectangle : public GraphicElement
 
 		int GetHeight() { return this->height; };
 		void SetHeight(int height) { this->height = height; };
+
+		SDL_Surface * GetTextura() { return this->textura; };
+		void SetTextura(SDL_Surface * textura) { this->textura = textura; };
 };
 
 class Square : public Rectangle
@@ -110,9 +126,13 @@ class Square : public Rectangle
 			this->width = side;
 			this->height = side;
 			this->position = pos;
+			Square();
 		};
 
-		Square() {};
+		Square() 
+		{
+			this->textura = NULL;
+		};
 
 		int GetSide() { return this->width; };
 		void SetSide(int side) 
