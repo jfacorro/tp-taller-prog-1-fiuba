@@ -255,7 +255,6 @@ void SDLHelper::DrawSegment ( int x1 , int y1 , int x2 , int y2 , Color color , 
 	}
 }
 
-
 void SDLHelper::Refresh()
 {
 	SDL_UpdateRect(this->screen, 0, 0, this->screen->w, this->screen->h);
@@ -279,6 +278,11 @@ void SDLHelper::WaitForKey()
                 break;
         }
     }
+}
+
+SDL_Surface * SDLHelper::LoadBitmap(char * bitmap)
+{
+	return SDL_LoadBMP(bitmap);
 }
 
 #endif

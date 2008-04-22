@@ -33,6 +33,8 @@ class SDLHelper
 		void DrawRectangle ( int x , int y , int b , int h , Color color , int nodeId );
 		void DrawSegment ( int x1 , int y1 , int x2 , int y2 , Color color , int nodeId );
 
+		static SDL_Surface * LoadBitmap(char * bitmap);
+
 		void Refresh();
 
 		void WaitForKey();

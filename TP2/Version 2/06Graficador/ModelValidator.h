@@ -15,6 +15,7 @@ class ModelValidator
 		void GetGraphicElement(Tag * tag);
 	public:
 		void ParseAndValidate(Tag * rootNode);
+		bool CheckDuplicatedId(ArrayList * graphElementsArr, char * id);
 
 		static Color GetDefaultColor()
 		{
@@ -26,6 +27,7 @@ class ModelValidator
 		};
 
 		ArrayList graphicElements;
+		ArrayList textures;
 };
 
 #endif

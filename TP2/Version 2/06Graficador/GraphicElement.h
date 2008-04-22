@@ -1,3 +1,4 @@
+#include "SDL.h"
 #include "SDLHelper.h"
 #include "StringHelper.h"
 
@@ -149,5 +150,19 @@ class Line : public GraphicElement
 		void SetEnd(Position end) { this->end = end; };
 };
 
+class Texture
+{
+	private:
+		char * id;
+		SDL_Surface * bitmap;
+	public:
+		char * GetId() { return this->id; };
+		void SetId(char * id) { this->id  = StringHelper::Substring(id, 0, strlen(id)); };
+
+		SDL_Surface * GetBitmap() { return this->bitmap; };
+		void SetBitmap(SDL_Surface * bitmap) { this->bitmap  = bitmap; };
+};
+
 
 #endif
+
