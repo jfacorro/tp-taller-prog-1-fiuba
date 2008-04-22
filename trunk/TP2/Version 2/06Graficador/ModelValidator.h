@@ -9,9 +9,10 @@
 class ModelValidator
 {
 	private:
+		char * ModelValidator::GetId(Tag * tag);
 		Position GetPosition(Tag * tag, char * posTagName);
 		Color GetColor(Tag * tag, char * colorAttName);
-		GraphicElement * GetGraphicElement(Tag * tag);
+		void GetGraphicElement(Tag * tag);
 	public:
 		void ParseAndValidate(Tag * rootNode);
 
