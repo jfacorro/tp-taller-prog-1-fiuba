@@ -1,4 +1,5 @@
 #include "SDLHelper.h"
+#include "StringHelper.h"
 
 #ifndef GraphicElement_h
 
@@ -23,6 +24,7 @@ class GraphicElement
 	protected:
 		Position position;	
 		Color color;
+		char * id;
 	public:
 		virtual void Print(SDLHelper * sdlHelper) {};
 		
@@ -31,6 +33,9 @@ class GraphicElement
 		
 		Color GetColor() { return this->color; };
 		void SetColor(Color color) { this->color = color; };
+
+		char * GetId() { return this->id; };
+		void SetId(char * id) { this->id  = StringHelper::Substring(id, 0, strlen(id)); };
 };
 
 class Circle : public GraphicElement

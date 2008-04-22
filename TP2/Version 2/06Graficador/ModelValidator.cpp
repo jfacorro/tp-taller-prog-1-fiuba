@@ -17,18 +17,13 @@ void ModelValidator::ParseAndValidate(Tag * rootNode)
 		{
 			Tag * child = (Tag *) children.GetCurrent();
 
-			GraphicElement * graphElem = GetGraphicElement(child);
+			GetGraphicElement(child);
 
-			if(graphElem != NULL)
-			{			
-				this->graphicElements.Add(graphElem);
-			}
-			
 		}while(children.MoveNext());
 	}
 }
 
-GraphicElement * ModelValidator::GetGraphicElement(Tag * tag)
+void ModelValidator::GetGraphicElement(Tag * tag)
 {
 	char * name = tag->GetName();
 
@@ -37,6 +32,7 @@ GraphicElement * ModelValidator::GetGraphicElement(Tag * tag)
 	if(strcmp(name, "cuadrado") == 0)
 	{
 		Square * square = new Square();
+		square->SetId(GetId(tag));
 		square->SetPosition(GetPosition(tag, POSITION_TAG_NAME));
 		square->SetColor(GetColor(tag, FIGURE_COLOR_ATT_NAME));
 
@@ -54,6 +50,7 @@ GraphicElement * ModelValidator::GetGraphicElement(Tag * tag)
 	else if(strcmp(name, "circulo") == 0)
 	{
 		Circle * circle = new Circle();
+		circle->SetId(GetId(tag));
 		circle->SetPosition(GetPosition(tag, POSITION_TAG_NAME));
 		circle->SetColor(GetColor(tag, FIGURE_COLOR_ATT_NAME));
 
@@ -71,6 +68,7 @@ GraphicElement * ModelValidator::GetGraphicElement(Tag * tag)
 	else if(strcmp(name, "rectangulo") == 0)
 	{
 		Rectangle * rectangle = new Rectangle();
+		rectangle->SetId(GetId(tag));
 		rectangle->SetPosition(GetPosition(tag, POSITION_TAG_NAME));
 		rectangle->SetColor(GetColor(tag, FIGURE_COLOR_ATT_NAME));
 
@@ -97,6 +95,7 @@ GraphicElement * ModelValidator::GetGraphicElement(Tag * tag)
 	else if(strcmp(name, "segmento") == 0)
 	{
 		Line * line = new Line();
+		line->SetId(GetId(tag));
 		line->SetBegin(GetPosition(tag, BEGIN_TAG_NAME));
 		line->SetEnd(GetPosition(tag, END_TAG_NAME));
 		line->SetColor(GetColor(tag, LINE_COLOR_ATT_NAME));
@@ -108,7 +107,53 @@ GraphicElement * ModelValidator::GetGraphicElement(Tag * tag)
 		throw Exception("Unknown graphic figure.");
 	}
 
-	return graphElement;
+	if(graphElement != NULL)
+	{	
+		bool existingId = false;
+
+		if(!this->graphicElements.IsEmpty())
+		{
+
+			this->graphicElements.MoveFirst();
+
+			do
+			{
+				GraphicElement * graphElementId = (GraphicElement *)this->graphicElements.GetCurrent();
+
+				if(strcmp(graphElementId->GetId(), graphElement->GetId()) == 0)
+				{
+					existingId = true;
+					break;
+				}				
+
+			}while(this->graphicElements.MoveNext() && !existingId);
+		}
+
+		if(existingId)
+		{
+			throw Exception("Duplicated id.");
+		}
+		else
+		{
+			this->graphicElements.Add(graphElement);
+		}
+	}
+}
+
+char * ModelValidator::GetId(Tag * tag)
+{
+	char * id = NULL;
+
+	TagProperty * idAtt = tag->GetAttribute("id");
+
+	if(idAtt == NULL)	
+	{
+		throw Exception("Id missing.");
+	}
+
+	char * idAttValue = idAtt->GetValue();
+
+	return idAttValue;
 }
 
 Position ModelValidator::GetPosition(Tag * tag, char * posTagName)
