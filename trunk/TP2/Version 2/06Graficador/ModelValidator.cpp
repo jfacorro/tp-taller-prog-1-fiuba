@@ -102,6 +102,29 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 		graphElement = line;
 	}
+	else if(strcmp(name, "textura") == 0)
+	{
+		Texture * texture = new Texture();
+		texture->SetId(GetId(tag));
+
+		TagProperty * pathAtt = tag->GetAttribute("path");
+
+		if(pathAtt == NULL)
+		{
+			throw Exception("Path missing for texture.");
+		}
+
+		texture->SetBitmap(SDLHelper::LoadBitmap(pathAtt->GetValue()));
+
+		if(CheckDuplicatedId(&textures, texture->GetId()))
+		{
+			throw Exception("Duplicated texture id.");
+		}
+		else
+		{
+			this->textures.Add(texture);
+		}
+	}
 	else
 	{
 		throw Exception("Unknown graphic figure.");
@@ -109,35 +132,42 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 	if(graphElement != NULL)
 	{	
-		bool existingId = false;
-
-		if(!this->graphicElements.IsEmpty())
-		{
-
-			this->graphicElements.MoveFirst();
-
-			do
-			{
-				GraphicElement * graphElementId = (GraphicElement *)this->graphicElements.GetCurrent();
-
-				if(strcmp(graphElementId->GetId(), graphElement->GetId()) == 0)
-				{
-					existingId = true;
-					break;
-				}				
-
-			}while(this->graphicElements.MoveNext() && !existingId);
-		}
+		bool existingId = CheckDuplicatedId(&graphicElements, graphElement->GetId());
 
 		if(existingId)
 		{
-			throw Exception("Duplicated id.");
+			throw Exception("Duplicated graphic element id.");
 		}
 		else
 		{
 			this->graphicElements.Add(graphElement);
 		}
 	}
+}
+
+bool ModelValidator::CheckDuplicatedId(ArrayList * graphElementsArr, char * idStr)
+{
+	bool existingId = false;
+
+	if(!graphElementsArr->IsEmpty())
+	{
+
+		graphElementsArr->MoveFirst();
+
+		do
+		{
+			GraphicElement * graphElementId = (GraphicElement *)graphElementsArr->GetCurrent();
+
+			if(strcmp(graphElementId->GetId(), idStr) == 0)
+			{
+				existingId = true;
+				break;
+			}				
+
+		}while(graphElementsArr->MoveNext() && !existingId);
+	}
+
+	return existingId;
 }
 
 char * ModelValidator::GetId(Tag * tag)
