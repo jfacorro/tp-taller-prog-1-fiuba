@@ -20,7 +20,7 @@ int main(int argc, char* argv[] )
 	{
 		#ifdef DEBUG
 		
-		Tag * rootNode = parser.ParseFile("C:\\Juan\\Facultad\\2008.1er.Taller.de.Programacion.I\\TP Nº2\\Version 2\\06Graficador\\figuras.xml");
+		Tag * rootNode = parser.ParseFile("C:\\02.Personal\\Facultad\\Taller de Programación I\\TP2\\Version 2\\06Graficador\\figuras.xml");
 
 		rootNode->Print();
 
@@ -30,7 +30,7 @@ int main(int argc, char* argv[] )
 
 		SDLHelper sdlHelper;
 
-		sdlHelper.Initialize(800, 600, 16);
+		sdlHelper.Initialize(modelVal.config);
 
 		if(!modelVal.graphicElements.IsEmpty())
 		{

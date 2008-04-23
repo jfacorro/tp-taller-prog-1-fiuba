@@ -13,44 +13,14 @@
 #define BEGIN_TAG_NAME "inicio"
 #define END_TAG_NAME "fin"
 
+#define END_TAG_NAME "fin"
+
 typedef struct Position
 {
 	int x;
 	int y;
 }
 Position;
-
-typedef struct Resolution
-{
-	int w;
-	int h;
-}
-Resolution;
-
-class Configuration
-{
-	private:
-		Resolution resolucion;
-		Color colorFondoGraf;
-		Texture * textura;
-		Color colorLinea;
-		Color colorFondo;
-	public:
-		Resolution GetResolucion() { return this->resolucion; };
-		void SetResolucion(Resolution resolucion) { this->resolucion = resolucion; };
-
-		Color GetColorFondoGraf() { return this->colorFondoGraf; };
-		void SetColorFondoGraf(Color colorFondoGraf) { this->colorFondoGraf = colorFondoGraf; };
-
-		Texture * GetTextura() { return this->textura; };
-		void SetTextura(Texture * textura) { this->textura = textura; };
-
-		Color GetColorLinea() { return this->colorLinea; };
-		void SetColorLinea(Color colorLinea) { this->colorLinea = colorLinea; };
-
-		Color GetColorFondo() { return this->colorFondo; };
-		void SetColorFondo(Color colorFondo) { this->colorFondo = colorFondo; };
-};
 
 class GraphicElement
 {
@@ -201,20 +171,6 @@ class Line : public GraphicElement
 		Position GetEnd() { return this->end; };
 		void SetEnd(Position end) { this->end = end; };
 };
-
-class Texture
-{
-	private:
-		char * id;
-		SDL_Surface * bitmap;
-	public:
-		char * GetId() { return this->id; };
-		void SetId(char * id) { this->id  = StringHelper::Substring(id, 0, strlen(id)); };
-
-		SDL_Surface * GetBitmap() { return this->bitmap; };
-		void SetBitmap(SDL_Surface * bitmap) { this->bitmap  = bitmap; };
-};
-
 
 #endif
 
