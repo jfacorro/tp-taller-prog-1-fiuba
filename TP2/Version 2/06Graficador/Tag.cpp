@@ -276,6 +276,8 @@ Tag * Tag::GetChildTag(char * tagName)
 			found = (strcmp(childTag->GetName(), tagName) == 0);
 		}
 		while(this->childTags.MoveNext() && !found);
+
+		if(!found) childTag = NULL;
 	}
 
 	return childTag;

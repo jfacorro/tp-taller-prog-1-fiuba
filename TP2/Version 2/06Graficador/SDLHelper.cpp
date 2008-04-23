@@ -39,6 +39,8 @@ void SDLHelper::Initialize(Configuration config)
 		throw Exception(SDL_GetError());
 		exit(1);
     }
+
+	this->DrawRectangle(0, 0, this->screen->clip_rect.w, this->screen->clip_rect.h, config.GetColorFondoGraf(), NULL, NULL);
 }
 
 void SDLHelper::Quit()

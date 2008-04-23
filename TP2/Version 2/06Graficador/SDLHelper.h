@@ -40,7 +40,7 @@ class Configuration
 	private:
 		Resolution resolucion;
 		Color colorFondoGraf;
-		Texture * textura;
+		SDL_Surface * textura;
 		Color colorLinea;
 		Color colorFondo;
 	public:
@@ -53,8 +53,8 @@ class Configuration
 		Color GetColorFondoGraf() { return this->colorFondoGraf; };
 		void SetColorFondoGraf(Color colorFondoGraf) { this->colorFondoGraf = colorFondoGraf; };
 
-		Texture * GetTextura() { return this->textura; };
-		void SetTextura(Texture * textura) { this->textura = textura; };
+		SDL_Surface * GetTextura() { return this->textura; };
+		void SetTextura(SDL_Surface * textura) { this->textura = textura; };
 
 		Color GetColorLinea() { return this->colorLinea; };
 		void SetColorLinea(Color colorLinea) { this->colorLinea = colorLinea; };
