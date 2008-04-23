@@ -19,15 +19,6 @@ class ModelValidator
 		void ParseAndValidate(Tag * rootNode);
 		bool CheckDuplicatedId(ArrayList * graphElementsArr, char * id);
 
-		static Color GetDefaultColor()
-		{
-			Color color;
-			color.R = 255;
-			color.G = 255;
-			color.B = 255;
-			return color;
-		};
-
 		ArrayList graphicElements;
 		ArrayList textures;
 		Configuration config;

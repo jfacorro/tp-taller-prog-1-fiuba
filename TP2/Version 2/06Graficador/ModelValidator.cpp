@@ -122,7 +122,14 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 			throw Exception("Path missing for texture.");
 		}
 
-		texture->SetBitmap(SDLHelper::LoadBitmap(pathAtt->GetValue()));
+		SDL_Surface * bitmap = SDLHelper::LoadBitmap(pathAtt->GetValue());
+
+		if(bitmap == NULL)
+		{
+			throw Exception("Could not load bitmap.");
+		}
+
+		texture->SetBitmap(bitmap);
 
 		cout << "(Ancho -Alto) textura '" << texture->GetId() << "':" << texture->GetBitmap()->clip_rect.w << " - " << texture->GetBitmap()->clip_rect.h << endl;
 
@@ -279,7 +286,7 @@ Color ModelValidator::GetColor(Tag * tag, char * colorAttName)
 	}
 	else
 	{
-		color = ModelValidator::GetDefaultColor();
+		color = SDLHelper::GetDefaultFrontColor();
 	}
 
 	return color;

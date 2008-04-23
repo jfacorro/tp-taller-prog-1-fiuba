@@ -6,13 +6,25 @@
 
 #define SDLHelper_cpp
 
+Configuration::Configuration()
+{
+	this->resolucion = SDLHelper::ResolutionByWidth(640);
+
+	this->colorFondoGraf = SDLHelper::GetDefaultBackColor();
+
+	this->textura = NULL;
+	
+	this->colorLinea = SDLHelper::GetDefaultFrontColor();
+	this->colorFondo = SDLHelper::GetDefaultFrontColor();
+};
+
 
 SDLHelper::SDLHelper()
 {
 	this->screen = NULL;
 }
 
-void SDLHelper::Initialize(int widthRes, int heightRes, int colorDepth)
+void SDLHelper::Initialize(Configuration config)
 {
     if((SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO)==-1))
 	{
@@ -20,13 +32,13 @@ void SDLHelper::Initialize(int widthRes, int heightRes, int colorDepth)
 		exit(1);
     }	
 
-	screen = SDL_SetVideoMode(widthRes, heightRes, colorDepth, SDL_SWSURFACE);
+	screen = SDL_SetVideoMode(config.GetResolucion().w, config.GetResolucion().h, 32, SDL_SWSURFACE);
 
     if ( screen == NULL ) 
 	{
 		throw Exception(SDL_GetError());
 		exit(1);
-    }	
+    }
 }
 
 void SDLHelper::Quit()
@@ -293,6 +305,33 @@ void SDLHelper::WaitForKey()
 SDL_Surface * SDLHelper::LoadBitmap(char * bitmap)
 {
 	return SDL_LoadBMP(bitmap);
+}
+
+Resolution SDLHelper::ResolutionByWidth(int width)
+{
+	Resolution res;
+	switch(width)
+	{
+		case 800:
+			res.w = 800;
+			res.h = 600;
+		break;
+		case 1024:
+			res.w = 1024;
+			res.h = 768;
+		break;
+		case 1280:
+			res.w = 1280;
+			res.h = 1024;
+		break;
+		case 640:
+		default:
+			res.w = 640;
+			res.h = 480;
+		break;
+	};
+	
+	return res; 
 }
 
 #endif
