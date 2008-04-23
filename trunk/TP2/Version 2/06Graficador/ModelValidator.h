@@ -30,6 +30,7 @@ class ModelValidator
 
 		ArrayList graphicElements;
 		ArrayList textures;
+		Configuration config;
 };
 
 #endif

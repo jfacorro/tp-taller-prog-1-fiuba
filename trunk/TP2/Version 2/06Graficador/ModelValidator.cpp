@@ -30,7 +30,11 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 	GraphicElement * graphElement = NULL;
 
-	if(strcmp(name, "cuadrado") == 0)
+	if(strcmp(name, "General") == 0)
+	{
+
+	}
+	else if(strcmp(name, "cuadrado") == 0)
 	{
 		Square * square = new Square();
 		square->SetId(GetId(tag));

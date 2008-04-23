@@ -20,6 +20,38 @@ typedef struct Position
 }
 Position;
 
+typedef struct Resolution
+{
+	int w;
+	int h;
+}
+Resolution;
+
+class Configuration
+{
+	private:
+		Resolution resolucion;
+		Color colorFondoGraf;
+		Texture * textura;
+		Color colorLinea;
+		Color colorFondo;
+	public:
+		Resolution GetResolucion() { return this->resolucion; };
+		void SetResolucion(Resolution resolucion) { this->resolucion = resolucion; };
+
+		Color GetColorFondoGraf() { return this->colorFondoGraf; };
+		void SetColorFondoGraf(Color colorFondoGraf) { this->colorFondoGraf = colorFondoGraf; };
+
+		Texture * GetTextura() { return this->textura; };
+		void SetTextura(Texture * textura) { this->textura = textura; };
+
+		Color GetColorLinea() { return this->colorLinea; };
+		void SetColorLinea(Color colorLinea) { this->colorLinea = colorLinea; };
+
+		Color GetColorFondo() { return this->colorFondo; };
+		void SetColorFondo(Color colorFondo) { this->colorFondo = colorFondo; };
+};
+
 class GraphicElement
 {
 	protected:
