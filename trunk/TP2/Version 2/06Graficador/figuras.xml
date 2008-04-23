@@ -1,12 +1,15 @@
 <Root>
-	<textura id="textura0" path="C:\bitmap.bmp" />
+	<General>
+		<resolucion>640</resolucion>
+		<colorLinea>255000000</colorLinea>
+	</General>
 	<circulo id="circulo0" radio="20" textura="textura0">
 		<posicion x="400" y="300" />
 	</circulo>		
 	<cuadrado id="cuadrado0" lado="30" colorFigura="255000000">
 		<posicion x="35" y="100" />
 	</cuadrado>		
-	<rectangulo id="rectangulo0" base="80" altura="30" textura="textura0">
+	<rectangulo id="rectangulo0" base="80" altura="30">
 		<posicion x="100" y="30" />
 	</rectangulo>	
 	<segmento id="segmento0" colorLinea="000000255">

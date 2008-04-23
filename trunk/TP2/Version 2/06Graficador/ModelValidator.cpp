@@ -32,7 +32,59 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 	if(strcmp(name, "General") == 0)
 	{
+		Tag * resTag = tag->GetChildTag("resolucion");
 
+		if(resTag != NULL)
+		{
+			char * resStr = resTag->GetInnerText();
+			int resInt = atoi(resStr);
+
+			this->config.SetResolucion(SDLHelper::ResolutionByWidth(resInt));
+		}
+
+		Tag * colorFondoGrafTag = tag->GetChildTag("colorFondoGraf");
+
+		if(colorFondoGrafTag != NULL)
+		{
+			char * colorFondoGrafStr = colorFondoGrafTag->GetInnerText();
+
+			Color colorFondoGraf = ModelValidator::GetColorFromString(colorFondoGrafStr);
+
+			this->config.SetColorFondoGraf(colorFondoGraf);
+		}
+
+
+		Tag * texturaTag = tag->GetChildTag("textura");
+
+		if(texturaTag != NULL)
+		{
+			char * texturaStr = texturaTag->GetInnerText();
+
+			this->config.SetTextura(GetTextureById(texturaStr));
+		}
+
+		Tag * colorLineaTag = tag->GetChildTag("colorLinea");
+
+		if(colorLineaTag != NULL)
+		{
+			char * colorLineaStr = colorLineaTag->GetInnerText();
+
+			Color colorLinea = ModelValidator::GetColorFromString(colorLineaStr);
+
+			this->config.SetColorLinea(colorLinea);
+		}
+
+
+		Tag * colorFondoTag = tag->GetChildTag("colorFondo");
+
+		if(colorFondoTag != NULL)
+		{
+			char * colorFondoStr = colorFondoTag->GetInnerText();
+
+			Color colorFondo = ModelValidator::GetColorFromString(colorFondoStr);
+
+			this->config.SetColorFondo(colorFondo);
+		}
 	}
 	else if(strcmp(name, "cuadrado") == 0)
 	{
@@ -211,22 +263,31 @@ SDL_Surface * ModelValidator::GetTexture(Tag * tag)
 
 	if(textureId != NULL)
 	{
-		if(!this->textures.IsEmpty())
+		bitmap = GetTextureById(textureId->GetValue());
+	}
+
+	return bitmap;
+}
+
+SDL_Surface * ModelValidator::GetTextureById(char * textureId)
+{
+	SDL_Surface * bitmap = NULL;
+
+	if(!this->textures.IsEmpty())
+	{
+		this->textures.MoveFirst();
+
+		do
 		{
-			this->textures.MoveFirst();
+			Texture * texture = (Texture *)this->textures.GetCurrent();
 
-			do
+			if(strcmp(texture->GetId(), textureId) == 0)
 			{
-				Texture * texture = (Texture *)this->textures.GetCurrent();
+				bitmap = texture->GetBitmap();
+				break;
+			}
 
-				if(strcmp(texture->GetId(), textureId->GetValue()) == 0)
-				{
-					bitmap = texture->GetBitmap();
-					break;
-				}
-
-			}while(this->textures.MoveNext());
-		}
+		}while(this->textures.MoveNext());
 	}
 
 	return bitmap;
@@ -267,27 +328,36 @@ Color ModelValidator::GetColor(Tag * tag, char * colorAttName)
 	{
 		char * RGB = att->GetValue();
 
-		if(strlen(RGB) != 9)
-		{
-			throw Exception("Invalid format for color attribute.");
-		}
-
-		char * Red = StringHelper::Substring(RGB, 0, 3);
-		char * Green = StringHelper::Substring(RGB, 3, 3);
-		char * Blue = StringHelper::Substring(RGB, 6, 3);
-
-		color.R = atoi(Red);
-		color.G = atoi(Green);
-		color.B= atoi(Blue);
-
-		delete Red;
-		delete Green;
-		delete Blue;
+		color = ModelValidator::GetColorFromString(RGB);
 	}
 	else
 	{
 		color = SDLHelper::GetDefaultFrontColor();
 	}
+
+	return color;
+}
+
+Color ModelValidator::GetColorFromString(char * RGB)
+{
+	Color color;
+
+	if(strlen(RGB) != 9)
+	{
+		throw Exception("Invalid format for color attribute.");
+	}
+
+	char * Red = StringHelper::Substring(RGB, 0, 3);
+	char * Green = StringHelper::Substring(RGB, 3, 3);
+	char * Blue = StringHelper::Substring(RGB, 6, 3);
+
+	color.R = atoi(Red);
+	color.G = atoi(Green);
+	color.B= atoi(Blue);
+
+	delete Red;
+	delete Green;
+	delete Blue;
 
 	return color;
 }
