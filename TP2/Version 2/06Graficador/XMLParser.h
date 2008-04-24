@@ -17,18 +17,26 @@ enum ParserResult
 class XMLParser
 {
 	private: 
-		char * source;
+		int stringIndex;
+		int stringLength;
+
+		char * stringXml;
 
 		Tag * BuildTree(ArrayList * stringsArr, Tag * parentTag, Tag * currentTag);
+		char * GetNextText();
+		char * GetNextTag();
 	public:
-		char * getSource() { return this->source; };
-		void setSource(char * sourceLocal) { this->source = sourceLocal; };
+		char * getSource() { return this->stringXml; };
+		void setSource(char * sourceLocal) { this->stringXml = sourceLocal; };
 	
-		XMLParser() {};
+		XMLParser() 
+		{
+			this->stringIndex = 0;
+			this->stringLength = 0;
+		};
 
 		Tag * ParseFile(char * filename);
-		char * GetNextText(FILE * file);
-		char * GetNextTag(FILE * file);
+		Tag * Parse(char * stringXml);
 
 		static bool ValidateName(char * nameStr);
 };
