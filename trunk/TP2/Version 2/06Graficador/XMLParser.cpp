@@ -20,42 +20,65 @@ Tag * XMLParser::ParseFile(char * filename)
 	
 	file = fopen(filename, "r");
 
+
 	if(file != NULL)
 	{
-		char * tagStr = NULL;
-		char * textStr = NULL;
+		int filesize = 0;
 
-		ArrayList stringsArr;
-		ArrayList tagsArr;
+		fseek(file, 0, SEEK_END);		
+		filesize = ftell(file);
 
-		do
-		{
-			textStr = this->GetNextText(file);
+		char * source = new char[filesize];
 
-			if(textStr != NULL)
-			{
-				stringsArr.Add(textStr);
-				/// printf("FOUND TEXT: %s\n", textStr);
-			}
+		fseek(file, 0, SEEK_SET);
+		fread(source, sizeof(char), filesize, file);
 
-			tagStr = this->GetNextTag(file);
-
-			if(tagStr != NULL)
-			{
-				stringsArr.Add(tagStr);
-				/// printf("FOUND TAG: %s\n", tagStr);
-				
-			}
-		}while(!feof(file));
-		
 		fclose(file);
 
-		rootTag = this->BuildTree(&stringsArr, NULL, NULL);
+		rootTag = this->Parse(source);
 	}
  	else
 	{
 		throw FileNotFoundException();
 	}
+
+	return rootTag;
+}
+
+Tag * XMLParser::Parse(char * stringXml)
+{
+	Tag * rootTag = NULL;
+
+	this->stringXml = stringXml;
+	this->stringLength = strlen(stringXml);
+	
+	char * tagStr = NULL;
+	char * textStr = NULL;
+
+	ArrayList stringsArr;
+	ArrayList tagsArr;
+
+	do
+	{
+		textStr = this->GetNextText();
+
+		if(textStr != NULL)
+		{
+			stringsArr.Add(textStr);
+			/// printf("FOUND TEXT: %s\n", textStr);
+		}
+
+		tagStr = this->GetNextTag();
+
+		if(tagStr != NULL)
+		{
+			stringsArr.Add(tagStr);
+			/// printf("FOUND TAG: %s\n", tagStr);
+			
+		}
+	}while(this->stringIndex < this->stringLength);
+	
+	rootTag = this->BuildTree(&stringsArr, NULL, NULL);
 
 	return rootTag;
 }
@@ -160,7 +183,7 @@ Tag * XMLParser::BuildTree(ArrayList * stringsArr, Tag * parentTag, Tag * curren
 	return NULL;
 }
 
-char * XMLParser::GetNextTag(FILE * file)
+char * XMLParser::GetNextTag()
 {
 	char openChar;
 	char closeChar;
@@ -176,47 +199,53 @@ char * XMLParser::GetNextTag(FILE * file)
 
 	do
 	{
-		openChar = fgetc(file);
+		openChar = this->stringXml[this->stringIndex];
+
+		this->stringIndex++;
 
 		if(openChar == '\n') numNewLineChar++;
 
 		if(openChar == '<')
 		{
-			openPos = ftell(file) - (1 + numNewLineChar);
+			openPos = this->stringIndex - (1 + numNewLineChar);
 		}
 
-	}while(!feof(file) && openChar != '<');
+	}while(this->stringIndex < this->stringLength && openChar != '<');
 
 	numNewLineChar = 0;
 
 	do
 	{
-		closeChar = fgetc(file);
+		closeChar = this->stringXml[this->stringIndex];
+
+		this->stringIndex++;
 
 		if(closeChar == '\n') numNewLineChar++;
 
 		if(closeChar == '>')
 		{
-			closePos = ftell(file) - (1 + numNewLineChar);
+			closePos = this->stringIndex - (1 + numNewLineChar);
 		}
 		else if (closeChar == '<')
 		{
 			throw ClosingTagMissingException();
 		}
-	}while(!feof(file) && closeChar != '>');
+	}while(this->stringIndex < this->stringLength && closeChar != '>');
 
 
-	if(closePos != 0 && !feof(file))
+	if(closePos != 0 && this->stringIndex <= this->stringLength)
 	{
-		fseek(file, openPos, SEEK_SET);
+		this->stringIndex = openPos;
 
 		tagStr = new char[closePos - openPos + 2];
 
-		fread(tagStr, 1, closePos - openPos + 1, file);
+		/// fread(tagStr, 1, closePos - openPos + 1, file);
+		tagStr = StringHelper::Substring(this->stringXml, this->stringIndex, closePos - openPos + 1);
 
 		tagStr[closePos - openPos + 1] = '\0';
 
-		fseek(file, closePos + 1, SEEK_SET);
+		this->stringIndex = closePos + 1;
+		/// fseek(file, closePos + 1, SEEK_SET);
 
 		char * temp = tagStr;
 		
@@ -228,10 +257,10 @@ char * XMLParser::GetNextTag(FILE * file)
 	return tagStr;
 }
 
-char * XMLParser::GetNextText(FILE * file)
+char * XMLParser::GetNextText()
 {
 	char openChar;
-	int beginPos = ftell(file);
+	int beginPos = this->stringIndex;
 	int endPos = 0;	
 	int openCharPos = 0;	
 
@@ -241,13 +270,15 @@ char * XMLParser::GetNextText(FILE * file)
 
 	do
 	{
-		openChar = fgetc(file);
+		openChar = this->stringXml[this->stringIndex];
+
+		this->stringIndex++;
 
 		if(openChar == '\n') numNewLineChar++;
 
 		if(openChar == '<')
 		{
-			openCharPos = ftell(file) - (1 + numNewLineChar);
+			openCharPos = this->stringIndex - (1 + numNewLineChar);
 			
 			endPos = openCharPos;
 
@@ -257,17 +288,17 @@ char * XMLParser::GetNextText(FILE * file)
 			}			
 		}
 
-	}while(!feof(file) && openChar != '<');	
+	}while(this->stringIndex < this->stringLength && openChar != '<');	
 
-	if(openCharPos != beginPos && !feof(file))
+	if(openCharPos != beginPos && this->stringIndex <= this->stringLength)
 	{
 		tagStr = new char[endPos - beginPos + 2];
 
-		fseek(file, beginPos, SEEK_SET);
+		this->stringIndex  = beginPos;
 
-		fread(tagStr, 1, endPos - beginPos + 1, file);
+		tagStr = StringHelper::Substring(this->stringXml, this->stringIndex, endPos - beginPos + 1);
 
-		fseek(file, endPos + 1, SEEK_SET);
+		this->stringIndex = endPos + 1;
 
 		tagStr[endPos - beginPos + 1] = '\0';
 
@@ -285,7 +316,8 @@ char * XMLParser::GetNextText(FILE * file)
 	}
 	else
 	{
-		fseek(file, beginPos, SEEK_SET);
+		this->stringIndex = beginPos;
+		/// fseek(file, beginPos, SEEK_SET);
 	}
 
 
