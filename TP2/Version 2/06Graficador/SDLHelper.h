@@ -43,24 +43,28 @@ class Configuration
 		SDL_Surface * textura;
 		Color colorLinea;
 		Color colorFondo;
+
+		bool isDefaultConfig;
 	public:
 		Configuration();
 
 		/// Accessors
 		Resolution GetResolucion() { return this->resolucion; };
-		void SetResolucion(Resolution resolucion) { this->resolucion = resolucion; };
+		void SetResolucion(Resolution resolucion) { this->isDefaultConfig = false; this->resolucion = resolucion; };
 
 		Color GetColorFondoGraf() { return this->colorFondoGraf; };
-		void SetColorFondoGraf(Color colorFondoGraf) { this->colorFondoGraf = colorFondoGraf; };
+		void SetColorFondoGraf(Color colorFondoGraf) { this->isDefaultConfig = false; this->colorFondoGraf = colorFondoGraf; };
 
 		SDL_Surface * GetTextura() { return this->textura; };
-		void SetTextura(SDL_Surface * textura) { this->textura = textura; };
+		void SetTextura(SDL_Surface * textura) { this->isDefaultConfig = false; this->textura = textura; };
 
 		Color GetColorLinea() { return this->colorLinea; };
-		void SetColorLinea(Color colorLinea) { this->colorLinea = colorLinea; };
+		void SetColorLinea(Color colorLinea) { this->isDefaultConfig = false; this->colorLinea = colorLinea; };
 
 		Color GetColorFondo() { return this->colorFondo; };
-		void SetColorFondo(Color colorFondo) { this->colorFondo = colorFondo; };
+		void SetColorFondo(Color colorFondo) { this->isDefaultConfig = false; this->colorFondo = colorFondo; };
+
+		bool GetIsDefaultConfig() { return this->isDefaultConfig; };
 };
 
 

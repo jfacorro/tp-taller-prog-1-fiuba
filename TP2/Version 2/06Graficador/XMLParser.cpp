@@ -28,12 +28,14 @@ Tag * XMLParser::ParseFile(char * filename)
 		fseek(file, 0, SEEK_END);		
 		filesize = ftell(file);
 
-		char * source = new char[filesize];
+		char * source = new char[filesize + 1];
 
 		fseek(file, 0, SEEK_SET);
 		fread(source, sizeof(char), filesize, file);
 
 		fclose(file);
+
+		source[filesize] = '\0';
 
 		rootTag = this->Parse(source);
 	}
@@ -50,7 +52,7 @@ Tag * XMLParser::Parse(char * stringXml)
 	Tag * rootTag = NULL;
 
 	this->stringXml = stringXml;
-	this->stringLength = strlen(stringXml);
+	this->stringLength = strlen(stringXml) + 1;
 	
 	char * tagStr = NULL;
 	char * textStr = NULL;
@@ -203,7 +205,11 @@ char * XMLParser::GetNextTag()
 
 		this->stringIndex++;
 
-		if(openChar == '\n') numNewLineChar++;
+		if(openChar == '\n')
+		{
+			numNewLineChar++;
+			this->stringLength--;
+		}
 
 		if(openChar == '<')
 		{
@@ -220,7 +226,11 @@ char * XMLParser::GetNextTag()
 
 		this->stringIndex++;
 
-		if(closeChar == '\n') numNewLineChar++;
+		if(closeChar == '\n')
+		{
+			numNewLineChar++;
+			this->stringLength--;
+		}
 
 		if(closeChar == '>')
 		{
@@ -230,7 +240,7 @@ char * XMLParser::GetNextTag()
 		{
 			throw ClosingTagMissingException();
 		}
-	}while(this->stringIndex < this->stringLength && closeChar != '>');
+	}while(this->stringIndex <= this->stringLength && closeChar != '>');
 
 
 	if(closePos != 0 && this->stringIndex <= this->stringLength)
@@ -239,13 +249,11 @@ char * XMLParser::GetNextTag()
 
 		tagStr = new char[closePos - openPos + 2];
 
-		/// fread(tagStr, 1, closePos - openPos + 1, file);
 		tagStr = StringHelper::Substring(this->stringXml, this->stringIndex, closePos - openPos + 1);
 
 		tagStr[closePos - openPos + 1] = '\0';
 
 		this->stringIndex = closePos + 1;
-		/// fseek(file, closePos + 1, SEEK_SET);
 
 		char * temp = tagStr;
 		
@@ -261,7 +269,7 @@ char * XMLParser::GetNextText()
 {
 	char openChar;
 	int beginPos = this->stringIndex;
-	int endPos = 0;	
+	int endPos = beginPos;	
 	int openCharPos = 0;	
 
 	char * tagStr = NULL;
@@ -274,7 +282,11 @@ char * XMLParser::GetNextText()
 
 		this->stringIndex++;
 
-		if(openChar == '\n') numNewLineChar++;
+		if(openChar == '\n')
+		{
+			numNewLineChar++;
+			this->stringLength--;
+		}
 
 		if(openChar == '<')
 		{
