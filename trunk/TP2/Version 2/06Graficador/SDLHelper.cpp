@@ -16,6 +16,8 @@ Configuration::Configuration()
 	
 	this->colorLinea = SDLHelper::GetDefaultFrontColor();
 	this->colorFondo = SDLHelper::GetDefaultFrontColor();
+
+	this->isDefaultConfig = true;
 };
 
 

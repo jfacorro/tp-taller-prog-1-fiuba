@@ -32,6 +32,12 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 	if(strcmp(name, "General") == 0)
 	{
+		if(!this->config.GetIsDefaultConfig())
+		{
+			throw Exception("There can only be one general element.");
+			
+		}
+		
 		Tag * resTag = tag->GetChildTag("resolucion");
 
 		if(resTag != NULL)
