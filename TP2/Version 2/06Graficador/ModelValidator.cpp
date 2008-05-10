@@ -98,7 +98,6 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		square->SetId(GetId(tag));
 		square->SetPosition(GetPosition(tag, POSITION_TAG_NAME));
 		square->SetColor(GetColor(tag, FIGURE_COLOR_ATT_NAME));
-		square->SetTextura(GetTexture(tag));
 
 		TagProperty * sideAtt =  tag->GetAttribute("lado");
 
@@ -108,6 +107,8 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		}
 
 		square->SetSide(atoi(sideAtt->GetValue()));
+
+		square->SetTextura(GetTexture(tag));
 		
 		graphElement = square;
 	}
