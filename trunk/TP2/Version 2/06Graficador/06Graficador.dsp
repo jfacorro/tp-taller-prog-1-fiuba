@@ -117,11 +117,11 @@ SOURCE=.\ModelValidator.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\resize.cpp
+SOURCE=.\SDL_rotozoom.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\resize.h
+SOURCE=.\SDL_rotozoom.h
 # End Source File
 # Begin Source File
 
