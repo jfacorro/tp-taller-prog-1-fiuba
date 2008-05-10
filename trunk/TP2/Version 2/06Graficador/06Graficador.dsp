@@ -117,6 +117,14 @@ SOURCE=.\ModelValidator.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\resize.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\resize.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\SDLHelper.cpp
 # End Source File
 # Begin Source File

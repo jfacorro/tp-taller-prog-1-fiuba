@@ -112,6 +112,7 @@ class SDLHelper
 		};
 
 		static Resolution ResolutionByWidth(int width);
+		static SDL_Surface * SDLResizeBitmap(SDL_Surface * image, int new_w, int new_h, int filter = 7);
 };
 
 #endif

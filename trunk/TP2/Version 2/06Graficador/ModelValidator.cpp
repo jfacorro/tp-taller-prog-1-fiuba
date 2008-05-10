@@ -189,7 +189,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 		texture->SetBitmap(bitmap);
 
-		cout << "(Ancho -Alto) textura '" << texture->GetId() << "':" << texture->GetBitmap()->clip_rect.w << " - " << texture->GetBitmap()->clip_rect.h << endl;
+		/// cout << "(Ancho -Alto) textura '" << texture->GetId() << "':" << texture->GetBitmap()->clip_rect.w << " - " << texture->GetBitmap()->clip_rect.h << endl;
 
 		if(CheckDuplicatedId(&textures, texture->GetId()))
 		{

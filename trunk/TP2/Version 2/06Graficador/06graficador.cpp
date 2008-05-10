@@ -1,3 +1,4 @@
+#include "resize.h"
 #include "conio.h"
 #include "stdio.h"
 #include "XMLParser.h"
