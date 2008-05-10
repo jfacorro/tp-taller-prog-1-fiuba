@@ -117,7 +117,7 @@ SOURCE=.\ModelValidator.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\resize.c
+SOURCE=.\resize.cpp
 # End Source File
 # Begin Source File
 
@@ -182,6 +182,18 @@ SOURCE=.\SDL\SDL.lib
 # Begin Source File
 
 SOURCE=.\SDL\SDLmain.lib
+# End Source File
+# End Group
+# Begin Group "TestXMLFiles"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\TestXMLFiles\figuras.xml
+# End Source File
+# Begin Source File
+
+SOURCE=.\TestXMLFiles\figuras01.xml
 # End Source File
 # End Group
 # Begin Source File

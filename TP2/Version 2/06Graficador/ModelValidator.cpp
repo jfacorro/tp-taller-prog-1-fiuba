@@ -117,7 +117,6 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		circle->SetId(GetId(tag));
 		circle->SetPosition(GetPosition(tag, POSITION_TAG_NAME));
 		circle->SetColor(GetColor(tag, FIGURE_COLOR_ATT_NAME));
-		circle->SetTextura(GetTexture(tag));
 
 		TagProperty * radiusAtt =  tag->GetAttribute("radio");
 
@@ -128,6 +127,8 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 		circle->SetRadius(atoi(radiusAtt->GetValue()));
 
+		circle->SetTextura(GetTexture(tag));
+
 		graphElement = circle;
 	}
 	else if(strcmp(name, "rectangulo") == 0)
@@ -136,7 +137,6 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		rectangle->SetId(GetId(tag));
 		rectangle->SetPosition(GetPosition(tag, POSITION_TAG_NAME));
 		rectangle->SetColor(GetColor(tag, FIGURE_COLOR_ATT_NAME));
-		rectangle->SetTextura(GetTexture(tag));
 
 		TagProperty * widthAtt =  tag->GetAttribute("base");
 
@@ -155,6 +155,10 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		}
 
 		rectangle->SetHeight(atoi(heightAtt->GetValue()));
+
+		/// Esto tiene que ser asignado despues de la 
+		/// altura y el ancho asi hace el reisze sólo una vez.
+		rectangle->SetTextura(GetTexture(tag));
 
 		graphElement = rectangle;
 	}
@@ -181,6 +185,8 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		}
 
 		SDL_Surface * bitmap = SDLHelper::LoadBitmap(pathAtt->GetValue());
+
+		texture->SetFilePath(pathAtt->GetValue());
 
 		if(bitmap == NULL)
 		{
@@ -289,7 +295,7 @@ SDL_Surface * ModelValidator::GetTextureById(char * textureId)
 
 			if(strcmp(texture->GetId(), textureId) == 0)
 			{
-				bitmap = texture->GetBitmap();
+				bitmap = SDLHelper::LoadBitmap(texture->GetFilePath());
 				break;
 			}
 

@@ -72,7 +72,10 @@ class Circle : public GraphicElement
 		void SetRadius(int radius) { this->radius = radius; };
 
 		SDL_Surface * GetTextura() { return this->textura; };
-		void SetTextura(SDL_Surface * textura) { this->textura = textura; };
+		void SetTextura(SDL_Surface * textura) 
+		{
+			this->textura = SDLHelper::SDLResizeBitmap(textura, this->radius * 2, this->radius * 2, 7);
+		};
 };
 
 class Rectangle : public GraphicElement
@@ -111,7 +114,10 @@ class Rectangle : public GraphicElement
 		void SetHeight(int height) { this->height = height; };
 
 		SDL_Surface * GetTextura() { return this->textura; };
-		void SetTextura(SDL_Surface * textura) { this->textura = textura; };
+		void SetTextura(SDL_Surface * texturaParam) 
+		{ 			
+			this->textura = SDLHelper::SDLResizeBitmap(texturaParam, this->width, this->height, 7);
+		};
 };
 
 class Square : public Rectangle
