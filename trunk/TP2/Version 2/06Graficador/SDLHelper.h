@@ -26,10 +26,15 @@ class Texture
 {
 	private:
 		char * id;
+		char * filePath;
 		SDL_Surface * bitmap;
+
 	public:
 		char * GetId() { return this->id; };
 		void SetId(char * id) { this->id  = StringHelper::Substring(id, 0, strlen(id)); };
+
+		char * GetFilePath() { return this->filePath; };
+		void SetFilePath(char * filePath) { this->filePath  = StringHelper::Substring(filePath, 0, strlen(filePath)); };
 
 		SDL_Surface * GetBitmap() { return this->bitmap; };
 		void SetBitmap(SDL_Surface * bitmap) { this->bitmap  = bitmap; };
@@ -79,7 +84,8 @@ class SDLHelper
 		SDLHelper();
 		~SDLHelper() {};
 
-		void Initialize(Configuration config);
+		void Initialize();
+		void InitializeVideo(Configuration config);
 		void Quit();
 
 		void DrawSquare ( int x , int y , int l , Color color , SDL_Surface* texture , char * nodeId );

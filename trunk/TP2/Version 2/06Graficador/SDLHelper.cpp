@@ -1,7 +1,7 @@
 #include "SDLHelper.h"
 #include "iostream.h"
 #include "Math.h"
-#include "resize.h"
+#include "SDL_rotozoom.h"
 
 #ifndef SDLHelper_cpp
 
@@ -21,20 +21,22 @@ Configuration::Configuration()
 	this->isDefaultConfig = true;
 };
 
-
 SDLHelper::SDLHelper()
 {
 	this->screen = NULL;
 }
 
-void SDLHelper::Initialize(Configuration config)
+void SDLHelper::Initialize()
 {
     if((SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO)==-1))
 	{
 		throw Exception(SDL_GetError());
 		exit(1);
-    }	
+    }
+}
 
+void SDLHelper::InitializeVideo(Configuration config)
+{
 	screen = SDL_SetVideoMode(config.GetResolucion().w, config.GetResolucion().h, 32, SDL_SWSURFACE);
 
     if ( screen == NULL ) 
@@ -341,7 +343,22 @@ Resolution SDLHelper::ResolutionByWidth(int width)
 
 SDL_Surface * SDLHelper::SDLResizeBitmap(SDL_Surface * image, int new_w, int new_h, int filter)
 {
-	return SDL_ResizeXY(image, new_w, new_h, filter);
+	SDL_Surface * resizedImage = NULL;
+	/// method from SDL_rotozoom.h
+	if(image != NULL)
+	{
+		double xfactor, yfactor;
+
+		xfactor = (double)new_w / image->w;
+		yfactor = (double)new_h / image->h;
+
+		resizedImage = zoomSurface(image, xfactor, yfactor, 1);
+	}
+
+	return resizedImage;
+	
+	/// method from resize.h
+	/// return SDL_ResizeXY(image, new_w, new_h, filter);
 }
 
 #endif
