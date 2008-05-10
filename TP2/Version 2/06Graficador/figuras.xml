@@ -3,7 +3,8 @@
 		<resolucion>640</resolucion>
 		<colorLinea>255000000</colorLinea>
 	</General>
-	<circulo id="circulo0" radio="20" textura="textura0">
+	<textura id="textura0" path="bitmap.bmp" />
+	<circulo id="circulo0" radio="40" textura="textura0">
 		<posicion x="400" y="300" />
 	</circulo>		
 	<cuadrado id="cuadrado0" lado="30" colorFigura="255000000">

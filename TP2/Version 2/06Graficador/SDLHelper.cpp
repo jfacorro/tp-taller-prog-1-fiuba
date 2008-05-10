@@ -1,6 +1,7 @@
 #include "SDLHelper.h"
 #include "iostream.h"
 #include "Math.h"
+#include "resize.h"
 
 #ifndef SDLHelper_cpp
 
@@ -336,6 +337,11 @@ Resolution SDLHelper::ResolutionByWidth(int width)
 	};
 	
 	return res; 
+}
+
+SDL_Surface * SDLHelper::SDLResizeBitmap(SDL_Surface * image, int new_w, int new_h, int filter)
+{
+	return SDL_ResizeXY(image, new_w, new_h, filter);
 }
 
 #endif
