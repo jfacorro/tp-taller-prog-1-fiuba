@@ -67,4 +67,20 @@ char * StringHelper::GetEmptyString()
 	return emptyStr;
 }
 
+char * StringHelper::AppendString(char * str1, char * str2)
+{
+  char * str3;
+  int length = strlen(str1) + strlen(str2) + 1;
+
+  str3 = new char[length];
+
+  str3[0] = '\0';
+
+  strcat(str3, str1);
+  strcat(str3, str2);
+  
+  return str3;
+}
+
+
 #endif

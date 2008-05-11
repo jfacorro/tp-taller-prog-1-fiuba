@@ -4,7 +4,6 @@
 #include "Common.h"
 #include "XMLParser.h"
 #include "Exception.h"
-#include "Stack.h"
 #include "Tag.h"
 #include "TagProperty.h"
 
@@ -18,17 +17,18 @@ Tag * XMLParser::ParseFile(char * filename)
 
 	FILE * file;
 	
-	file = fopen(filename, "r");
+	file = fopen(filename, "rb");
 
 
 	if(file != NULL)
 	{
-		int filesize = 0;
+		long filesize = 0;
 
 		fseek(file, 0, SEEK_END);		
 		filesize = ftell(file);
 
 		char * source = new char[filesize + 1];
+		//char * source = (char *)malloc(sizeof(char) * filesize);
 
 		fseek(file, 0, SEEK_SET);
 		fread(source, sizeof(char), filesize, file);
@@ -133,7 +133,7 @@ Tag * XMLParser::BuildTree(ArrayList * stringsArr, Tag * parentTag, Tag * curren
 				}
 				else
 				{
-					throw NotWellFormedException();
+					throw NotWellFormedException(tag->GetName());
 				}
 			}
 			else if(currentTag == NULL)
@@ -163,7 +163,7 @@ Tag * XMLParser::BuildTree(ArrayList * stringsArr, Tag * parentTag, Tag * curren
 			/// afuera del root element, generar una excepcion.
 			else
 			{
-				throw NotWellFormedException();
+				throw NotWellFormedException("There's text outside the root element.");
 			}
 		}
 	}
@@ -177,9 +177,10 @@ Tag * XMLParser::BuildTree(ArrayList * stringsArr, Tag * parentTag, Tag * curren
 
 		return currentTag;
 	}
+	/// No hay tag de cierre.
 	else
 	{
-		throw NotWellFormedException();
+		throw NotWellFormedException(StringHelper::AppendString("There's a closing tag missing for ",  currentTag->GetName()));
 	}
 
 	return NULL;
@@ -208,7 +209,6 @@ char * XMLParser::GetNextTag()
 		if(openChar == '\n')
 		{
 			numNewLineChar++;
-			this->stringLength--;
 		}
 
 		if(openChar == '<')
@@ -229,7 +229,6 @@ char * XMLParser::GetNextTag()
 		if(closeChar == '\n')
 		{
 			numNewLineChar++;
-			this->stringLength--;
 		}
 
 		if(closeChar == '>')
@@ -285,7 +284,6 @@ char * XMLParser::GetNextText()
 		if(openChar == '\n')
 		{
 			numNewLineChar++;
-			this->stringLength--;
 		}
 
 		if(openChar == '<')

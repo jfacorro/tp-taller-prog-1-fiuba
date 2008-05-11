@@ -34,7 +34,7 @@ void Tag::ParseTagString(char * tagString)
 		(tagString[2] == BLANK_SPACE && this->isClosingTag)
 	)
 	{
-		throw NotWellFormedException();
+		throw NotWellFormedException("Found blank space after <.");
 	}
 
 	/// Verificar si esta o no cerrado en él mismo.
@@ -83,7 +83,7 @@ void Tag::ParseProperties(char * tagString)
 				/// una excepcion.
 				if(this->isClosingTag)
 				{
-					throw NotWellFormedException();
+					throw NotWellFormedException("Found an invalid character in a closing tag.");
 				}
 				/// Si es un AutoClosing tag verificar que 
 				/// no sea la barra antes del '>' final
@@ -102,7 +102,7 @@ void Tag::ParseProperties(char * tagString)
 				/// Si no encontro un igual generar una excepcion.
 				if(firstEqual == -1)
 				{
-					throw NotWellFormedException();
+					throw NotWellFormedException("There's an equal sign missing.");
 				}
 
 				index = firstEqual  + 1;
@@ -115,7 +115,7 @@ void Tag::ParseProperties(char * tagString)
 				/// generar una excepcion.
 				if(firstQuote == -1)
 				{
-					throw NotWellFormedException();
+					throw NotWellFormedException("There's no open quote.");
 				}
 
 				index = firstQuote + 1;
@@ -126,7 +126,7 @@ void Tag::ParseProperties(char * tagString)
 				/// generar una excepcion.
 				if(secondQuote == -1)
 				{
-					throw NotWellFormedException();
+					throw NotWellFormedException("There's no closing quote.");
 				}
 
 				index = secondQuote + 1;
