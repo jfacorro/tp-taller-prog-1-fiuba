@@ -24,7 +24,7 @@ int main(int argc, char* argv[] )
 
 		Tag * rootNode = parser.ParseFile("C:\\Juan\\Facultad\\2008.1er.Taller.de.Programacion.I\\TP Nº2\\Version 2\\06Graficador\\TestXMLFiles\\figuras01.xml");
 		
-		///Tag * rootNode = parser.Parse(xml);
+		/// Tag * rootNode = parser.Parse(xml);
 
 		rootNode->Print();
 
@@ -103,7 +103,7 @@ int main(int argc, char* argv[] )
 	}
 	catch(Exception ex)
 	{
-		printf("\nAn Exception ocurred: %s", ex.GetMessage());
+		printf("\nAn Exception ocurred: %s\n", ex.GetMessage());
 	}
 
 	return 0;

@@ -1,4 +1,5 @@
 #include <string.h>
+#include "StringHelper.h"
 
 #ifndef Exception_h
 
@@ -63,7 +64,18 @@ class NotWellFormedException : public Exception
 	public:
 		NotWellFormedException()
 		{
+			this->message = NULL;
+
 			this->SetMessage("XML not well formed.");
+		};
+
+		NotWellFormedException(char * msg)
+		{
+			char * xmlWellFormedMsg = "XML not well formed. ";
+
+			xmlWellFormedMsg = StringHelper::AppendString(xmlWellFormedMsg, msg);
+
+			this->SetMessage(xmlWellFormedMsg);
 		};
 };
 
