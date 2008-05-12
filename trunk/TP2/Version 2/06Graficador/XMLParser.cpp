@@ -38,6 +38,8 @@ Tag * XMLParser::ParseFile(char * filename)
 		source[filesize] = '\0';
 
 		rootTag = this->Parse(source);
+
+		free(source);
 	}
  	else
 	{
