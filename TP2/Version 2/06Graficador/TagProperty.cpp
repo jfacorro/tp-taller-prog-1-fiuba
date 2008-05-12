@@ -7,6 +7,12 @@
 
 #define TagProperty_cpp
 
+TagProperty::TagProperty()
+{
+	this->name = NULL;
+	this->value = NULL;
+}
+
 TagProperty::TagProperty(char * name, char * value)
 {
 	this->name = StringHelper::Substring(name, 0, strlen(name));

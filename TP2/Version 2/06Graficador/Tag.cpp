@@ -232,9 +232,9 @@ void Tag::Print()
 
 }
 
-TagProperty * Tag::GetAttribute(char * attName)
+TagProperty Tag::GetAttribute(char * attName)
 {
-	TagProperty * att = NULL;
+	TagProperty att;
 
 	if(!this->properties.IsEmpty())
 	{
@@ -242,17 +242,19 @@ TagProperty * Tag::GetAttribute(char * attName)
 
 		bool found = false;
 
+		TagProperty attSearch;
+
 		do
 		{
-			att = (TagProperty * )this->properties.GetCurrent();
+			attSearch = (*(TagProperty * )this->properties.GetCurrent());
 
-			found = (strcmp(att->GetName(), attName) == 0);
+			found = (strcmp(attSearch.GetName(), attName) == 0);
 		}
 		while(this->properties.MoveNext() && !found);
 
-		if(!found)
+		if(found)
 		{
-			att = NULL;
+			att = attSearch;
 		}
 	}
 

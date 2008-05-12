@@ -40,7 +40,8 @@ class Tag
 			if(this->innerText != NULL)
 				delete this->innerText;
 
-			this->innerText = new char[strlen(innerText)];
+			this->innerText = StringHelper::Substring(innerText, 0, strlen(innerText));
+//				new char[strlen(innerText)];
 
 			strcpy(this->innerText, innerText);
 		};
@@ -55,7 +56,7 @@ class Tag
 		ArrayList properties;
 		ArrayList childTags;
 
-		TagProperty * GetAttribute(char * attName);
+		TagProperty GetAttribute(char * attName);
 		Tag * GetChildTag(char * tagName);
 		
 };

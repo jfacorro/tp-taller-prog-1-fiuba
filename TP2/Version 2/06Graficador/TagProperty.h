@@ -13,6 +13,7 @@ class TagProperty
 	public:
 		TagProperty(char * name, char * value);
 		TagProperty(char * propStr);
+		TagProperty();
 
 		char * GetName() { return this->name; };		
 
