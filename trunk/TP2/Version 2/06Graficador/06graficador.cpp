@@ -22,7 +22,7 @@ int main(int argc, char* argv[] )
 		
 		char * xml = "<Root><circulo id=\"circulo0\" radio=\"20\" textura=\"textura0\"><posicion x=\"400\" y=\"300\" /></circulo></Root>";
 
-		Tag * rootNode = parser.ParseFile("C:\\02.Personal\\Facultad\\Taller de Programación I\\TP2\\Version 2\\06Graficador\\TestXMLFiles\\figuras02.xml");
+		Tag * rootNode = parser.ParseFile("C:\\Juan\\Facultad\\2008.1er.Taller.de.Programacion.I\\TP Nº2\\Version 2\\06Graficador\\TestXMLFiles\\figuras02.xml");
 		
 		/// Tag * rootNode = parser.Parse(xml);
 

@@ -16,9 +16,11 @@ class ModelValidator
 		SDL_Surface * GetTextureById(char * textureId);
 
 		void GetGraphicElement(Tag * tag);
+
+		enum GraphicElementType {FIGURE, TEXTURE};
 	public:
 		void ParseAndValidate(Tag * rootNode);
-		bool CheckDuplicatedId(ArrayList * graphElementsArr, char * id);
+		bool CheckDuplicatedId(ArrayList * elements, char * idStr, GraphicElementType type);
 
 		ArrayList graphicElements;
 		ArrayList textures;
