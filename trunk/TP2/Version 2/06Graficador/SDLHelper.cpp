@@ -21,6 +21,12 @@ Configuration::Configuration()
 	this->isDefaultConfig = true;
 };
 
+void Configuration::SetTextura(SDL_Surface * textura)
+{ 
+	this->isDefaultConfig = false; 
+	this->textura = SDLHelper::SDLResizeBitmap(textura, this->resolucion.w, this->resolucion.h, 7);
+}
+
 SDLHelper::SDLHelper()
 {
 	this->screen = NULL;
@@ -45,7 +51,14 @@ void SDLHelper::InitializeVideo(Configuration config)
 		exit(1);
     }
 
-	this->DrawRectangle(0, 0, this->screen->clip_rect.w, this->screen->clip_rect.h, config.GetColorFondoGraf(), NULL, NULL);
+	if(config.GetTextura() == NULL)
+	{
+		this->DrawRectangle(0, 0, this->screen->clip_rect.w, this->screen->clip_rect.h, config.GetColorFondoGraf(), NULL, NULL);
+	}
+	else
+	{
+		this->DrawRectangle(0, 0, this->screen->clip_rect.w, this->screen->clip_rect.h, config.GetColorFondoGraf(), config.GetTextura(), NULL);
+	}
 }
 
 void SDLHelper::Quit()
