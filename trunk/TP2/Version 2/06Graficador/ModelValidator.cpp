@@ -358,7 +358,14 @@ Color ModelValidator::GetColor(Tag * tag, char * colorAttName)
 	}
 	else
 	{
-		color = SDLHelper::GetDefaultFrontColor();
+		if(strcmp(colorAttName, "colorFigura") == 0)
+		{
+			color = config.GetColorFondo();
+		}
+		else
+		{
+			color = config.GetColorLinea();
+		}
 	}
 
 	return color;
