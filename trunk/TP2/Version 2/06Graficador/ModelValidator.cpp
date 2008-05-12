@@ -26,7 +26,7 @@ void ModelValidator::ParseAndValidate(Tag * rootNode)
 
 void ModelValidator::GetGraphicElement(Tag * tag)
 {
- 	char * name = tag->GetName();
+	char * name = tag->GetName();
 
 	GraphicElement * graphElement = NULL;
 
@@ -99,14 +99,14 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		square->SetPosition(GetPosition(tag, POSITION_TAG_NAME));
 		square->SetColor(GetColor(tag, FIGURE_COLOR_ATT_NAME));
 
-		TagProperty sideAtt =  tag->GetAttribute("lado");
+		TagProperty * sideAtt =  tag->GetAttribute("lado");
 
-		if(sideAtt.GetName() == NULL)
+		if(sideAtt == NULL)
 		{
 			throw Exception("Side size missing for square figure.");
 		}
 
-		square->SetSide(atoi(sideAtt.GetValue()));
+		square->SetSide(atoi(sideAtt->GetValue()));
 
 		square->SetTextura(GetTexture(tag));
 		
@@ -119,14 +119,14 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		circle->SetPosition(GetPosition(tag, POSITION_TAG_NAME));
 		circle->SetColor(GetColor(tag, FIGURE_COLOR_ATT_NAME));
 
-		TagProperty radiusAtt =  tag->GetAttribute("radio");
+		TagProperty * radiusAtt =  tag->GetAttribute("radio");
 
-		if(radiusAtt.GetName() == NULL)
+		if(radiusAtt == NULL)
 		{
 			throw Exception("Radius missing for circle figure.");
 		}
 
-		circle->SetRadius(atoi(radiusAtt.GetValue()));
+		circle->SetRadius(atoi(radiusAtt->GetValue()));
 
 		circle->SetTextura(GetTexture(tag));
 
@@ -139,23 +139,23 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		rectangle->SetPosition(GetPosition(tag, POSITION_TAG_NAME));
 		rectangle->SetColor(GetColor(tag, FIGURE_COLOR_ATT_NAME));
 
-		TagProperty widthAtt =  tag->GetAttribute("base");
+		TagProperty * widthAtt =  tag->GetAttribute("base");
 
-		if(widthAtt.GetName() == NULL)
+		if(widthAtt  == NULL)
 		{
 			throw Exception("Width missing for rectangle figure.");
 		}
 
-		rectangle->SetWidth(atoi(widthAtt.GetValue()));
+		rectangle->SetWidth(atoi(widthAtt->GetValue()));
 
-		TagProperty heightAtt = tag->GetAttribute("altura");
+		TagProperty * heightAtt =  tag->GetAttribute("altura");
 
-		if(heightAtt.GetName() == NULL)
+		if(heightAtt  == NULL)
 		{
 			throw Exception("Height missing for rectangle figure.");
 		}
 
-		rectangle->SetHeight(atoi(heightAtt.GetValue()));
+		rectangle->SetHeight(atoi(heightAtt->GetValue()));
 
 		/// Esto tiene que ser asignado despues de la 
 		/// altura y el ancho asi hace el reisze sólo una vez.
@@ -178,16 +178,16 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		Texture * texture = new Texture();
 		texture->SetId(GetId(tag));
 
-		TagProperty pathAtt = tag->GetAttribute("path");
+		TagProperty * pathAtt = tag->GetAttribute("path");
 
-		if(pathAtt.GetName() == NULL)
+		if(pathAtt == NULL)
 		{
 			throw Exception("Path missing for texture.");
 		}
 
-		SDL_Surface * bitmap = SDLHelper::LoadBitmap(pathAtt.GetValue());
+		SDL_Surface * bitmap = SDLHelper::LoadBitmap(pathAtt->GetValue());
 
-		texture->SetFilePath(pathAtt.GetValue());
+		texture->SetFilePath(pathAtt->GetValue());
 
 		if(bitmap == NULL)
 		{
@@ -256,14 +256,14 @@ char * ModelValidator::GetId(Tag * tag)
 {
 	char * id = NULL;
 
-	TagProperty idAtt = tag->GetAttribute("id");
+	TagProperty * idAtt = tag->GetAttribute("id");
 
-	if(idAtt.GetName() == NULL)	
+	if(idAtt == NULL)	
 	{
 		throw Exception("Id missing.");
 	}
 
-	char * idAttValue = idAtt.GetValue();
+	char * idAttValue = idAtt->GetValue();
 
 	return idAttValue;
 }
@@ -272,11 +272,11 @@ SDL_Surface * ModelValidator::GetTexture(Tag * tag)
 {
 	SDL_Surface * bitmap = NULL;
 
-	TagProperty textureId = tag->GetAttribute("textura");
+	TagProperty * textureId = tag->GetAttribute("textura");
 
-	if(textureId.GetName() != NULL)
+	if(textureId != NULL)
 	{
-		bitmap = GetTextureById(textureId.GetValue());
+		bitmap = GetTextureById(textureId->GetValue());
 	}
 
 	return bitmap;
@@ -317,16 +317,16 @@ Position ModelValidator::GetPosition(Tag * tag, char * posTagName)
 		throw Exception("Posicion missing.");
 	}
 
-	TagProperty x = posicion->GetAttribute("x");
-	TagProperty y = posicion->GetAttribute("y");
+	TagProperty * x = posicion->GetAttribute("x");
+	TagProperty * y = posicion->GetAttribute("y");
 
-	if(x.GetName() == NULL || y.GetName() == NULL)
+	if(x == NULL || y == NULL)
 	{
 		throw Exception("x or y attributes missing.");
 	}
 
-	pos.x = atoi(x.GetValue());
-	pos.y = atoi(y.GetValue());
+	pos.x = atoi(x->GetValue());
+	pos.y = atoi(y->GetValue());
 
 	return pos;
 }
@@ -335,11 +335,11 @@ Color ModelValidator::GetColor(Tag * tag, char * colorAttName)
 {
 	Color color;
 
-	TagProperty att = tag->GetAttribute(colorAttName);
+	TagProperty * att = tag->GetAttribute(colorAttName);
 
-	if(att.GetName() != NULL)
+	if(att != NULL)
 	{
-		char * RGB = att.GetValue();
+		char * RGB = att->GetValue();
 
 		color = ModelValidator::GetColorFromString(RGB);
 	}
