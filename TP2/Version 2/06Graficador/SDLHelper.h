@@ -61,7 +61,7 @@ class Configuration
 		void SetColorFondoGraf(Color colorFondoGraf) { this->isDefaultConfig = false; this->colorFondoGraf = colorFondoGraf; };
 
 		SDL_Surface * GetTextura() { return this->textura; };
-		void SetTextura(SDL_Surface * textura) { this->isDefaultConfig = false; this->textura = textura; };
+		void SetTextura(SDL_Surface * textura);
 
 		Color GetColorLinea() { return this->colorLinea; };
 		void SetColorLinea(Color colorLinea) { this->isDefaultConfig = false; this->colorLinea = colorLinea; };
@@ -71,7 +71,6 @@ class Configuration
 
 		bool GetIsDefaultConfig() { return this->isDefaultConfig; };
 };
-
 
 class SDLHelper
 {
