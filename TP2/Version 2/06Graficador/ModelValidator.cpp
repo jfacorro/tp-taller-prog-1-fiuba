@@ -198,7 +198,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 		/// cout << "(Ancho -Alto) textura '" << texture->GetId() << "':" << texture->GetBitmap()->clip_rect.w << " - " << texture->GetBitmap()->clip_rect.h << endl;
 
-		if(CheckDuplicatedId(&textures, texture->GetId()))
+		if(CheckDuplicatedId(&textures, texture->GetId(), TEXTURE))
 		{
 			throw Exception("Duplicated texture id.");
 		}
@@ -214,7 +214,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 	if(graphElement != NULL)
 	{	
-		bool existingId = CheckDuplicatedId(&graphicElements, graphElement->GetId());
+		bool existingId = CheckDuplicatedId(&graphicElements, graphElement->GetId(), FIGURE);
 
 		if(existingId)
 		{
@@ -227,26 +227,39 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 	}
 }
 
-bool ModelValidator::CheckDuplicatedId(ArrayList * graphElementsArr, char * idStr)
+bool ModelValidator::CheckDuplicatedId(ArrayList * elements, char * idStr, GraphicElementType type)
 {
 	bool existingId = false;
 
-	if(!graphElementsArr->IsEmpty())
+	if(!elements->IsEmpty())
 	{
 
-		graphElementsArr->MoveFirst();
+		elements->MoveFirst();
 
 		do
 		{
-			GraphicElement * graphElementId = (GraphicElement *)graphElementsArr->GetCurrent();
-
-			if(strcmp(graphElementId->GetId(), idStr) == 0)
+			if(type == FIGURE)
 			{
-				existingId = true;
-				break;
-			}				
+				GraphicElement * element = (GraphicElement *)elements->GetCurrent();
 
-		}while(graphElementsArr->MoveNext() && !existingId);
+				if(strcmp(element->GetId(), idStr) == 0)
+				{
+					existingId = true;
+					break;
+				}
+			}
+			else if(type == TEXTURE)
+			{
+				Texture * element = (Texture *)elements->GetCurrent();
+
+				if(strcmp(element->GetId(), idStr) == 0)
+				{
+					existingId = true;
+					break;
+				}
+			}
+
+		}while(elements->MoveNext() && !existingId);
 	}
 
 	return existingId;
@@ -263,9 +276,9 @@ char * ModelValidator::GetId(Tag * tag)
 		throw Exception("Id missing.");
 	}
 
-	char * idAttValue = idAtt->GetValue();
+	id = idAtt->GetValue();
 
-	return idAttValue;
+	return id;
 }
 
 SDL_Surface * ModelValidator::GetTexture(Tag * tag)
