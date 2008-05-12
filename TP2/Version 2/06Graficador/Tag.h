@@ -41,9 +41,6 @@ class Tag
 				delete this->innerText;
 
 			this->innerText = StringHelper::Substring(innerText, 0, strlen(innerText));
-//				new char[strlen(innerText)];
-
-			strcpy(this->innerText, innerText);
 		};
 		bool GetIsClosingTag() { return this->isClosingTag; };
 		bool GetIsAutoClosed() { return this->isAutoClosed; };
@@ -56,7 +53,7 @@ class Tag
 		ArrayList properties;
 		ArrayList childTags;
 
-		TagProperty GetAttribute(char * attName);
+		TagProperty * GetAttribute(char * attName);
 		Tag * GetChildTag(char * tagName);
 		
 };
