@@ -1,8 +1,8 @@
 <Root>
-	<General>
+	<general>
 		<resolucion>640</resolucion>
 		<colorLinea>255000000</colorLinea>
-	</General>
+	</general>
 	<textura id="textura0" path="bitmap.bmp" />
 	<circulo id="circulo0" radio="40" textura="textura0">
 		<posicion x="400" y="300" />
