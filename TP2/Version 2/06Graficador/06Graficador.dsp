@@ -133,14 +133,6 @@ SOURCE=.\SDLHelper.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Stack.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Stack.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\StringHelper.cpp
 # End Source File
 # Begin Source File
