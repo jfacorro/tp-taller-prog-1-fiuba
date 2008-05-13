@@ -206,7 +206,8 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 		if(bitmap == NULL)
 		{
-			throw Exception("Could not load bitmap.");
+			/// throw Exception("Could not load bitmap.");
+			printf("ERROR: Could not load bitmap %s", pathAtt->GetValue());
 		}
 
 		texture->SetBitmap(bitmap);
@@ -312,6 +313,8 @@ SDL_Surface * ModelValidator::GetTextureById(char * textureId)
 {
 	SDL_Surface * bitmap = NULL;
 
+	bool found = false;
+
 	if(!this->textures.IsEmpty())
 	{
 		this->textures.MoveFirst();
@@ -323,13 +326,14 @@ SDL_Surface * ModelValidator::GetTextureById(char * textureId)
 			if(strcmp(texture->GetId(), textureId) == 0)
 			{
 				bitmap = SDLHelper::LoadBitmap(texture->GetFilePath());
+				found = true;
 				break;
 			}
 
 		}while(this->textures.MoveNext());
 	}
 
-	if(bitmap == NULL)
+	if(!found)
 	{
 		throw Exception(StringHelper::AppendString("Texture not found. ID: ", textureId));
 	}
