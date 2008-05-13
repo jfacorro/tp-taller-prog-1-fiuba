@@ -6,7 +6,7 @@
 #include "SDLHelper.h"
 #include "ModelValidator.h"
 
-#define DEBUG 1
+//#define DEBUG 1
 
 void TestSDL();
 void TestSDLHelper();
@@ -68,12 +68,14 @@ int main(int argc, char* argv[] )
 			rootNode->Print();
 
 			ModelValidator modelVal;
+
+			SDLHelper sdlHelper;
+			
+			sdlHelper.Initialize();
 			
 			modelVal.ParseAndValidate(rootNode);
 
-			SDLHelper sdlHelper;
-
-			sdlHelper.Initialize(800, 600, 16);
+			sdlHelper.InitializeVideo(modelVal.config);
 
 			if(!modelVal.graphicElements.IsEmpty())
 			{
@@ -96,7 +98,7 @@ int main(int argc, char* argv[] )
 		}
 		else
 		{
-			printf("\nDebe ingresar el path del archivo XML.\n");
+			throw Exception("Debe ingresar el path del archivo XML.\n");
 		}
 
 		#endif
