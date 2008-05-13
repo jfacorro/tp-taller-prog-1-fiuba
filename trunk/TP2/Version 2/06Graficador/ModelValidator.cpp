@@ -316,6 +316,11 @@ SDL_Surface * ModelValidator::GetTextureById(char * textureId)
 		}while(this->textures.MoveNext());
 	}
 
+	if(bitmap == NULL)
+	{
+		throw Exception(StringHelper::AppendString("Texture not found. ID: ", textureId));
+	}
+
 	return bitmap;
 }
 
