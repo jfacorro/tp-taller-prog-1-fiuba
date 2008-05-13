@@ -1,7 +1,7 @@
 <Root>
 	<textura id="textura0" path="bitmap.bmp" />
 	<textura id="textura1" path="bitmap2.bmp" />
-	<textura id="textura2" path="bitmap2.bmp" />
+	<textura id="textura2" path="bitmap3.bmp" />
 	<general>
 		<resolucion>640</resolucion>
 		<colorLinea>255000000</colorLinea>
