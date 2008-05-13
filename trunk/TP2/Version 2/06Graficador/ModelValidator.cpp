@@ -30,7 +30,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 	GraphicElement * graphElement = NULL;
 
-	if(strcmp(name, "General") == 0)
+	if(strcmp(name, GENERAL_TAG_NAME) == 0)
 	{
 		if(!this->config.GetIsDefaultConfig())
 		{
@@ -38,7 +38,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 			
 		}
 		
-		Tag * resTag = tag->GetChildTag("resolucion");
+		Tag * resTag = tag->GetChildTag(RESOLUTION_ATT_NAME);
 
 		if(resTag != NULL)
 		{
@@ -48,7 +48,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 			this->config.SetResolucion(SDLHelper::ResolutionByWidth(resInt));
 		}
 
-		Tag * colorFondoGrafTag = tag->GetChildTag("colorFondoGraf");
+		Tag * colorFondoGrafTag = tag->GetChildTag(BACKCOLORGRAF_ATT_NAME);
 
 		if(colorFondoGrafTag != NULL)
 		{
@@ -60,7 +60,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		}
 
 
-		Tag * texturaTag = tag->GetChildTag("textura");
+		Tag * texturaTag = tag->GetChildTag(TEXTURE_ATT_NAME);
 
 		if(texturaTag != NULL)
 		{
@@ -69,7 +69,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 			this->config.SetTextura(GetTextureById(texturaStr));
 		}
 
-		Tag * colorLineaTag = tag->GetChildTag("colorLinea");
+		Tag * colorLineaTag = tag->GetChildTag(LINE_COLOR_ATT_NAME);
 
 		if(colorLineaTag != NULL)
 		{
@@ -81,7 +81,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		}
 
 
-		Tag * colorFondoTag = tag->GetChildTag("colorFondo");
+		Tag * colorFondoTag = tag->GetChildTag(FIGURE_COLOR_ATT_NAME);
 
 		if(colorFondoTag != NULL)
 		{
@@ -92,7 +92,7 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 			this->config.SetColorFondo(colorFondo);
 		}
 	}
-	else if(strcmp(name, "cuadrado") == 0)
+	else if(strcmp(name, SQUARE_TAG_NAME) == 0)
 	{
 		Square * square = new Square();
 		square->SetId(GetId(tag));
@@ -108,11 +108,16 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 		square->SetSide(atoi(sideAtt->GetValue()));
 
+		if(BackColorAndTextureConflictExists(tag))
+		{
+			throw Exception(StringHelper::AppendString("Background color and texture conflict in figure ", square->GetId()));
+		}
+
 		square->SetTextura(GetTexture(tag));
 		
 		graphElement = square;
 	}
-	else if(strcmp(name, "circulo") == 0)
+	else if(strcmp(name, CIRCLE_TAG_NAME) == 0)
 	{
 		Circle * circle = new Circle();
 		circle->SetId(GetId(tag));
@@ -128,11 +133,16 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 		circle->SetRadius(atoi(radiusAtt->GetValue()));
 
+		if(BackColorAndTextureConflictExists(tag))
+		{
+			throw Exception(StringHelper::AppendString("Background color and texture conflict in figure ", circle->GetId()));
+		}
+
 		circle->SetTextura(GetTexture(tag));
 
 		graphElement = circle;
 	}
-	else if(strcmp(name, "rectangulo") == 0)
+	else if(strcmp(name, RECTANGLE_TAG_NAME) == 0)
 	{
 		Rectangle * rectangle = new Rectangle();
 		rectangle->SetId(GetId(tag));
@@ -157,13 +167,18 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 		rectangle->SetHeight(atoi(heightAtt->GetValue()));
 
+		if(BackColorAndTextureConflictExists(tag))
+		{
+			throw Exception(StringHelper::AppendString("Background color and texture conflict in figure ", rectangle->GetId()));
+		}
+
 		/// Esto tiene que ser asignado despues de la 
 		/// altura y el ancho asi hace el reisze sólo una vez.
 		rectangle->SetTextura(GetTexture(tag));
 
 		graphElement = rectangle;
 	}
-	else if(strcmp(name, "segmento") == 0)
+	else if(strcmp(name, LINE_TAG_NAME) == 0)
 	{
 		Line * line = new Line();
 		line->SetId(GetId(tag));
@@ -173,12 +188,12 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 		graphElement = line;
 	}
-	else if(strcmp(name, "textura") == 0)
+	else if(strcmp(name, TEXTURE_ATT_NAME) == 0)
 	{
 		Texture * texture = new Texture();
 		texture->SetId(GetId(tag));
 
-		TagProperty * pathAtt = tag->GetAttribute("path");
+		TagProperty * pathAtt = tag->GetAttribute(PATH_ATT_NAME);
 
 		if(pathAtt == NULL)
 		{
@@ -195,8 +210,6 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 		}
 
 		texture->SetBitmap(bitmap);
-
-		/// cout << "(Ancho -Alto) textura '" << texture->GetId() << "':" << texture->GetBitmap()->clip_rect.w << " - " << texture->GetBitmap()->clip_rect.h << endl;
 
 		if(CheckDuplicatedId(&textures, texture->GetId(), TEXTURE))
 		{
@@ -269,7 +282,7 @@ char * ModelValidator::GetId(Tag * tag)
 {
 	char * id = NULL;
 
-	TagProperty * idAtt = tag->GetAttribute("id");
+	TagProperty * idAtt = tag->GetAttribute(ID_ATT_NAME);
 
 	if(idAtt == NULL)	
 	{
@@ -285,7 +298,7 @@ SDL_Surface * ModelValidator::GetTexture(Tag * tag)
 {
 	SDL_Surface * bitmap = NULL;
 
-	TagProperty * textureId = tag->GetAttribute("textura");
+	TagProperty * textureId = tag->GetAttribute(TEXTURE_ATT_NAME);
 
 	if(textureId != NULL)
 	{
@@ -335,8 +348,8 @@ Position ModelValidator::GetPosition(Tag * tag, char * posTagName)
 		throw Exception("Posicion missing.");
 	}
 
-	TagProperty * x = posicion->GetAttribute("x");
-	TagProperty * y = posicion->GetAttribute("y");
+	TagProperty * x = posicion->GetAttribute(XPOS_ATT_NAME);
+	TagProperty * y = posicion->GetAttribute(YPOS_ATT_NAME);
 
 	if(x == NULL || y == NULL)
 	{
@@ -363,7 +376,7 @@ Color ModelValidator::GetColor(Tag * tag, char * colorAttName)
 	}
 	else
 	{
-		if(strcmp(colorAttName, "colorFigura") == 0)
+		if(strcmp(colorAttName, FIGURE_COLOR_ATT_NAME) == 0)
 		{
 			color = config.GetColorFondo();
 		}
@@ -399,5 +412,14 @@ Color ModelValidator::GetColorFromString(char * RGB)
 
 	return color;
 }
+
+bool ModelValidator::BackColorAndTextureConflictExists(Tag * tag)
+{
+	TagProperty * attColor = tag->GetAttribute(FIGURE_COLOR_ATT_NAME);
+	TagProperty * attTexture = tag->GetAttribute(TEXTURE_ATT_NAME);
+
+	return (attColor != NULL && attTexture != NULL);
+}
+
 
 #endif

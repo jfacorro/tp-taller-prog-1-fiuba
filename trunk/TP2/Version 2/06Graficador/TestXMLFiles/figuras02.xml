@@ -2,16 +2,16 @@
 	<textura id="textura0" path="bitmap.bmp" />
 	<textura id="textura1" path="bitmap2.bmp" />
 	<textura id="textura2" path="bitmap2.bmp" />
-	<General>
+	<general>
 		<resolucion>640</resolucion>
 		<colorLinea>255000000</colorLinea>
-		<colorFondo>255102000</colorFondo>
+		<colorFigura>255102000</colorFigura>
 		<colorFondoGraf>255152150</colorFondoGraf>
-	</General>
+	</general>
 	<circulo id="circulo0" radio="40">
 		<posicion x="400" y="300" />
 	</circulo>		
-	<cuadrado id="cuadrado0" lado="30" colorFigura="255000000" textura="textura2">
+	<cuadrado id="cuadrado0" lado="30" textura="textura2">
 		<posicion x="35" y="100" />
 	</cuadrado>		
 	<rectangulo id="rectangulo0" base="150" altura="30" textura="textura0">

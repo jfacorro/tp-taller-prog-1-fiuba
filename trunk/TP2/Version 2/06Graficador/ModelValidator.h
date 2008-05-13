@@ -15,6 +15,8 @@ class ModelValidator
 		SDL_Surface * GetTexture(Tag * tag);
 		SDL_Surface * GetTextureById(char * textureId);
 
+		bool BackColorAndTextureConflictExists(Tag * tag);
+
 		void GetGraphicElement(Tag * tag);
 
 		enum GraphicElementType {FIGURE, TEXTURE};

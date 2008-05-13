@@ -6,14 +6,30 @@
 
 #define GraphicElement_h
 
+#define ID_ATT_NAME "id"
+
 #define FIGURE_COLOR_ATT_NAME "colorFigura"
 #define LINE_COLOR_ATT_NAME "colorLinea"
 
+#define TEXTURE_ATT_NAME "textura"
+#define PATH_ATT_NAME "path"
+
 #define POSITION_TAG_NAME "posicion"
+#define XPOS_ATT_NAME "x"
+#define YPOS_ATT_NAME "y"
+
 #define BEGIN_TAG_NAME "inicio"
 #define END_TAG_NAME "fin"
 
-#define END_TAG_NAME "fin"
+#define LINE_TAG_NAME "segmento"
+#define RECTANGLE_TAG_NAME "rectangulo"
+#define CIRCLE_TAG_NAME "circulo"
+#define SQUARE_TAG_NAME "cuadrado"
+
+#define GENERAL_TAG_NAME "general"
+
+#define RESOLUTION_ATT_NAME "resolucion"
+#define BACKCOLORGRAF_ATT_NAME "colorFondoGraf"
 
 typedef struct Position
 {
