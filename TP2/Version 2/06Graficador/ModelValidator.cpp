@@ -30,6 +30,8 @@ void ModelValidator::GetGraphicElement(Tag * tag)
 
 	GraphicElement * graphElement = NULL;
 
+	GraphicElement::ValidChildElementsAndProperties(tag);
+
 	if(strcmp(name, GENERAL_TAG_NAME) == 0)
 	{
 		if(!this->config.GetIsDefaultConfig())
@@ -344,6 +346,8 @@ SDL_Surface * ModelValidator::GetTextureById(char * textureId)
 Position ModelValidator::GetPosition(Tag * tag, char * posTagName)
 {
 	Position pos;
+
+	bool repeated = false;
 
 	Tag * posicion = tag->GetChildTag(posTagName);
 
