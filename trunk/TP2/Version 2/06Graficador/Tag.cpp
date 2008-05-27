@@ -262,25 +262,66 @@ TagProperty * Tag::GetAttribute(char * attName)
 Tag * Tag::GetChildTag(char * tagName)
 {
 	Tag * childTag = NULL;
+	Tag * childTagFound = NULL;
 
 	if(!this->childTags.IsEmpty())
 	{
 		this->childTags.MoveFirst();
 
-		bool found = false;
+		//bool found = false;
+		int count = 0;
 
 		do
 		{
 			childTag = (Tag *)this->childTags.GetCurrent();
 
-			found = (strcmp(childTag->GetName(), tagName) == 0);
+			//found = (strcmp(childTag->GetName(), tagName) == 0);
+			if ( (strcmp(childTag->GetName(), tagName) == 0) )
+			{
+				childTagFound = childTag;
+				count++;
+			}
 		}
-		while(this->childTags.MoveNext() && !found);
+		while(this->childTags.MoveNext() /* && !found */);
 
-		if(!found) childTag = NULL;
+		//if(!found) 
+		if ( count == 1 )
+			childTag = NULL;
+		else if ( count > 1 )
+		{
+			char * msg = StringHelper::AppendString("Repeated child element ", tagName);
+			msg = StringHelper::AppendString(msg, " in tag ");
+			msg = StringHelper::AppendString(msg, this->GetName());
+
+			throw Exception(msg);
+		}
+
+
+		/*
+		else
+		{
+			found = false;
+
+			while(this->childTags.MoveNext() && !found)
+			{
+				childTag = (Tag *)this->childTags.GetCurrent();
+
+				found = (strcmp(childTag->GetName(), tagName) == 0);
+			}
+
+			if(found) 
+			{
+				char * msg = StringHelper::AppendString("Repeated child element ", tagName);
+				msg = StringHelper::AppendString(msg, " in tag ");
+				msg = StringHelper::AppendString(msg, this->GetName());
+
+				throw Exception(msg);
+			}
+		}
+		*/
 	}
 
-	return childTag;
+	return childTagFound;
 }
 
 #endif

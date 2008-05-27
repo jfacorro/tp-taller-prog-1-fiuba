@@ -1,6 +1,7 @@
 #include "SDL.h"
 #include "SDLHelper.h"
 #include "StringHelper.h"
+#include "Tag.h"
 
 #ifndef GraphicElement_h
 
@@ -17,6 +18,13 @@
 #define POSITION_TAG_NAME "posicion"
 #define XPOS_ATT_NAME "x"
 #define YPOS_ATT_NAME "y"
+
+#define RADIUS_ATT_NAME "radio"
+
+#define SIDE_ATT_NAME "lado"
+
+#define WIDTH_ATT_NAME "base"
+#define HEIGHT_ATT_NAME "altura"
 
 #define BEGIN_TAG_NAME "inicio"
 #define END_TAG_NAME "fin"
@@ -46,6 +54,7 @@ class GraphicElement
 		char * id;
 	public:
 		virtual void Print(SDLHelper * sdlHelper) {};
+		static void ValidChildElementsAndProperties(Tag * tag);
 		
 		Position GetPosition() { return this->position; };
 		void SetPosition(Position pos) { this->position = pos; };
@@ -83,6 +92,8 @@ class Circle : public GraphicElement
 		};
 
 		virtual void Print(SDLHelper * sdlHelper);
+
+		//virtual bool ValidChildElementsAndProperties(Tag * tag);
 
 		int GetRadius() { return this->radius; };
 		void SetRadius(int radius) { this->radius = radius; };
@@ -122,6 +133,8 @@ class Rectangle : public GraphicElement
 		};
 
 		virtual void Print(SDLHelper * sdlHelper);
+
+		//virtual bool ValidChildElementsAndProperties(Tag * tag);
 
 		int GetWidth() { return this->width; };
 		void SetWidth(int width) { this->width = width; };
@@ -164,6 +177,8 @@ class Square : public Rectangle
 			this->width = side; 
 			this->height = side; 
 		};
+
+		//virtual bool ValidChildElementsAndProperties(Tag * tag);
 };
 
 class Line : public GraphicElement
