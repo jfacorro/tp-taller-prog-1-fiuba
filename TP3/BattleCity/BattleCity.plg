@@ -1,0 +1,81 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: BattleCity - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP598.tmp" with contents
+[
+/nologo /MD /W3 /Gm /GX /ZI /Od /I "SDL\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Debug/" /Fp"Debug/BattleCity.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TPs\TP3\BattleCity\BattleCity.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TPs\TP3\BattleCity\Classes\SDLHelper.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TPs\TP3\BattleCity\Classes\StringHelper.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TPs\TP3\BattleCity\Classes\SDL_rotozoom.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TPs\TP3\BattleCity\Classes\Thread.cpp"
+"C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TPs\TP3\BattleCity\Classes\Socket.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP598.tmp" 
+Creating temporary file "C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP599.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/BattleCity.pdb" /debug /machine:I386 /out:"Debug/BattleCity.exe" /pdbtype:sept /libpath:"Classes" 
+.\Debug\BattleCity.obj
+.\SDL\SDL.lib
+.\SDL\SDLmain.lib
+.\Debug\SDLHelper.obj
+.\Debug\StringHelper.obj
+.\Debug\SDL_rotozoom.obj
+.\Debug\Thread.obj
+.\Debug\Socket.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\jfacorro\LOCALS~1\Temp\RSP599.tmp"
+<h3>Output Window</h3>
+Compiling...
+BattleCity.cpp
+SDLHelper.cpp
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdlhelper.cpp(93) : warning C4244: '=' : conversion from 'unsigned __int32' to 'unsigned __int8', possible loss of data
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdlhelper.cpp(101) : warning C4244: '=' : conversion from 'unsigned __int32' to 'unsigned __int16', possible loss of data
+StringHelper.cpp
+SDL_rotozoom.cpp
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(400) : warning C4018: '<' : signed/unsigned mismatch
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(408) : warning C4018: '<' : signed/unsigned mismatch
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(417) : warning C4018: '<' : signed/unsigned mismatch
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(423) : warning C4018: '<' : signed/unsigned mismatch
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(439) : warning C4018: '<' : signed/unsigned mismatch
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(442) : warning C4018: '<' : signed/unsigned mismatch
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(736) : warning C4273: 'rotozoomSurfaceSizeXY' : inconsistent dll linkage.  dllexport assumed.
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(745) : warning C4273: 'rotozoomSurfaceSize' : inconsistent dll linkage.  dllexport assumed.
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(754) : warning C4273: 'rotozoomSurface' : inconsistent dll linkage.  dllexport assumed.
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(761) : warning C4273: 'rotozoomSurfaceXY' : inconsistent dll linkage.  dllexport assumed.
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(990) : warning C4273: 'zoomSurfaceSize' : inconsistent dll linkage.  dllexport assumed.
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(1015) : warning C4273: 'zoomSurface' : inconsistent dll linkage.  dllexport assumed.
+c:\juan\facultad\2008.1er.taller.de.programacion.i\tps\tp3\battlecity\classes\sdl_rotozoom.cpp(1126) : warning C4273: 'shrinkSurface' : inconsistent dll linkage.  dllexport assumed.
+Thread.cpp
+Socket.cpp
+Linking...
+   Creating library Debug/BattleCity.lib and object Debug/BattleCity.exp
+Socket.obj : error LNK2001: unresolved external symbol __imp__accept@12
+Socket.obj : error LNK2001: unresolved external symbol __imp__listen@8
+Socket.obj : error LNK2001: unresolved external symbol __imp__bind@12
+Socket.obj : error LNK2001: unresolved external symbol __imp__htons@4
+Socket.obj : error LNK2001: unresolved external symbol __imp__socket@12
+Socket.obj : error LNK2001: unresolved external symbol __imp__WSAStartup@8
+Socket.obj : error LNK2001: unresolved external symbol __imp__connect@12
+Socket.obj : error LNK2001: unresolved external symbol __imp__gethostbyname@4
+Socket.obj : error LNK2001: unresolved external symbol __imp__send@16
+Socket.obj : error LNK2001: unresolved external symbol __imp__recv@16
+Socket.obj : error LNK2001: unresolved external symbol __imp__closesocket@4
+Debug/BattleCity.exe : fatal error LNK1120: 11 unresolved externals
+Error executing link.exe.
+Creating command line "bscmake.exe /nologo /o"Debug/BattleCity.bsc"  .\Debug\BattleCity.sbr .\Debug\SDLHelper.sbr .\Debug\StringHelper.sbr .\Debug\SDL_rotozoom.sbr .\Debug\Thread.sbr .\Debug\Socket.sbr"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+BattleCity.exe - 12 error(s), 15 warning(s)
+</pre>
+</body>
+</html>
