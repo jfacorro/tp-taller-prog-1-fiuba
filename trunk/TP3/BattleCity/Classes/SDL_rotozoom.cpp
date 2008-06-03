@@ -15,6 +15,9 @@
 
 #include "SDL_rotozoom.h"
 
+#ifndef _SDL_rotozoom_cpp
+#define _SDL_rotozoom_cpp
+
 #define MAX(a,b)    (((a) > (b)) ? (a) : (b))
 
 
@@ -1229,3 +1232,4 @@ SDL_Surface *shrinkSurface(SDL_Surface * src, int factorx, int factory)
      */
     return (rz_dst);
 }
+#endif

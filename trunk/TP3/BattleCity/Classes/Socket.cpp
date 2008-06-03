@@ -1,4 +1,3 @@
-#include <winsock2.h>
 #include "Socket.h"
 
 #ifndef Socket_cpp
@@ -76,10 +75,10 @@ int Socket::Listen(int port)
 					}
 					else 
 					{
-						(*this->connection).cxPuerto = port;
-						(*this->connection).cxIP = (char*) malloc(IP_SIZE);
-						(*this->connection).cxIP = GetIPAddressFromSocket(sockAddrIn);
-						(*this->connection).cxSocket = sockAceptado;
+						this->connection.cxPuerto = port;
+						this->connection.cxIP = (char*) malloc(IP_SIZE);
+						this->connection.cxIP = GetIPAddressFromSocket(sockAddrIn);
+						this->connection.cxSocket = sockAceptado;
 						resultado = RES_OK;
 					}
 				}
@@ -136,10 +135,10 @@ int Socket::Connect(const char * address, int port)
 			} 
 			else 
 			{
-				this->connection->cxPuerto = port;
-				this->connection->cxIP = (char*) malloc(IP_SIZE);
-				this->connection->cxIP = GetIPAddressFromSocket(sockAddrIn);
-				this->connection->cxSocket = sock;
+				this->connection.cxPuerto = port;
+				this->connection.cxIP = (char*) malloc(IP_SIZE);
+				this->connection.cxIP = GetIPAddressFromSocket(sockAddrIn);
+				this->connection.cxSocket = sock;
 
 				resultado = RES_OK;
 			}
@@ -156,7 +155,7 @@ int Socket::Send(Packet packet)
 	int cantEnviada = 0;
    
 	tmp = GetDataSize(packet.GetDataType());
-	cantEnviada = send(this->connection->cxSocket, (char *)packet.GetData(), packet.GetNumberOfItems() * tmp, 0);
+	cantEnviada = send(this->connection.cxSocket, (char *)packet.GetData(), packet.GetNumberOfItems() * tmp, 0);
 
 	if (cantEnviada != packet.GetNumberOfItems() * tmp)  /* No envio la cantidad indicada */
 	{
@@ -180,7 +179,7 @@ int Socket::Receive(Packet packet)
    tamano = packet.GetNumberOfItems() * tmp;
    while ( totalRecibido < tamano )
    {
-		cantRecibida = recv (this->connection->cxSocket, (char *)((char *)packet.GetData() + totalRecibido), tamano - totalRecibido, 0);
+		cantRecibida = recv (this->connection.cxSocket, (char *)((char *)packet.GetData() + totalRecibido), tamano - totalRecibido, 0);
 	
 		if ( cantRecibida == 0 || cantRecibida == -1 )
 			return RES_ERROR_RECEIVE;
@@ -200,13 +199,13 @@ int Socket::Close()
 	if (this->IsActive() == RES_OK) /* La conexion esta activa */
 	{ 
 		/* Cierra el socket y quita los valores de la conexion */
-		if (this->connection->cxIP != NULL) 
+		if (this->connection.cxIP != NULL) 
 		{
-			free(this->connection->cxIP); 
+			free(this->connection.cxIP); 
 		}
-		this->connection->cxPuerto = NULL_PORT;
-		closesocket(this->connection->cxSocket);
-		this->connection->cxSocket = INVALID_SOCKET;
+		this->connection.cxPuerto = NULL_PORT;
+		closesocket(this->connection.cxSocket);
+		this->connection.cxSocket = INVALID_SOCKET;
 		resultado = RES_OK;
 	} 
 	else 
@@ -221,9 +220,9 @@ int Socket::IsActive()
 {
 	int resultado = RES_ERROR_UNKNOWN;
    
-	if (this->connection != NULL) 
+	if (this->connection.cxPuerto != 0) 
 	{ /* La conexion no es nula */
-		if (this->connection->cxSocket != INVALID_SOCKET) 
+		if (this->connection.cxSocket != INVALID_SOCKET) 
 		{ /* La conexion esta activa */
 			resultado = RES_OK;
 		} 
@@ -243,7 +242,7 @@ int Socket::IsActive()
 char * Socket::GetIPAddressFromSocket(const struct sockaddr_in sockAddress)
 {
     char* charTemp = (char*) malloc(3);
-	char* dirIP = NULL;
+	char* dirIP = new char[IP_SIZE];
 
     /* Inicializa el valor de la direccion */
     strcpy(dirIP,"");
