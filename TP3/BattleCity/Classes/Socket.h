@@ -1,8 +1,8 @@
-#include <winsock2.h>
-
 #ifndef Socket_h
 
 #define Socket_h
+
+#include <winsock2.h>
 
 typedef struct _CONNECTION
 {
@@ -55,7 +55,7 @@ class Packet
 class Socket
 {
 	private:
-		Connection * connection;
+		Connection connection;
 
 		char * GetIPAddressFromSocket(const struct sockaddr_in sockAddress);
 		int GetDataSize (enum DataType dataType);
