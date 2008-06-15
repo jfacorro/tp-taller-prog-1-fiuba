@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual C++ Express 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClienteTanque", "ClienteTanque\ClienteTanque.vcproj", "{BDF87297-5D91-4CDE-8799-DC80ACF47FAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDF87297-5D91-4CDE-8799-DC80ACF47FAC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BDF87297-5D91-4CDE-8799-DC80ACF47FAC}.Debug|Win32.Build.0 = Debug|Win32
+		{BDF87297-5D91-4CDE-8799-DC80ACF47FAC}.Release|Win32.ActiveCfg = Release|Win32
+		{BDF87297-5D91-4CDE-8799-DC80ACF47FAC}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
