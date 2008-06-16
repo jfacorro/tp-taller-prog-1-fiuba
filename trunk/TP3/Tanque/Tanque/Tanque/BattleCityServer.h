@@ -4,7 +4,7 @@
 #include "winsock2.h"
 
 #include "BattleCityEngine.h"
-
+#include "BattleCityCommunicationProtocol.h"
 
 /* Resulados de las funciones.*/
 /* Los errores que siguen deben empezar con RES_ seguido de un nombre, por ejemplo RES_TIMEOUT */
@@ -37,6 +37,8 @@ private:
 
 	void NewConnection ( SOCKET s );
 	void UpdateClients ( BattleCityState state );
+    void SendToAllClients ( char * buffer, int size );
+    void SendToAllClients(BattleCityDataPacket packet);
 
 	void OnKey ( int tank , int key );
 
