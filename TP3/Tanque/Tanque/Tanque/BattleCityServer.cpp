@@ -112,14 +112,8 @@ void BattleCityServer::NewConnection(SOCKET s)
 	{
 		sockets[first] = s;
 
-		char buffer[6];
-		buffer[0] = 1;
-		buffer[1] = 0;
-		buffer[2] = 6;
-		buffer[3] = 0;
-		buffer[4] = first;
-		buffer[5] = 0;
-		send(s,buffer,6,0);
+        BattleCityPlayerNumberPacket playerPacket(first);
+        playerPacket.Send(s);
 
 		BCThreadParam* p = new BCThreadParam();
 		p->socketPos = first;
@@ -350,28 +344,27 @@ DWORD BattleCityServer::MainThread(LPVOID param)
 	return 0;
 }
 
-/// Data type table:
-/// 
 void BattleCityServer::UpdateClients(BattleCityState state)
 {
-	char buffer[4096];
-	int  size;
+    /************************************************/
+    /* Send Tanks state                           */
+    /************************************************/
+    BattleCityTankPacket tankPacket(state.Tanks);
+    this->SendToAllClients(tankPacket);
 
-    /// Set the type of data being sent
-    buffer[0] = buffer[1] = 0;
-	size = 4;
-	
-	memcpy(buffer+size,(void*)&state.Tanks[0],sizeof(BattleCityTank));
-	size += sizeof(BattleCityTank);
-	memcpy(buffer+size,(void*)&state.Tanks[1],sizeof(BattleCityTank));
-	size += sizeof(BattleCityTank);
+    /************************************************/
+    /* Send Bullets state                           */
+    /************************************************/
+    BattleCityBulletPacket bulletPacket(state.Bullets);
+    this->SendToAllClients(bulletPacket);
 
-	buffer[2] = (size & 0xFF);
-	buffer[3] = (size >> 8);
+}
 
+void BattleCityServer::SendToAllClients(BattleCityDataPacket packet)
+{
 	for ( int i = 0 ; i < BATTLE_CITY_MAX_PLAYERS ; i++ )
+    {
 		if ( sockets[i] != SOCKET_ERROR )
-			send(sockets[i],buffer,size,0);
-
-
+            packet.Send(sockets[i]);
+    }
 }

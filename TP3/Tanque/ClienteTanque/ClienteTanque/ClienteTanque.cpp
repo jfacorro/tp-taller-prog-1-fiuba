@@ -6,7 +6,8 @@
 #include "BattleCityEngine.h"
 #include "iostream"
 #include "conio.h"
-
+#include "BattleCityCommunicationProtocol.h"
+#include "BattleCityClient.h"
 
 void clrscr()
 {
@@ -23,6 +24,8 @@ void gotoxy(int x, int y)
 	c.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
 }
+
+void RenderScreen(BattleCityState& state);
 
 
 /* Resulados de las funciones.*/
@@ -97,8 +100,12 @@ int _tmain(int argc, _TCHAR* argv[])
    {
 		char buffer [ 4096 ];
 		bool salir = false;
-		int offset = 0;
-		while ( !salir )
+		int writeFromOffset = 0;
+        int readFromOffset = 0;
+
+        BattleCityClient client;
+
+        while ( !salir )
 		{
 			if ( kbhit() )
 			{
@@ -106,52 +113,120 @@ int _tmain(int argc, _TCHAR* argv[])
 				if ( tecla == 27 ) 
 					salir = true;
 				else 
-					UpdateEngine(sock,tecla);
+					UpdateEngine(sock, tecla);
 			}
 
-			int br = recv ( sock , buffer + offset , 4096 - offset , 0 );
-			if ( br == -1 )
-				salir = true;
-			else
-			{
-				offset += br;
-				if ( offset >= 4 )
-				{
-					/// Get the packet length by taking the upper 8 bits from 
-                    /// buffer[3] and the lower form buffer[2].
-                    int len = ((int) buffer[3] << 8) + buffer[2];
+            BattleCityDataPacket * packet = (BattleCityDataPacket *)BattleCityCommunicationProtocol::ReceiveDataPacket(sock);
 
-                    if ( offset >= len )
-					{
-						offset -= len;
-						/*
-						printf ( "Packet type: %X\n" , ((int) buffer[1] << 8) + buffer[0] );
-						printf ( "Packet len:  %X\n" , ((int) buffer[3] << 8) + buffer[2] );
-						printf ( "\n" );
-						*/
-						if ( buffer[0] == 0 && buffer[1] == 0 )
-						{
-							BattleCityTank tanks[2];
-							memcpy((void*)tanks,buffer+4,2*sizeof(BattleCityTank));
-							//printf ( "pos1: %f,%f  pos2: %f,%f\n" , tanks[0].Pos.X,tanks[0].Pos.Y,tanks[1].Pos.X,tanks[1].Pos.Y);
-							clrscr();
-							gotoxy(1,1);
-							cout << "TANQUE " << nroTanque;
-							gotoxy((int)tanks[0].Pos.X,(int) tanks[0].Pos.Y);
-							cout << "O";
-							gotoxy((int)tanks[1].Pos.X,(int) tanks[1].Pos.Y);
-							cout << "O";
-						}
-						else if ( buffer[0] == 1 && buffer[1] == 0 )
-						{
-							nroTanque = buffer[4] + 1;
-						}
-					}
-				}
-			}
+            BattleCityPlayerNumberPacket * playerNumberPacket  = NULL;
+            BattleCityTankPacket * tankPacket = NULL;
+            BattleCityBulletPacket * bulletPacket = NULL;
+
+            if(packet != NULL)
+            {
+                switch(packet->GetType())
+                {
+                    case DUMMY:
+                        break;
+                    case PLAYERNUMBER:
+                        playerNumberPacket = (BattleCityPlayerNumberPacket *)packet;
+
+                        break;
+                    case TANK:
+                        tankPacket = (BattleCityTankPacket *)packet;
+                        client.state.Tanks.clear();
+                        for(int i = 0; i < tankPacket->tanks.size(); i++)
+                        {
+                            client.state.Tanks.push_back(tankPacket->tanks[i]);
+                        }
+                        break;
+                    case BULLET:
+                        bulletPacket = (BattleCityBulletPacket *)packet;
+                        client.state.Bullets.clear();
+                        for(int i = 0; i < bulletPacket->bullets.size(); i++)
+                        {
+                            client.state.Bullets.push_back(bulletPacket->bullets[i]);
+                        }
+                        break;
+                }
+            }
+
+            delete packet;
+
+            RenderScreen(client.state);
 		}
    }
 
 	return 0;
 }
 
+void RenderScreen(BattleCityState& state)
+{
+	clrscr();
+
+    for(int i = 0; i <state.Tanks.size(); i++)
+    {
+	    gotoxy((int)state.Tanks[i].Pos.X,(int)state.Tanks[i].Pos.Y); cout << "O";
+    }
+
+    list<BattleCityBomb>::iterator iter = state.Bombs.begin();
+	for ( ; iter != state.Bombs.end() ; ++iter )
+	{
+		if ( iter->TimeToDie >= 0 )
+		{
+			gotoxy(iter->Pos.X,iter->Pos.Y);
+			cout << "B";
+		}
+		else
+		{
+			gotoxy(iter->Pos.X,iter->Pos.Y-1);
+			cout << "*";
+			gotoxy(iter->Pos.X-1,iter->Pos.Y);
+			cout << "***";
+			gotoxy(iter->Pos.X,iter->Pos.Y+1);
+			cout << "*";
+		}
+	}
+
+	for ( unsigned int i = 0 ; i < state.Bullets.size() ; i++ )
+	{
+		gotoxy((int)state.Bullets[i].Pos.X,(int)state.Bullets[i].Pos.Y);
+		printf("*");
+	}
+
+	for ( unsigned int j = 0 ; j < state.Walls.size() ; j++ )
+	{
+		Rect rect = state.Walls[j].GetRect();
+		for ( int a = rect.X ; a < (rect.X + rect.Width) ; a++ )
+			for ( int b = rect.Y ; b < (rect.Y + rect.Height) ; b++ )
+			{
+				gotoxy(a,b);
+				int life = state.Walls[j].GetLife();
+				BattleCityWallTypes t = state.Walls[j].GetType();
+
+				if ( t == WOOD )
+				{
+					if ( life == 1 )
+						printf("w");
+					else 
+						printf("W");
+				}
+				else if ( t == ROCK )
+				{
+					if ( life == 1 )
+						printf("r");
+					else 
+						printf("R");
+				}
+				else if ( t == IRON )
+					printf ( "I" );
+			}
+	}
+    /*
+    for(int y = 0; y <state.Tanks.size(); y++)
+    {
+	    gotoxy ( 1 , y + 1 );
+        for ( unsigned int i = 0 ; i < state.Tanks[y].Life ; i++ ) printf ( "x" );
+    }
+    */
+}

@@ -6,6 +6,7 @@
 	ProjectGUID="{BDF87297-5D91-4CDE-8799-DC80ACF47FAC}"
 	RootNamespace="ClienteTanque"
 	Keyword="Win32Proj"
+	AssemblyReferenceSearchPaths="&quot;..\..\Tanque\Tanque&quot;"
 	>
 	<Platforms>
 		<Platform
@@ -40,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TPs\TP3\Tanque\Tanque\Tanque"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -177,6 +179,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\Tanque\Tanque\BattleCityCommunicationProtocol.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Tanque\Tanque\BattleCityWall.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ClienteTanque.cpp"
 				>
 			</File>
@@ -191,15 +201,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\BattleCityEngine.h"
+				RelativePath=".\BattleCityClient.h"
 				>
 			</File>
 			<File
-				RelativePath=".\BattleCityTypes.h"
+				RelativePath="..\..\Tanque\Tanque\BattleCityCommunicationProtocol.h"
 				>
 			</File>
 			<File
-				RelativePath=".\BattleCityWall.h"
+				RelativePath="..\..\Tanque\Tanque\BattleCityTypes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Tanque\Tanque\BattleCityWall.h"
 				>
 			</File>
 			<File
