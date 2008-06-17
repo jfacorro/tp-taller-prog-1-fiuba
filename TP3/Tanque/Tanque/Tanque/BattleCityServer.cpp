@@ -352,8 +352,14 @@ void BattleCityServer::UpdateClients(BattleCityState state)
     /************************************************/
     /* Send Bombs state                           */
     /************************************************/
-    BattleCityBombPacket bombPacket(state.Bombs);
-    this->SendToAllClients(&bombPacket);
+    for(int i = 0; i < state.Bombs.size(); i++)
+    {
+        vector<BattleCityBomb> bombs;
+        bombs.push_back(state.Bombs[i]);
+
+        BattleCityBombPacket bombPacket(bombs);
+        this->SendToAllClients(&bombPacket);
+    }
 
     /************************************************/
     /* Send Walls state                           */
