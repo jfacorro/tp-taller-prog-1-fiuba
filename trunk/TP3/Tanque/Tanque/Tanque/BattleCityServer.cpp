@@ -1,5 +1,8 @@
-#include "BattleCityServer.h"
+#ifndef BattleCityServer_cpp
+#define BattleCityServer_cpp
 
+#include "BattleCityServer.h"
+#include "Screen.h"
 #include "conio.h"
 #include "iostream"
 
@@ -213,46 +216,29 @@ void UpdateEngine(BattleCityEngine& e, int tecla)
 		e.ShootBullet(1);
 }
 
-void clrscr()
-{
-	COORD c;
-	c.X = 0;
-	c.Y = 0;
-	FillConsoleOutputCharacter(GetStdHandle(STD_OUTPUT_HANDLE),' ',25 * 80 , c , NULL );
-}
-
-void gotoxy(int x, int y)
-{
-	COORD c;
-	c.X = x;
-	c.Y = y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
-}
-
 void RenderScreen(BattleCityState& state)
 {
 	clrscr();
 	gotoxy((int)state.Tanks[0].Pos.X,(int)state.Tanks[0].Pos.Y); cout << "O";
 	gotoxy((int)state.Tanks[1].Pos.X,(int)state.Tanks[1].Pos.Y); cout << "O";
 
-	list<BattleCityBomb>::iterator iter = state.Bombs.begin();
-	for ( ; iter != state.Bombs.end() ; ++iter )
-	{
-		if ( iter->TimeToDie >= 0 )
+    for ( unsigned int i = 0 ; i < state.Bombs.size() ; i++ )
+    {
+		if ( state.Bombs[i].TimeToDie >= 0 )
 		{
-			gotoxy(iter->Pos.X,iter->Pos.Y);
+			gotoxy(state.Bombs[i].Pos.X, state.Bombs[i].Pos.Y);
 			cout << "B";
 		}
 		else
 		{
-			gotoxy(iter->Pos.X,iter->Pos.Y-1);
+			gotoxy(state.Bombs[i].Pos.X, state.Bombs[i].Pos.Y-1);
 			cout << "*";
-			gotoxy(iter->Pos.X-1,iter->Pos.Y);
+			gotoxy(state.Bombs[i].Pos.X-1, state.Bombs[i].Pos.Y);
 			cout << "***";
-			gotoxy(iter->Pos.X,iter->Pos.Y+1);
+			gotoxy(state.Bombs[i].Pos.X, state.Bombs[i].Pos.Y+1);
 			cout << "*";
 		}
-	}
+    }
 
 	for ( unsigned int i = 0 ; i < state.Bullets.size() ; i++ )
 	{
@@ -350,21 +336,50 @@ void BattleCityServer::UpdateClients(BattleCityState state)
     /* Send Tanks state                           */
     /************************************************/
     BattleCityTankPacket tankPacket(state.Tanks);
-    this->SendToAllClients(tankPacket);
+    this->SendToAllClients(&tankPacket);
 
     /************************************************/
     /* Send Bullets state                           */
     /************************************************/
-    BattleCityBulletPacket bulletPacket(state.Bullets);
-    this->SendToAllClients(bulletPacket);
+    for(int i = 0; i < state.Bullets.size(); i++)
+    {
+        vector<BattleCityBullet> bullets;
+        bullets.push_back(state.Bullets[i]);
+        BattleCityBulletPacket bulletPacket(bullets);
+        this->SendToAllClients(&bulletPacket);
+    }
 
+    /************************************************/
+    /* Send Bombs state                           */
+    /************************************************/
+    BattleCityBombPacket bombPacket(state.Bombs);
+    this->SendToAllClients(&bombPacket);
+
+    /************************************************/
+    /* Send Walls state                           */
+    /************************************************/
+    for(int i = 0; i < state.Walls.size(); i++)
+    {
+        vector<BattleCityWall> walls;
+        walls.push_back(state.Walls[i]);
+        BattleCityWallPacket wallPacket(walls);
+        this->SendToAllClients(&wallPacket);
+    }
+
+    /************************************************/
+    /* Send Walls state                           */
+    /************************************************/
+    BattleCityCommandPacket cmdPacket(UPDATESCREEN);
+    this->SendToAllClients(&cmdPacket);
 }
 
-void BattleCityServer::SendToAllClients(BattleCityDataPacket packet)
+void BattleCityServer::SendToAllClients(BattleCityDataPacket * packet)
 {
 	for ( int i = 0 ; i < BATTLE_CITY_MAX_PLAYERS ; i++ )
     {
 		if ( sockets[i] != SOCKET_ERROR )
-            packet.Send(sockets[i]);
+            packet->Send(sockets[i]);
     }
 }
+
+#endif
