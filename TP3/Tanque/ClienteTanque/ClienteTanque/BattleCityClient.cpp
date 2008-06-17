@@ -130,6 +130,21 @@ void BattleCityClient::RenderScreenSDL()
 	white.R = white.G = white.B = 255;
 	Color black;
 	black.R = black.G = black.B = 0;
+	Color blue;
+	blue.R = blue.G = 0;
+	blue.B = 255;
+	Color red;
+	red.B = red.G = 0;
+	red.R = 255;
+	Color green;
+	green.B = green.R = 0;
+	green.G = 255;
+	Color greyIron;
+	greyIron.B = greyIron.R = greyIron.G = 200;
+	Color greyWood;
+	greyWood.B = greyWood.R = greyWood.G = 150;
+	Color greyRock;
+	greyRock.B = greyRock.R = greyRock.G = 100;
 
 	Configuration config = this->sdlHelper.GetConfiguration();
 
@@ -138,6 +153,45 @@ void BattleCityClient::RenderScreenSDL()
 	for(int i = 0; i <state.Tanks.size(); i++)
 	{
 		this->sdlHelper.DrawRectangle((int)state.Tanks[i].Pos.X, (int)state.Tanks[i].Pos.Y, 10, 10, black, NULL, NULL);
+	}
+
+	for(int i = 0; i <state.Bombs.size(); i++)
+	{
+		if ( state.Bombs[i].TimeToDie >= 0 )
+		{
+			this->sdlHelper.DrawRectangle((int)state.Bombs[i].Pos.X, (int)state.Bombs[i].Pos.Y, 10, 10, blue, NULL, NULL);
+		}
+		else
+		{
+			this->sdlHelper.DrawCircle((int)state.Bombs[i].Pos.X, (int)state.Bombs[i].Pos.Y, 10, red, NULL, NULL);
+		}
+	}
+
+	for ( int i = 0 ; i < state.Bullets.size() ; i++ )
+	{
+		this->sdlHelper.DrawRectangle((int)state.Bullets[i].Pos.X, (int)state.Bullets[i].Pos.Y, 10, 10, green, NULL, NULL);
+	}
+
+	for ( unsigned int j = 0 ; j < state.Walls.size() ; j++ )
+	{
+		Rect rect = state.Walls[j].GetRect();
+		BattleCityWallTypes t = state.Walls[j].GetType();
+		Color wallColor;
+
+		switch(t)
+		{
+			case WOOD:
+				wallColor = greyWood;
+				break;
+			case IRON:
+				wallColor = greyIron;
+				break;
+			case ROCK:
+				wallColor = greyRock;
+				break;
+		}
+		
+		this->sdlHelper.DrawRectangle(rect.X, rect.Y, rect.Width, rect.Height, wallColor, NULL, NULL);
 	}
 
 	this->sdlHelper.Refresh();
