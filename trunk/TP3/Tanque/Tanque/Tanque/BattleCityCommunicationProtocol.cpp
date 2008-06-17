@@ -14,30 +14,30 @@ BattleCityTankPacket::BattleCityTankPacket(vector<BattleCityTank> tanks)
     this->tanks = tanks;
 
     int totalPacketSize = this->size + sizeof(BattleCityTank) * tanks.size();
-    this->buffer = new char[totalPacketSize];
+    this->data = new char[totalPacketSize];
 
     for(int i = 0; i < tanks.size(); i++)
     {
-        memcpy(this->buffer + this->size, (void*)&this->tanks[i], sizeof(BattleCityTank));
+        memcpy(this->data + this->size, (void*)&this->tanks[i], sizeof(BattleCityTank));
         this->size += sizeof(BattleCityTank);
     }
     
-    this->SetHeaderInBuffer();
+    this->SetHeaderInData();
 };
 
-BattleCityTankPacket::BattleCityTankPacket(char * buffer, int size)
+BattleCityTankPacket::BattleCityTankPacket(char * data, int size)
 {
     this->type = TANK;
     this->size = PACKET_HEADER_SIZE;
 
-    //this->buffer = new char[size];
+    //this->data = new char[size];
 
-    //memcpy((void *)this->buffer, buffer, size);
+    //memcpy((void *)this->data, data, size);
 
     this->size = size;
     int numberOfTanks = (this->size - PACKET_HEADER_SIZE) / sizeof(BattleCityTank);
 
-    unsigned long offset = (unsigned long)buffer + PACKET_HEADER_SIZE;
+    unsigned long offset = (unsigned long)data + PACKET_HEADER_SIZE;
 
     for(int i = 0; i < numberOfTanks; i++)
     {
@@ -59,18 +59,18 @@ BattleCityBulletPacket::BattleCityBulletPacket(vector<BattleCityBullet> bullets)
     this->bullets = bullets;
 
     int totalPacketSize = this->size + sizeof(BattleCityBullet) * bullets.size();
-    this->buffer = new char[totalPacketSize];
+    this->data = new char[totalPacketSize];
 
     for(int i = 0; i < bullets.size(); i++)
     {
-        memcpy(this->buffer + this->size, (void*)&this->bullets[i], sizeof(BattleCityBullet));
+        memcpy(this->data + this->size, (void*)&this->bullets[i], sizeof(BattleCityBullet));
         this->size += sizeof(BattleCityBullet);                
     }
     
-    this->SetHeaderInBuffer();
+    this->SetHeaderInData();
 };
 
-BattleCityBulletPacket::BattleCityBulletPacket(char * buffer, int size)
+BattleCityBulletPacket::BattleCityBulletPacket(char * data, int size)
 {
     this->type = BULLET; 
     this->size = PACKET_HEADER_SIZE;
@@ -78,7 +78,7 @@ BattleCityBulletPacket::BattleCityBulletPacket(char * buffer, int size)
     this->size = size;
     int numberOfBullets = (this->size - PACKET_HEADER_SIZE) / sizeof(BattleCityBullet);
 
-    unsigned long offset = (unsigned long)buffer + PACKET_HEADER_SIZE;
+    unsigned long offset = (unsigned long)data + PACKET_HEADER_SIZE;
 
     for(int i = 0; i < numberOfBullets; i++)
     {
@@ -101,18 +101,18 @@ BattleCityBombPacket::BattleCityBombPacket(vector<BattleCityBomb> bombs)
     this->bombs = bombs;
 
     int totalPacketSize = this->size + sizeof(BattleCityBomb) * bombs.size();
-    this->buffer = new char[totalPacketSize];
+    this->data = new char[totalPacketSize];
 
     for(int i = 0; i < bombs.size(); i++)
     {
-        memcpy(this->buffer + this->size, (void*)&this->bombs[i], sizeof(BattleCityBomb));
+        memcpy(this->data + this->size, (void*)&this->bombs[i], sizeof(BattleCityBomb));
         this->size += sizeof(BattleCityBomb);                
     }
     
-    this->SetHeaderInBuffer();
+    this->SetHeaderInData();
 };
 
-BattleCityBombPacket::BattleCityBombPacket(char * buffer, int size)
+BattleCityBombPacket::BattleCityBombPacket(char * data, int size)
 {
     this->type = BOMB; 
     this->size = PACKET_HEADER_SIZE;
@@ -120,7 +120,7 @@ BattleCityBombPacket::BattleCityBombPacket(char * buffer, int size)
     this->size = size;
     int numberOfBombs = (this->size - PACKET_HEADER_SIZE) / sizeof(BattleCityBomb);
 
-    unsigned long offset = (unsigned long)buffer + PACKET_HEADER_SIZE;
+    unsigned long offset = (unsigned long)data + PACKET_HEADER_SIZE;
 
     for(int i = 0; i < numberOfBombs; i++)
     {
@@ -143,18 +143,18 @@ BattleCityWallPacket::BattleCityWallPacket(vector<BattleCityWall> walls)
     this->walls = walls;
 
     int totalPacketSize = this->size + sizeof(BattleCityWall) * walls.size();
-    this->buffer = new char[totalPacketSize];
+    this->data = new char[totalPacketSize];
 
     for(int i = 0; i < walls.size(); i++)
     {
-        memcpy(this->buffer + this->size, (void*)&this->walls[i], sizeof(BattleCityWall));
+        memcpy(this->data + this->size, (void*)&this->walls[i], sizeof(BattleCityWall));
         this->size += sizeof(BattleCityWall);                
     }
     
-    this->SetHeaderInBuffer();
+    this->SetHeaderInData();
 };
 
-BattleCityWallPacket::BattleCityWallPacket(char * buffer, int size)
+BattleCityWallPacket::BattleCityWallPacket(char * data, int size)
 {
     this->type = WALL; 
     this->size = PACKET_HEADER_SIZE;
@@ -162,7 +162,7 @@ BattleCityWallPacket::BattleCityWallPacket(char * buffer, int size)
     this->size = size;
     int numberOfWalls = (this->size - PACKET_HEADER_SIZE) / sizeof(BattleCityWall);
 
-    unsigned long offset = (unsigned long)buffer + PACKET_HEADER_SIZE;
+    unsigned long offset = (unsigned long)data + PACKET_HEADER_SIZE;
 
     for(int i = 0; i < numberOfWalls; i++)
     {
@@ -182,38 +182,40 @@ BattleCityCommandPacket::BattleCityCommandPacket(BattleCityCommandType cmdType)
     this->cmdType = cmdType;
     this->type = COMMAND; 
     
-    this->buffer = new char[PACKET_HEADER_SIZE + sizeof(BattleCityCommandType)];
+    this->data = new char[PACKET_HEADER_SIZE + sizeof(BattleCityCommandType)];
     
-    this->buffer[0] = COMMAND;
+    this->data[0] = COMMAND;
     this->size = PACKET_HEADER_SIZE;
 
-    memcpy(this->buffer + this->size, (void*)&this->cmdType, sizeof(BattleCityCommandType));
+    memcpy(this->data + this->size, (void*)&this->cmdType, sizeof(BattleCityCommandType));
 
     this->size += sizeof(BattleCityCommandType);
 
-    this->SetSizeInBuffer();
+    this->SetSizeInData();
 };
 
-BattleCityCommandPacket::BattleCityCommandPacket(char * buffer, int size)
+BattleCityCommandPacket::BattleCityCommandPacket(char * data, int size)
 {
     this->type = COMMAND;
     this->size = size;
     
-    int offset = (int)buffer + PACKET_HEADER_SIZE;
+    int offset = (int)data + PACKET_HEADER_SIZE;
 
     memcpy((void*)&(this->cmdType), (void * )offset, sizeof(BattleCityCommandType));
 }
 
 /**********************************************************************************************************/
 
-void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET socket)
+void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
 {
     BattleCityDataPacket * packet = NULL;
 
     char packetHeader[PACKET_HEADER_SIZE];
+    /// Packet packet(packetHeader, 3);
 
     /// Get Packet Header
-    int bytesRead = recv ( socket , packetHeader, 3 , 0 );
+    int bytesRead = recv ( socket.GetConnection().cxSocket , packetHeader, 3 , 0 );
+    /// int result = socket.Receive(packet);
 
     if(bytesRead != -1)
     {
@@ -244,7 +246,7 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET socket)
 
                     while ( totalRecibido < packetDataLength )
                     {
-                        cantRecibida = recv (socket, packetData + PACKET_HEADER_SIZE + totalRecibido, packetDataLength - totalRecibido, 0);
+                        cantRecibida = recv (socket.GetConnection().cxSocket, packetData + PACKET_HEADER_SIZE + totalRecibido, packetDataLength - totalRecibido, 0);
 
                         if ( cantRecibida == 0 || cantRecibida == -1 )
                             successTransfer = false;
