@@ -9,9 +9,9 @@
 #include "BattleCityCommunicationProtocol.h"
 #include "BattleCityClient.h"
 #include "Screen.h"
+#include "Socket.h"
 
 void RenderScreen(BattleCityState& state);
-
 
 /* Resulados de las funciones.*/
 /* Los errores que siguen deben empezar con RES_ seguido de un nombre, por ejemplo RES_TIMEOUT */
@@ -43,50 +43,14 @@ void UpdateEngine ( SOCKET s , int tecla )
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	int nroTanque = 0;
+    int nroTanque = 0;
 
-   WSADATA wsaData; /* Utilizada para inicializacion del winsock */
-   WORD wVersionReq = MAKEWORD(2, 2); /* Contiene la version */
-   SOCKET sock; /* Contiene la informacion del socket */
-   //SOCKET tempSock; /* Se utiliza para no sobreescribir informacion al aceptar la conexion */   
-   struct hostent* hostInfo; /* Se utiliza para convertir el nombre del host a su direccion IP */
-   struct sockaddr_in sockAddrIn; /* Direccion de socket */
-   int codError = 0; /* Codigo de error que se evalua dentro de la funcion */
-   int resultado = RES_ERROR_UNKNOWN; /* Codigo de error que se devolvera */
+    Socket clientSock;
+    int resultado = clientSock.Connect("127.0.0.1", BATTLE_CITY_SOCKET);
 
-   /* Inicializa el socket */
-   codError = WSAStartup(wVersionReq, &wsaData);
-   if (codError != 0) {
-      resultado = RES_ERROR_STARTUP;
-
-   } else {
-      /* Crea un socket */
-      sock = socket(AF_INET, SOCK_STREAM, 0);
-      if (sock == INVALID_SOCKET) {
-         resultado = RES_INVALID_SOCKET;
-         
-      } else {
-         /* Carga los valores de sockAddrIn */
-         sockAddrIn.sin_family = AF_INET;       /* Protocolo ipv4 */
-         sockAddrIn.sin_port = htons(2488);   /* Puerto indicado */
-         hostInfo = gethostbyname("127.0.0.1");  /* Direccion IP */
-         sockAddrIn.sin_addr = *((struct in_addr *)((*hostInfo).h_addr));
-         
-            codError = connect(sock, (SOCKADDR *)(&sockAddrIn), sizeof(sockAddrIn));
-            if (codError != 0) {
-               resultado = RES_ERROR_CONNECT;
-            } else {
-               resultado = RES_OK;
-            }
-	      }
-   }
-	
-   if ( resultado == RES_OK )
-   {
-		char buffer [ 4096 ];
+    if ( resultado == RES_OK )
+    {
 		bool salir = false;
-		int writeFromOffset = 0;
-        int readFromOffset = 0;
 
         BattleCityClient client;
 
@@ -98,10 +62,10 @@ int _tmain(int argc, _TCHAR* argv[])
 				if ( tecla == 27 ) 
 					salir = true;
 				else 
-					UpdateEngine(sock, tecla);
+					UpdateEngine(clientSock.GetConnection().cxSocket, tecla);
 			}
 
-            BattleCityDataPacket * packet = (BattleCityDataPacket *)BattleCityCommunicationProtocol::ReceiveDataPacket(sock);
+            BattleCityDataPacket * packet = (BattleCityDataPacket *)BattleCityCommunicationProtocol::ReceiveDataPacket(clientSock);
 
             BattleCityPlayerNumberPacket * playerNumberPacket  = NULL;
             BattleCityCommandPacket * cmdPacket  = NULL;
@@ -169,8 +133,6 @@ int _tmain(int argc, _TCHAR* argv[])
             }
 
             delete packet;
-
-            ///RenderScreen(client.state);
 		}
    }
 
