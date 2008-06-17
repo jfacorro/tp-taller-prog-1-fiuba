@@ -3,6 +3,9 @@
 
 #include "BattleCityTypes.h"
 
+/**********************************************************************************************************/
+// BattleCityCollitionObject
+/**********************************************************************************************************/
 Rect BattleCityCollitionObject::GetRect()
 {
 	Rect rect;
@@ -32,8 +35,23 @@ bool BattleCityCollitionObject::Intersects(Rect rval)
 
 bool BattleCityCollitionObject::Intersects(BattleCityCollitionObject &collObject)
 {
-	return Intersects ( collObject.GetRect());
+	return Intersects(collObject.GetRect());
 }
+
+
+/**********************************************************************************************************/
+// BattleCityTank
+/**********************************************************************************************************/
+Rect BattleCityTank::GetRect()
+{
+	Rect rect;
+	rect.Height = this->Height;
+	rect.Width = this->Width;
+	rect.X = this->Pos.X - this->Width / 2;
+	rect.Y = this->Pos.Y - this->Height / 2;;
+
+	return rect;
+};
 
 
 #endif

@@ -57,7 +57,7 @@ class BattleCityCollitionObject
 		bool Intersects ( Rect rect );
 		bool Intersects ( BattleCityCollitionObject& collObject );
 
-		Rect GetRect();
+		virtual Rect GetRect();
 };
 
 class BattleCityTank : public BattleCityCollitionObject
@@ -72,6 +72,8 @@ class BattleCityTank : public BattleCityCollitionObject
 		double			Speed;
 		Direction		Direction;
 		unsigned int	Life;
+
+		Rect GetRect();
 };
 
 
