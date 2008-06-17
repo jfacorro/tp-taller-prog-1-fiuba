@@ -18,15 +18,23 @@ void BattleCityClient::StartPlaying()
 {
 	bool salir = false;
 
+	this->sdlHelper.Initialize();
+	Configuration config;
+	this->sdlHelper.InitializeVideo(config);
+
     while ( !salir )
 	{
-		if ( kbhit() )
+		SDL_keysym keyPressed;
+		if(this->sdlHelper.GetPressedKey(keyPressed))
 		{
-			int tecla = getch();
-			if ( tecla == 27 ) 
+			if(keyPressed.sym == SDLK_ESCAPE)
+			{
 				salir = true;
-			else 
-				UpdateEngine(tecla);
+			}
+			else
+			{
+				UpdateEngine(keyPressed.sym);
+			}
 		}
 
         BattleCityDataPacket * packet = (BattleCityDataPacket *)BattleCityCommunicationProtocol::ReceiveDataPacket(this->socket);
@@ -84,7 +92,7 @@ void BattleCityClient::StartPlaying()
                     cmdPacket = (BattleCityCommandPacket *)packet;
                     if(cmdPacket->GetCommandType() == UPDATESCREEN)
                     {
-                        RenderScreen();
+                        RenderScreenSDL();
 
                         this->state.Tanks.clear();
                         this->state.Bullets.clear();
@@ -116,7 +124,26 @@ void BattleCityClient::UpdateEngine (int tecla)
 	send(this->socket.GetConnection().cxSocket, (char*)buffer, 6, 0);
 }
 
-void BattleCityClient::RenderScreen()
+void BattleCityClient::RenderScreenSDL()
+{
+	Color white;
+	white.R = white.G = white.B = 255;
+	Color black;
+	black.R = black.G = black.B = 0;
+
+	Configuration config = this->sdlHelper.GetConfiguration();
+
+	this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
+
+	for(int i = 0; i <state.Tanks.size(); i++)
+	{
+		this->sdlHelper.DrawRectangle((int)state.Tanks[i].Pos.X, (int)state.Tanks[i].Pos.Y, 10, 10, black, NULL, NULL);
+	}
+
+	this->sdlHelper.Refresh();
+}
+
+void BattleCityClient::RenderScreenChars()
 {
 	clrscr();
 
