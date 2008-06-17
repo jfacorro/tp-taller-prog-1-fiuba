@@ -14,6 +14,7 @@ enum BattleCityWallTypes
 class BattleCityWall 
 {
 public:
+    BattleCityWall () {};
 	BattleCityWall ( Rect rect , BattleCityWallTypes type );
 
 	bool Intersects ( Point p );

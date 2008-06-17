@@ -35,7 +35,7 @@ typedef struct _BattleCityParameters
 typedef struct _BattleCityState
 {
 	vector<BattleCityTank>		Tanks;
-	list<BattleCityBomb>		Bombs;
+	vector<BattleCityBomb>		Bombs;
 	vector<BattleCityBullet>	Bullets;
 	vector<BattleCityWall>		Walls;
 }

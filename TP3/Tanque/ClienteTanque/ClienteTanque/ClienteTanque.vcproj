@@ -191,6 +191,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Tanque\Tanque\Screen.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 			</File>
@@ -214,6 +218,10 @@
 			</File>
 			<File
 				RelativePath="..\..\Tanque\Tanque\BattleCityWall.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Tanque\Tanque\Screen.h"
 				>
 			</File>
 			<File

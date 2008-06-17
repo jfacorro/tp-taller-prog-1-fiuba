@@ -3,9 +3,8 @@
 
 class BattleCityClient
 {
-    private:
-        int clientNumber;
     public:
+        int clientNumber;
         BattleCityState state;
 };
 

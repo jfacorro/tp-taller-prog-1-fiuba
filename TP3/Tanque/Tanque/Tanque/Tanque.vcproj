@@ -193,6 +193,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Screen.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 			</File>
@@ -224,6 +228,10 @@
 			</File>
 			<File
 				RelativePath=".\BattleCityWall.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Screen.h"
 				>
 			</File>
 			<File

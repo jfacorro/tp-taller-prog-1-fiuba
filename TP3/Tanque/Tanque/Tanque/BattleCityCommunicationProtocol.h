@@ -3,14 +3,17 @@
 
 #include "winsock2.h"
 #include "BattleCityTypes.h"
+#include "BattleCityWall.h"
 #include <vector>
+#include <list>
 
 using namespace std;
 
 #define PACKET_DATA_MAX_SIZE    4096
 #define PACKET_HEADER_SIZE      3
 
-enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER};
+enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, COMMAND};
+enum BattleCityCommandType {UPDATESCREEN};
 
 class BattleCityDataPacket
 { 
@@ -29,18 +32,29 @@ class BattleCityDataPacket
             return ((int) buffer[2] << 8) + buffer[1];
         };
 
+        BattleCityPacketType type;
+
     public:
         BattleCityDataPacket()
         {
+            this->buffer = NULL;
             this->type = DUMMY;
             this->size = PACKET_HEADER_SIZE;
-
-            this->SetSizeInBuffer();
         };
+
+        ~BattleCityDataPacket()
+        {
+            if(this->buffer != NULL)
+            {
+                delete [] this->buffer;
+                this->buffer = NULL;
+            }
+        }
 
         void SetHeaderInBuffer()
         {
             this->buffer[0] = this->type;
+            this->SetSizeInBuffer();
         }
 
         void Send(SOCKET socket)
@@ -49,8 +63,6 @@ class BattleCityDataPacket
         };
 
         BattleCityPacketType GetType() { return this->type; };
-
-        BattleCityPacketType type;
 };
 
 class BattleCityTankPacket : public BattleCityDataPacket
@@ -59,10 +71,11 @@ class BattleCityTankPacket : public BattleCityDataPacket
         BattleCityTankPacket()
         { 
             this->type = TANK; 
-            this->buffer[0] = TANK;
             this->size = PACKET_HEADER_SIZE;
         };
+
         BattleCityTankPacket(vector<BattleCityTank> tanks);
+
         BattleCityTankPacket(char * buffer, int size);
 
         vector<BattleCityTank> tanks;
@@ -74,13 +87,46 @@ class BattleCityBulletPacket : public BattleCityDataPacket
         BattleCityBulletPacket()
         { 
             this->type = BULLET; 
-            this->buffer[0] = BULLET;
             this->size = PACKET_HEADER_SIZE;
         };
+
         BattleCityBulletPacket(vector<BattleCityBullet> bullets);
+
         BattleCityBulletPacket(char * buffer, int size);
 
         vector<BattleCityBullet> bullets;
+};
+
+class BattleCityBombPacket : public BattleCityDataPacket
+{
+    public:
+        BattleCityBombPacket()
+        { 
+            this->type = BOMB; 
+            this->size = PACKET_HEADER_SIZE;
+        };
+
+        BattleCityBombPacket(vector<BattleCityBomb> bombs);
+
+        BattleCityBombPacket(char * buffer, int size);
+
+        vector<BattleCityBomb> bombs;
+};
+
+class BattleCityWallPacket : public BattleCityDataPacket
+{
+    public:
+        BattleCityWallPacket()
+        { 
+            this->type = WALL; 
+            this->size = PACKET_HEADER_SIZE;
+        };
+
+        BattleCityWallPacket(vector<BattleCityWall> walls);
+
+        BattleCityWallPacket(char * buffer, int size);
+
+        vector<BattleCityWall> walls;
 };
 
 class BattleCityPlayerNumberPacket : public BattleCityDataPacket
@@ -92,6 +138,9 @@ class BattleCityPlayerNumberPacket : public BattleCityDataPacket
         { 
             this->playerNumber = playerNumber;
             this->type = PLAYERNUMBER; 
+            
+            this->buffer = new char[PACKET_HEADER_SIZE + sizeof(int)];
+            
             this->buffer[0] = PLAYERNUMBER;
             this->size = PACKET_HEADER_SIZE;
 
@@ -101,12 +150,27 @@ class BattleCityPlayerNumberPacket : public BattleCityDataPacket
 
             this->SetSizeInBuffer();
         };
+
+        int GetPlayerNumber() {return this->playerNumber;};
+};
+
+class BattleCityCommandPacket : public BattleCityDataPacket
+{
+    private:
+        BattleCityCommandType cmdType;
+        
+    public:
+        BattleCityCommandPacket(BattleCityCommandType cmdType);
+        BattleCityCommandPacket(char * buffer, int size);
+
+        BattleCityCommandType GetCommandType() {return this->cmdType; };
 };
 
 class BattleCityCommunicationProtocol
 {
     private:
         BattleCityCommunicationProtocol() {};
+        static void WriteLog(const char * msg);
 
     public:
         static void * ReceiveDataPacket(SOCKET socket);

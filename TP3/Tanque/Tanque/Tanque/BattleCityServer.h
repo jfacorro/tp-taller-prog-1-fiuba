@@ -38,7 +38,7 @@ private:
 	void NewConnection ( SOCKET s );
 	void UpdateClients ( BattleCityState state );
     void SendToAllClients ( char * buffer, int size );
-    void SendToAllClients(BattleCityDataPacket packet);
+    void SendToAllClients(BattleCityDataPacket * packet);
 
 	void OnKey ( int tank , int key );
 

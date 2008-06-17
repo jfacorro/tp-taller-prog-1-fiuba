@@ -8,22 +8,7 @@
 #include "conio.h"
 #include "BattleCityCommunicationProtocol.h"
 #include "BattleCityClient.h"
-
-void clrscr()
-{
-	COORD c;
-	c.X = 0;
-	c.Y = 0;
-	FillConsoleOutputCharacter(GetStdHandle(STD_OUTPUT_HANDLE),' ',25 * 80 , c , NULL );
-}
-
-void gotoxy(int x, int y)
-{
-	COORD c;
-	c.X = x;
-	c.Y = y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
-}
+#include "Screen.h"
 
 void RenderScreen(BattleCityState& state);
 
@@ -119,8 +104,11 @@ int _tmain(int argc, _TCHAR* argv[])
             BattleCityDataPacket * packet = (BattleCityDataPacket *)BattleCityCommunicationProtocol::ReceiveDataPacket(sock);
 
             BattleCityPlayerNumberPacket * playerNumberPacket  = NULL;
+            BattleCityCommandPacket * cmdPacket  = NULL;
             BattleCityTankPacket * tankPacket = NULL;
             BattleCityBulletPacket * bulletPacket = NULL;
+            BattleCityBombPacket * bombPacket = NULL;
+            BattleCityWallPacket * wallPacket = NULL;
 
             if(packet != NULL)
             {
@@ -130,11 +118,11 @@ int _tmain(int argc, _TCHAR* argv[])
                         break;
                     case PLAYERNUMBER:
                         playerNumberPacket = (BattleCityPlayerNumberPacket *)packet;
-
+                        client.clientNumber = playerNumberPacket->GetPlayerNumber();
                         break;
                     case TANK:
                         tankPacket = (BattleCityTankPacket *)packet;
-                        client.state.Tanks.clear();
+                        //client.state.Tanks.clear();
                         for(int i = 0; i < tankPacket->tanks.size(); i++)
                         {
                             client.state.Tanks.push_back(tankPacket->tanks[i]);
@@ -142,18 +130,47 @@ int _tmain(int argc, _TCHAR* argv[])
                         break;
                     case BULLET:
                         bulletPacket = (BattleCityBulletPacket *)packet;
-                        client.state.Bullets.clear();
+                        //client.state.Bullets.clear();
                         for(int i = 0; i < bulletPacket->bullets.size(); i++)
                         {
                             client.state.Bullets.push_back(bulletPacket->bullets[i]);
                         }
+                        break;
+                    case BOMB:
+                        bombPacket = (BattleCityBombPacket *)packet;
+                        //client.state.Bombs.clear();
+                        for(int i = 0; i < bombPacket->bombs.size(); i++)
+                        {
+                            client.state.Bombs.push_back(bombPacket->bombs[i]);
+                        }
+                        break;
+                    case WALL:
+                        wallPacket = (BattleCityWallPacket *)packet;
+                        //client.state.Walls.clear();
+                        for(int i = 0; i < wallPacket->walls.size(); i++)
+                        {
+                            client.state.Walls.push_back(wallPacket->walls[i]);
+                        }
+                        break;
+                    case COMMAND:
+                        cmdPacket = (BattleCityCommandPacket *)packet;
+                        if(cmdPacket->GetCommandType() == UPDATESCREEN)
+                        {
+                            RenderScreen(client.state);
+
+                            client.state.Tanks.clear();
+                            client.state.Bullets.clear();
+                            client.state.Bombs.clear();
+                            client.state.Walls.clear();                                                        
+                        }
+
                         break;
                 }
             }
 
             delete packet;
 
-            RenderScreen(client.state);
+            ///RenderScreen(client.state);
 		}
    }
 
@@ -169,24 +186,23 @@ void RenderScreen(BattleCityState& state)
 	    gotoxy((int)state.Tanks[i].Pos.X,(int)state.Tanks[i].Pos.Y); cout << "O";
     }
 
-    list<BattleCityBomb>::iterator iter = state.Bombs.begin();
-	for ( ; iter != state.Bombs.end() ; ++iter )
-	{
-		if ( iter->TimeToDie >= 0 )
+    for ( unsigned int i = 0 ; i < state.Bombs.size() ; i++ )
+    {
+		if ( state.Bombs[i].TimeToDie >= 0 )
 		{
-			gotoxy(iter->Pos.X,iter->Pos.Y);
+			gotoxy(state.Bombs[i].Pos.X, state.Bombs[i].Pos.Y);
 			cout << "B";
 		}
 		else
 		{
-			gotoxy(iter->Pos.X,iter->Pos.Y-1);
+			gotoxy(state.Bombs[i].Pos.X, state.Bombs[i].Pos.Y-1);
 			cout << "*";
-			gotoxy(iter->Pos.X-1,iter->Pos.Y);
+			gotoxy(state.Bombs[i].Pos.X-1, state.Bombs[i].Pos.Y);
 			cout << "***";
-			gotoxy(iter->Pos.X,iter->Pos.Y+1);
+			gotoxy(state.Bombs[i].Pos.X, state.Bombs[i].Pos.Y+1);
 			cout << "*";
 		}
-	}
+    }
 
 	for ( unsigned int i = 0 ; i < state.Bullets.size() ; i++ )
 	{
