@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Juan\Facultad\2008.1er.Taller.de.Programacion.I\TPs\TP3\Tanque\Tanque\Tanque"
+				AdditionalIncludeDirectories="&quot;C:\02.Personal\Facultad\Taller de Programación I\TPs\TP3\Tanque\ClienteTanque\ClienteTanque\SDL\include&quot;;&quot;C:\02.Personal\Facultad\Taller de Programación I\TPs\TP3\Tanque\Tanque\Tanque&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib $(NoInherit) ws2_32.lib"
+				AdditionalDependencies="kernel32.lib ws2_32.lib SDL\SDL.lib SDL\SDLmain.lib $(NOINHERIT)"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -199,11 +199,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SDL_rotozoom.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SDLHelper.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Tanque\Tanque\Socket.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\stdafx.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StringHelper.cpp"
 				>
 			</File>
 		</Filter>
@@ -229,7 +241,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Tanque\Tanque\Screen.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SDL\include\SDL.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SDL_rotozoom.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SDLHelper.h"
 				>
 			</File>
 			<File
@@ -238,6 +270,10 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StringHelper.h"
 				>
 			</File>
 		</Filter>

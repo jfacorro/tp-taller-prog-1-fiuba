@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "BattleCityCommunicationProtocol.h"
 #include "BattleCityClient.h"
+#include "SDL.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {

@@ -3,17 +3,22 @@
 
 #include "Socket.h"
 #include "BattleCityEngine.h"
+#include "SDLHelper.h"
 
 class BattleCityClient
 {
     private:
         Socket socket;
 
+		SDLHelper sdlHelper;
+
         bool isConnected;
 
         void UpdateEngine (int tecla);
 
-        void RenderScreen();
+        void RenderScreenChars();
+
+		void RenderScreenSDL();
         
     public:
         BattleCityClient() {};
