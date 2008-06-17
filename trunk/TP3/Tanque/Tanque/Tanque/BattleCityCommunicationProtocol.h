@@ -18,18 +18,13 @@ using namespace std;
 enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, COMMAND};
 enum BattleCityCommandType {UPDATESCREEN};
 
-class BattleCityDataPacket : public Packet
+class BattleCityDataPacket : public SocketPacket
 { 
     protected:
         void SetSizeInData()
         {
             this->data[1] = (size & 0xFF);
             this->data[2] = (size >> 8);
-        };
-
-        int GetSizeFromData()
-        {
-            return ((int) data[2] << 8) + data[1];
         };
 
         BattleCityPacketType type;
@@ -51,6 +46,11 @@ class BattleCityDataPacket : public Packet
         void Send(SOCKET socket)
         {
             send(socket, this->data, this->size, 0);
+        };
+
+        static int GetSizeFromData(char * data)
+        {
+            return ((int) data[2] << 8) + data[1];
         };
 
         BattleCityPacketType GetType() { return this->type; };

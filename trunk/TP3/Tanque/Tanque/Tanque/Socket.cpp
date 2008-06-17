@@ -148,7 +148,7 @@ int Socket::Connect(const char * address, int port)
 	return resultado;
 }
 
-int Socket::Send(Packet packet) 
+int Socket::Send(SocketPacket packet) 
 {
 	int tmp;
 	int resultado = RES_ERROR_UNKNOWN;
@@ -168,16 +168,16 @@ int Socket::Send(Packet packet)
 	return resultado;
 }
 
-int Socket::Receive(Packet packet) 
+int Socket::Receive(SocketPacket * packet) 
 {
     int tmp;
     int resultado = RES_ERROR_UNKNOWN;
     int cantRecibida = 0, totalRecibido = 0, tamano;   
 
-    tamano = packet.GetSize();
+    tamano = packet->GetSize();
     while ( totalRecibido < tamano )
     {
-	    cantRecibida = recv (this->connection.cxSocket, (char *)((char *)packet.GetData() + totalRecibido), tamano - totalRecibido, 0);
+	    cantRecibida = recv (this->connection.cxSocket, (char *)((char *)packet->GetData() + totalRecibido), tamano - totalRecibido, 0);
 
 	    if ( cantRecibida == 0 || cantRecibida == -1 )
 		    return RES_ERROR_RECEIVE;
