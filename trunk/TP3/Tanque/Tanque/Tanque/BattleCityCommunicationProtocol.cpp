@@ -309,6 +309,7 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET socket)
 
 void BattleCityCommunicationProtocol::WriteLog(const char * msg)
 {
+    /*    
     FILE * file;
 
     file = fopen("log.txt", "a");
@@ -318,6 +319,7 @@ void BattleCityCommunicationProtocol::WriteLog(const char * msg)
         fputs (msg, file);
         fclose (file);
     }
+    */
 }
 
 #endif
