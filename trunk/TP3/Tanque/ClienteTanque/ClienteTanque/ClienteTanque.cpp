@@ -2,14 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "winsock2.h"
-#include "BattleCityEngine.h"
-#include "iostream"
-#include "conio.h"
 #include "BattleCityCommunicationProtocol.h"
 #include "BattleCityClient.h"
-#include "Screen.h"
-#include "Socket.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
