@@ -152,14 +152,15 @@ void BattleCityClient::RenderScreenSDL()
 
 	for(int i = 0; i <state.Tanks.size(); i++)
 	{
-		this->sdlHelper.DrawRectangle((int)state.Tanks[i].Pos.X, (int)state.Tanks[i].Pos.Y, 10, 10, black, NULL, NULL);
+		int tankRadius = 5;
+		this->sdlHelper.DrawRectangle((int)state.Tanks[i].Pos.X - tankRadius, (int)state.Tanks[i].Pos.Y - tankRadius, tankRadius * 2, tankRadius * 2, black, NULL, NULL);
 	}
 
 	for(int i = 0; i <state.Bombs.size(); i++)
 	{
 		if ( state.Bombs[i].TimeToDie >= 0 )
 		{
-			this->sdlHelper.DrawRectangle((int)state.Bombs[i].Pos.X, (int)state.Bombs[i].Pos.Y, 10, 10, blue, NULL, NULL);
+			this->sdlHelper.DrawRectangle((int)state.Bombs[i].Pos.X - 2.5, (int)state.Bombs[i].Pos.Y - 2.5, 5, 5, blue, NULL, NULL);
 		}
 		else
 		{

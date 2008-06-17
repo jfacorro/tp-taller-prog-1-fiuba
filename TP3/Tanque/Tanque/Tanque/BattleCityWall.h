@@ -11,27 +11,21 @@ enum BattleCityWallTypes
 	IRON
 };
 
-class BattleCityWall 
+class BattleCityWall : public BattleCityCollitionObject
 {
 public:
     BattleCityWall () {};
 	BattleCityWall ( Rect rect , BattleCityWallTypes type );
 
-	bool Intersects ( Point p );
-	bool Intersects ( Rect rect );
-	bool Intersects ( BattleCityWall& wall );
+	unsigned int Distance ( DoublePoint p );
 
-	unsigned int Distance ( Point p );
+	int Shoot ();
+	int	Blast ();
 
-	int  Shoot ();
-	int	 Blast ();
-
-	Rect	GetRect();
-	int		GetLife();
+	int	GetLife();
 	BattleCityWallTypes GetType();
 
 private:
-	Rect				rect;
 	BattleCityWallTypes type;
 	int					life;
 };

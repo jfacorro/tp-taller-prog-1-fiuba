@@ -5,7 +5,8 @@
 #include "Screen.h"
 
 /**********************************************************************************************************/
-
+// BattleCityTankPacket
+/**********************************************************************************************************/
 BattleCityTankPacket::BattleCityTankPacket(vector<BattleCityTank> tanks)
 {
     this->type = TANK; 
@@ -42,15 +43,14 @@ BattleCityTankPacket::BattleCityTankPacket(char * data, int size)
     for(int i = 0; i < numberOfTanks; i++)
     {
         offset = offset + sizeof(BattleCityTank) * i;
-        BattleCityTank tank[1];
-        memcpy((void*)tank, (void *)(offset), sizeof(BattleCityTank));
-        this->tanks.push_back(tank[0]);
+        BattleCityTank tank(1);
+        memcpy((void*)&tank, (void *)(offset), sizeof(BattleCityTank));
+        this->tanks.push_back(tank);
     }
 }
 /**********************************************************************************************************/
 // BattleCityBulletPacket
 /**********************************************************************************************************/
-
 BattleCityBulletPacket::BattleCityBulletPacket(vector<BattleCityBullet> bullets)
 {
     this->type = BULLET; 
@@ -92,7 +92,6 @@ BattleCityBulletPacket::BattleCityBulletPacket(char * data, int size)
 /**********************************************************************************************************/
 // BattleCityBombPacket
 /**********************************************************************************************************/
-
 BattleCityBombPacket::BattleCityBombPacket(vector<BattleCityBomb> bombs)
 {
     this->type = BOMB; 
@@ -134,7 +133,6 @@ BattleCityBombPacket::BattleCityBombPacket(char * data, int size)
 /**********************************************************************************************************/
 // BattleCityWallPacket
 /**********************************************************************************************************/
-
 BattleCityWallPacket::BattleCityWallPacket(vector<BattleCityWall> walls)
 {
     this->type = WALL; 
@@ -174,9 +172,8 @@ BattleCityWallPacket::BattleCityWallPacket(char * data, int size)
 }
 
 /**********************************************************************************************************/
-// BattleCityWallPacket
+// BattleCityCommandPacket
 /**********************************************************************************************************/
-
 BattleCityCommandPacket::BattleCityCommandPacket(BattleCityCommandType cmdType)
 { 
     this->cmdType = cmdType;
@@ -205,7 +202,38 @@ BattleCityCommandPacket::BattleCityCommandPacket(char * data, int size)
 }
 
 /**********************************************************************************************************/
+// BattleCityPlayerNumberPacket
+/**********************************************************************************************************/
+BattleCityPlayerNumberPacket::BattleCityPlayerNumberPacket(int playerNumber)
+{ 
+    this->playerNumber = playerNumber;
+    this->type = PLAYERNUMBER; 
+    
+    this->data = new char[PACKET_HEADER_SIZE + sizeof(int)];
+    
+    this->data[0] = PLAYERNUMBER;
+    this->size = PACKET_HEADER_SIZE;
 
+    memcpy(this->data + this->size, (void*)&this->playerNumber, sizeof(int));
+
+    this->size += sizeof(int);
+
+    this->SetSizeInData();
+}
+
+BattleCityPlayerNumberPacket::BattleCityPlayerNumberPacket(char * data, int size)
+{
+	this->type = PLAYERNUMBER;
+	this->size = size;
+
+	int offset = (int)data + PACKET_HEADER_SIZE;
+
+	memcpy((void*)&(this->playerNumber), (void * )offset, sizeof(int));
+}
+
+/**********************************************************************************************************/
+// BattleCityCommunicationProtocol
+/**********************************************************************************************************/
 void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
 {
     BattleCityDataPacket * packet = NULL;
@@ -283,6 +311,12 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
 		                {
                             BattleCityCommandPacket * cmdPacket = new BattleCityCommandPacket(packetData, packetTotalLength);
                             packet = cmdPacket;
+		                }
+
+						if ( packetData[0] == PLAYERNUMBER)
+		                {
+                            BattleCityPlayerNumberPacket * playerPacket = new BattleCityPlayerNumberPacket(packetData, packetTotalLength);
+                            packet = playerPacket;
 		                }
                     }
 

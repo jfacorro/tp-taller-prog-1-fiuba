@@ -16,6 +16,7 @@ typedef struct _BattleCityParameters
 	unsigned int ArenaWidth;
 	unsigned int ArenaHeight;
 	unsigned int TankRadius;
+	unsigned int BulletRadius;	
 	
 	vector<BattleCityTank>	Tanks;
 	vector<BattleCityWall>	Walls;
