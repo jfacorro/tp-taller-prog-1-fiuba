@@ -335,8 +335,14 @@ void BattleCityServer::UpdateClients(BattleCityState state)
     /************************************************/
     /* Send Tanks state                           */
     /************************************************/
-    BattleCityTankPacket tankPacket(state.Tanks);
-    this->SendToAllClients(&tankPacket);
+    for(int i = 0; i < state.Tanks.size(); i++)
+    {
+        vector<BattleCityTank> tanks;
+        tanks.push_back(state.Tanks[i]);
+
+        BattleCityTankPacket tankPacket(tanks);
+        this->SendToAllClients(&tankPacket);
+    }
 
     /************************************************/
     /* Send Bullets state                           */
