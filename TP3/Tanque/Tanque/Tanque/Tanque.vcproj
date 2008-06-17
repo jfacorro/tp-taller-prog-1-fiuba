@@ -197,6 +197,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Socket.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 			</File>
@@ -232,6 +236,10 @@
 			</File>
 			<File
 				RelativePath=".\Screen.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Socket.h"
 				>
 			</File>
 			<File

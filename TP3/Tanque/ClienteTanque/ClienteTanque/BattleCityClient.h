@@ -8,13 +8,26 @@ class BattleCityClient
 {
     private:
         Socket socket;
+
+        bool isConnected;
+
+        void UpdateEngine (int tecla);
+
+        void RenderScreen();
         
     public:
         BattleCityClient() {};
 
+        void Connect(char * dir, int socketNumber);
+
         int clientNumber;
 
         BattleCityState state;
+
+        bool IsConnected() { return this->isConnected; };
+
+        void StartPlaying();
+        
 };
 
 #endif

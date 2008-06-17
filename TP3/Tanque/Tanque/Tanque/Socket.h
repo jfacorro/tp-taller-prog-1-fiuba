@@ -28,26 +28,32 @@ enum DataType { INT_TYPE, CHAR_TYPE, FLOAT_TYPE, DOUBLE_TYPE };
 #define RES_ERROR_RECEIVE   9
 #define RES_ERROR_UNKNOWN  -1
 
-class Packet
+class SocketPacket
 {
 	protected:
 		int size;
 		char * data;
 
 	public:
-        Packet()
+        SocketPacket()
         {
             this->size = 0;
             this->data = NULL;
         };
+
+        SocketPacket(int size)
+        {
+            this->size = size;
+            this->data = new char[size];
+        };
         
-        Packet(char * data, int size)
+        SocketPacket(char * data, int size)
 		{
 			this->size = size;
             this->data = data;
 		};
 
-        ~Packet()
+        ~SocketPacket()
         {
             if(this->data != NULL)
             {
@@ -59,7 +65,7 @@ class Packet
 		int GetSize() { return this->size; };
 		void SetSize(int size) { this->size = size; };
 
-		const void * GetData() { return this->data; };
+		char * GetData() { return this->data; };
 };
 
 class Socket
@@ -77,8 +83,8 @@ class Socket
 		int IsActive();
 		int Close();
 
-		int Send(Packet packet);
-		int Receive(Packet packet);
+		int Send(SocketPacket packet);
+		int Receive(SocketPacket * packet);
 
 		char * GetIP();
 		int GetPort();

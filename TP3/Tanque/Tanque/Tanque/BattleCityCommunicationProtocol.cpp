@@ -210,29 +210,26 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
 {
     BattleCityDataPacket * packet = NULL;
 
-    char packetHeader[PACKET_HEADER_SIZE];
-    /// Packet packet(packetHeader, 3);
+    SocketPacket headerPacket(PACKET_HEADER_SIZE);
 
     /// Get Packet Header
-    int bytesRead = recv ( socket.GetConnection().cxSocket , packetHeader, 3 , 0 );
-    /// int result = socket.Receive(packet);
+    /// int bytesRead = recv ( socket.GetConnection().cxSocket , packetHeader, 3 , 0 );
+    int result = socket.Receive(&headerPacket);
 
-    if(bytesRead != -1)
+    if(result == RES_OK)
     {
-        if ( bytesRead >= 3 )
-        {
-            int packetTotalLength = ((int) packetHeader[2] << 8) + packetHeader[1];
+        /// if ( bytesRead >= 3 )
+        /// {
+            char * packetHeader = headerPacket.GetData();
+
+            int packetTotalLength = BattleCityDataPacket::GetSizeFromData(headerPacket.GetData()); ///((int) packetHeader[2] << 8) + packetHeader[1];
+
             if(packetTotalLength > 0)
             {
                 int packetDataLength = packetTotalLength - PACKET_HEADER_SIZE;
 
-                WriteLog("char * packetData = new char[packetTotalLength];\n");
-                char number[10];
-                itoa(packetTotalLength, number, 10);
-                WriteLog(number);
-                WriteLog("\n");
-
                 char * packetData = new char[packetTotalLength];
+
                 if(packetData != 0)
                 {
                     packetData[0] = packetHeader[0];
@@ -260,41 +257,30 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
                     {
                         if ( packetData[0] == TANK)
 		                {
-                            WriteLog("BattleCityTankPacket * tankPacket = new BattleCityTankPacket(packetData, packetTotalLength);\n");
-
                             BattleCityTankPacket * tankPacket = new BattleCityTankPacket(packetData, packetTotalLength);
                             packet = tankPacket;
 		                }
 
                         if ( packetData[0] == BULLET)
 		                {
-                            WriteLog("BattleCityBulletPacket * bulletPacket = new BattleCityBulletPacket(packetData, packetTotalLength);\n");
-
                             BattleCityBulletPacket * bulletPacket = new BattleCityBulletPacket(packetData, packetTotalLength);
                             packet = bulletPacket;
 		                }
 
                         if ( packetData[0] == BOMB)
 		                {
-                            WriteLog("BattleCityBombPacket * bombPacket = new BattleCityBombPacket(packetData, packetTotalLength);\n");
-
                             BattleCityBombPacket * bombPacket = new BattleCityBombPacket(packetData, packetTotalLength);
                             packet = bombPacket;
 		                }
 
                         if ( packetData[0] == WALL)
 		                {
-                            WriteLog("BattleCityWall * wallPacket = new BattleCityWallPacket(packetData, packetTotalLength);\n");
-
                             BattleCityWallPacket * wallPacket = new BattleCityWallPacket(packetData, packetTotalLength);
                             packet = wallPacket;
 		                }
 
-
                         if ( packetData[0] == COMMAND)
 		                {
-                            WriteLog("BattleCityCommandPacket * cmdPacket = new BattleCityCommandPacket(packetData, packetTotalLength);");
-
                             BattleCityCommandPacket * cmdPacket = new BattleCityCommandPacket(packetData, packetTotalLength);
                             packet = cmdPacket;
 		                }
@@ -303,7 +289,7 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
                     delete packetData;
                 }
             }
-        }
+        /// }
     }
 
     return packet;
