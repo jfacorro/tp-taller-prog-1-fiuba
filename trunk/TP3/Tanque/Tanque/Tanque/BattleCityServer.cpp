@@ -218,6 +218,8 @@ void UpdateEngine(BattleCityEngine& e, int tecla)
 
 void RenderScreen(BattleCityState& state)
 {
+	return;
+
 	clrscr();
 	gotoxy((int)state.Tanks[0].Pos.X,(int)state.Tanks[0].Pos.Y); cout << "O";
 	gotoxy((int)state.Tanks[1].Pos.X,(int)state.Tanks[1].Pos.Y); cout << "O";

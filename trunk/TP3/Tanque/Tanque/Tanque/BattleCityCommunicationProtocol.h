@@ -125,22 +125,8 @@ class BattleCityPlayerNumberPacket : public BattleCityDataPacket
     private:
         int playerNumber;
     public:
-        BattleCityPlayerNumberPacket(int playerNumber)
-        { 
-            this->playerNumber = playerNumber;
-            this->type = PLAYERNUMBER; 
-            
-            this->data = new char[PACKET_HEADER_SIZE + sizeof(int)];
-            
-            this->data[0] = PLAYERNUMBER;
-            this->size = PACKET_HEADER_SIZE;
-
-            memcpy(this->data + this->size, (void*)&this->playerNumber, sizeof(int));
-
-            this->size += sizeof(int);
-
-            this->SetSizeInData();
-        };
+        BattleCityPlayerNumberPacket(int playerNumber);
+		BattleCityPlayerNumberPacket(char * data, int size);
 
         int GetPlayerNumber() {return this->playerNumber;};
 };

@@ -4,8 +4,13 @@
 #include "exception"
 
 
-BattleCityWall::BattleCityWall(Rect rect,BattleCityWallTypes type) : rect(rect), type(type)
+BattleCityWall::BattleCityWall(Rect rect,BattleCityWallTypes type) : type(type)
 {
+	this->Pos.X = rect.X;
+	this->Pos.Y = rect.Y;
+	this->Width = rect.Width;
+	this->Height = rect.Height;
+
 	if ( type == WOOD )
 		life = 2;
 	else if ( type == ROCK )
@@ -16,59 +21,35 @@ BattleCityWall::BattleCityWall(Rect rect,BattleCityWallTypes type) : rect(rect),
 		throw exception ( "BattleCityWall::BattleCityWall Invalid wall type" );
 }
 
-
-#define POINT_INSIDE_RECT(x,y,rect) (rect.X <= x && (rect.X + rect.Width) > x && rect.Y <= y && (rect.Y + rect.Height) > y)
-
-
-bool BattleCityWall::Intersects(Point p)
-{
-	return POINT_INSIDE_RECT(p.X,p.Y,rect);
-}
-
-bool BattleCityWall::Intersects(Rect rval)
-{
-	return !( (rval.X >= (rect.X + rect.Width)) ||
-		      ((rval.X + rval.Width) <= rect.X) ||
-			  (rval.Y >= (rect.Y + rect.Height)) ||
-			  ((rval.Y + rval.Height) <= rect.Y) );
-}
-
-
-bool BattleCityWall::Intersects(BattleCityWall &wall)
-{
-	return Intersects ( wall.rect );
-}
-
-
 #define DISTANCE(x1,y1,x2,y2) sqrt((double) ((x1-x2) * (x1-x2) + (y1-y2) * (y1-y2)))
 
-unsigned int BattleCityWall::Distance(Point p)
+unsigned int BattleCityWall::Distance(DoublePoint p)
 {
-	if ( p.X >= rect.X && p.X < (rect.X + rect.Width) )
+	if ( p.X >= this->Pos.X && p.X < (this->Pos.X + this->Width) )
 	{
-		if ( p.Y < rect.Y )
-			return rect.Y - p.Y;
-		else if ( p.Y >= (rect.Y + rect.Height) )
-			return p.Y - (rect.Y + rect.Height - 1);
+		if ( p.Y < this->Pos.Y )
+			return this->Pos.Y - p.Y;
+		else if ( p.Y >= (this->Pos.Y + this->Height) )
+			return p.Y - (this->Pos.Y + this->Height - 1);
 		else 
 			return 0;
 	}
-	else if (p.Y >= rect.Y && p.Y < (rect.Y + rect.Height) )
+	else if (p.Y >= this->Pos.Y && p.Y < (this->Pos.Y + this->Height) )
 	{
-		if ( p.X < rect.X )
-			return rect.X - p.X;
-		else if ( p.X >= (rect.X + rect.Width) )
-			return p.X - (rect.X + rect.Width - 1);
+		if ( p.X < this->Pos.X )
+			return this->Pos.X - p.X;
+		else if ( p.X >= (this->Pos.X + this->Width) )
+			return p.X - (this->Pos.X + this->Width - 1);
 		else
 			return 0;
 	}
 	else
 	{
 		unsigned int v1, v2, v3, v4;
-		v1 = (unsigned int) DISTANCE(p.X,p.Y,rect.X,rect.Y);
-		v2 = (unsigned int) DISTANCE(p.X,p.Y,rect.X+rect.Width,rect.Y);
-		v3 = (unsigned int) DISTANCE(p.X,p.Y,rect.X,rect.Y+rect.Height);
-		v4 = (unsigned int) DISTANCE(p.X,p.Y,rect.X+rect.Width,rect.Y+rect.Height);
+		v1 = (unsigned int) DISTANCE(p.X,p.Y,this->Pos.X,this->Pos.Y);
+		v2 = (unsigned int) DISTANCE(p.X,p.Y,this->Pos.X+this->Width,this->Pos.Y);
+		v3 = (unsigned int) DISTANCE(p.X,p.Y,this->Pos.X,this->Pos.Y+this->Height);
+		v4 = (unsigned int) DISTANCE(p.X,p.Y,this->Pos.X+this->Width,this->Pos.Y+this->Height);
 		
 		unsigned int min = v1;
 		if ( v2 < min ) min = v2;
@@ -96,13 +77,6 @@ int BattleCityWall::Blast()
 
 	return life;
 }
-
-
-Rect BattleCityWall::GetRect()
-{
-	return rect;
-}
-
 
 int BattleCityWall::GetLife()
 {

@@ -21,33 +21,66 @@ typedef struct _DoublePoint
 	double X;
 	double Y;
 }
-	DoublePoint;
+DoublePoint;
 
 
 typedef enum _Direction
 {
 	UP, DOWN, LEFT, RIGHT
 }
-	Direction;	
+Direction;	
 
-
-typedef struct _BattleCityTank
+typedef struct _Rect
 {
-	DoublePoint		Pos;
-	double			Speed;
-	Direction		Direction;
-	unsigned int	Life;
-}	
-	BattleCityTank;
+	int	X;
+	int Y;
+	int Height;
+	int Width;
+}
+	Rect;
 
-
-typedef struct _BattleCityBomb
+class BattleCityCollitionObject
 {
-	unsigned int	Tank;
-	int				TimeToDie;
-	Point			Pos;
-}	
-	BattleCityBomb;
+	protected:
+		int				Width;
+		int				Height;
+	public:
+		BattleCityCollitionObject()
+		{
+			this->Width = 1;
+			this->Height = 1;
+		};
+
+		DoublePoint		Pos;
+
+		bool Intersects ( Point p );
+		bool Intersects ( Rect rect );
+		bool Intersects ( BattleCityCollitionObject& collObject );
+
+		Rect GetRect();
+};
+
+class BattleCityTank : public BattleCityCollitionObject
+{
+	public:
+		BattleCityTank(int size)
+		{
+			this->Width = size;
+			this->Height = size;
+		};
+
+		double			Speed;
+		Direction		Direction;
+		unsigned int	Life;
+};
+
+
+class BattleCityBomb: public BattleCityCollitionObject
+{
+	public:
+		unsigned int	Tank;
+		int				TimeToDie;
+};
 
 
 typedef struct _BattleCityBullet
@@ -58,15 +91,5 @@ typedef struct _BattleCityBullet
 	Direction		Direction;
 }
 	BattleCityBullet;
-
-
-typedef struct _Rect
-{
-	int	X;
-	int Y;
-	int Height;
-	int Width;
-}
-	Rect;
 
 #endif

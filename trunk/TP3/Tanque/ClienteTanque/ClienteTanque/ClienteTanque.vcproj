@@ -187,6 +187,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Tanque\Tanque\BattleCityTypes.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Tanque\Tanque\BattleCityWall.cpp"
 				>
 			</File>

@@ -112,20 +112,19 @@ void BattleCityEngine::HitTank(unsigned int tank)
 	}
 }
 
-bool BattleCityEngine::FindTankCollition(unsigned int tank,int x, int y)
+bool BattleCityEngine::FindTankCollition(unsigned int tank, int x, int y)
 {
+	BattleCityTank nextPosTank(2 * this->parameters.TankRadius);
+	nextPosTank.Pos.X = x;
+	nextPosTank.Pos.Y = y;
+
 	for ( unsigned int i = 0 ; i < tanks.size() ; i++ )
 		if ( i != tank )
-			if ( (int) tanks[i].Pos.X == x && (int) tanks[i].Pos.Y == y )
+			if ( nextPosTank.Intersects(tanks[i]) )
 				return true;
 
-	Rect tankRect;
-	tankRect.X = x - parameters.TankRadius;
-	tankRect.Y = y - parameters.TankRadius;
-	tankRect.Width = 2 * parameters.TankRadius + 1;
-	tankRect.Height = 2 * parameters.TankRadius + 1;
 	for ( unsigned int j = 0 ; j < walls.size() ; j++ )
-		if ( walls[j].Intersects(tankRect) )
+		if ( walls[j].Intersects(nextPosTank) )
 			return true;
 
 	return false;

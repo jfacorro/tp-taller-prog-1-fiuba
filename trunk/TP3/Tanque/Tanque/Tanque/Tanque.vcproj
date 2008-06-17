@@ -189,6 +189,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BattleCityTypes.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\BattleCityWall.cpp"
 				>
 			</File>
