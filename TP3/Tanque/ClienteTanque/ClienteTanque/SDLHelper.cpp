@@ -212,19 +212,14 @@ void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , SD
 //			<< "," << b << "," << h << ") in node " << nodeId << endl;
 		return;
 	}
-	SDL_Rect rect;
-	rect.h = h;
-	rect.w = b;
-	rect.x = x;
-	rect.y = y;
 
-	if ( texture == NULL )
+	for ( int posY = y ; posY < (y + h) ; posY++ )
+		for ( int posX = x ; posX < (x + b) ; posX++ )
 	{
-		SDL_FillRect(this->screen, &rect, SDL_MapRGB(screen->format, color.R, color.G, color.B));
-	}
-	else
-	{
-		SDL_BlitSurface(texture, NULL, this->screen, &rect);
+			if ( texture != NULL )
+				GetPixel ( texture , posX - x , posY - y , &color.R , &color.G , &color.B );
+
+			DrawPixel ( screen , posX , posY , color.R , color.G , color.B );
 	}
 }
 
