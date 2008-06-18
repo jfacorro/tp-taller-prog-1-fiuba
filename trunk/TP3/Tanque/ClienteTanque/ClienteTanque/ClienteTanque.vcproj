@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\02.Personal\Facultad\Taller de Programación I\TPs\TP3\Tanque\ClienteTanque\ClienteTanque\SDL\include&quot;;&quot;C:\02.Personal\Facultad\Taller de Programación I\TPs\TP3\Tanque\Tanque\Tanque&quot;"
+				AdditionalIncludeDirectories="SDL\include;..\..\Tanque\Tanque"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
