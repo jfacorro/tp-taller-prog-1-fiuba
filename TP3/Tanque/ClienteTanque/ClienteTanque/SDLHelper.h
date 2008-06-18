@@ -86,6 +86,7 @@ class SDLHelper
 
 		void Initialize();
 		void InitializeVideo(Configuration config);
+		bool VideoInitialized() { return this->screen != NULL; };
 		void Quit();
 
 		void DrawSquare ( int x , int y , int l , Color color , SDL_Surface* texture , char * nodeId );
