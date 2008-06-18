@@ -19,8 +19,6 @@ void BattleCityClient::StartPlaying()
 	bool salir = false;
 
 	this->sdlHelper.Initialize();
-	Configuration config;
-	this->sdlHelper.InitializeVideo(config);
 
     while ( !salir )
 	{
@@ -59,7 +57,7 @@ void BattleCityClient::StartPlaying()
                     break;
                 case PARAMETERS:
                     parametersPacket = (BattleCityParametersPacket *)packet;
-                    this->parameters = parametersPacket->GetParameters();
+//                    this->parameters = parametersPacket->GetParameters();
                     break;
                 case TANK:
                     tankPacket = (BattleCityTankPacket *)packet;
@@ -98,7 +96,7 @@ void BattleCityClient::StartPlaying()
                         this->state.Tanks.clear();
                         this->state.Bullets.clear();
                         this->state.Bombs.clear();
-                        this->state.Walls.clear();                                                        
+                        this->state.Walls.clear();
                     }
 
                     break;
@@ -127,6 +125,13 @@ void BattleCityClient::UpdateEngine (int tecla)
 
 void BattleCityClient::RenderScreenSDL()
 {
+	if(!this->sdlHelper.VideoInitialized())
+	{
+		Configuration config;
+		config.SetResolucion(SDLHelper::ResolutionByWidth(800));
+		this->sdlHelper.InitializeVideo(config);
+	}
+
 	Color white;
 	white.R = white.G = white.B = 255;
 	Color black;
@@ -151,9 +156,10 @@ void BattleCityClient::RenderScreenSDL()
 
 	this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
     
-    int tankRadius = this->parameters.TankRadius;
-    int bulletRadius = this->parameters.BulletRadius;
-    int bombRadius = this->parameters.BulletRadius;
+    int tankRadius = 5;//this->parameters.TankRadius;
+    int bulletRadius = 2;//this->parameters.BulletRadius;
+    int bombRadius = 4;//this->parameters.BulletRadius;
+	int bombBlastRadius = 10;//this->parameters.BombBlastRadius;
 
 	for(int i = 0; i <state.Tanks.size(); i++)
 	{
@@ -168,7 +174,7 @@ void BattleCityClient::RenderScreenSDL()
 		}
 		else
 		{
-			this->sdlHelper.DrawCircle((int)state.Bombs[i].Pos.X, (int)state.Bombs[i].Pos.Y, this->parameters.BombBlastRadius, red, NULL, NULL);
+			this->sdlHelper.DrawCircle((int)state.Bombs[i].Pos.X, (int)state.Bombs[i].Pos.Y, bombBlastRadius, red, NULL, NULL);
 		}
 	}
 

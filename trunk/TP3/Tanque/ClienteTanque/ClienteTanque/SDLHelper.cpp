@@ -212,7 +212,23 @@ void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , SD
 //			<< "," << b << "," << h << ") in node " << nodeId << endl;
 		return;
 	}
+	
+	SDL_Rect rect;
+	rect.h = h;
+	rect.w = b;
+	rect.x = x;
+	rect.y = y;
 
+	if ( texture == NULL )
+	{
+		SDL_FillRect(this->screen, &rect, SDL_MapRGB(screen->format, color.R, color.G, color.B));
+	}
+	else
+	{
+		SDL_BlitSurface(texture, NULL, this->screen, &rect);
+	}
+
+/*
 	for ( int posY = y ; posY < (y + h) ; posY++ )
 		for ( int posX = x ; posX < (x + b) ; posX++ )
 	{
@@ -221,6 +237,7 @@ void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , SD
 
 			DrawPixel ( screen , posX , posY , color.R , color.G , color.B );
 	}
+*/
 }
 
 #define USE_ANTIALIASING	
@@ -293,7 +310,7 @@ void SDLHelper::DrawSegment ( int x1 , int y1 , int x2 , int y2 , Color color , 
 
 void SDLHelper::Refresh()
 {
-	SDL_UpdateRect(this->screen, 0, 0, this->screen->w, this->screen->h);
+	SDL_Flip(this->screen);
 }
 
 void SDLHelper::WaitForKey()
@@ -305,9 +322,9 @@ void SDLHelper::WaitForKey()
 	while(!keyPress)
 	{
 		SDL_PollEvent( &event );
-        switch( event.type ){
+        switch( event.type )
+		{
             /* Keyboard event */
-            /* Pass the event data onto PrintKeyInfo() */
             case SDL_KEYDOWN:
             case SDL_KEYUP:
 				keyPress = true;
@@ -322,9 +339,9 @@ bool SDLHelper::GetPressedKey(SDL_keysym & key)
 	bool keyPress = false;
 
 	SDL_PollEvent( &event );
-    switch( event.type ){
+    switch( event.type )
+	{
         /* Keyboard event */
-        /* Pass the event data onto PrintKeyInfo() */
         case SDL_KEYDOWN:
 			keyPress = true;
 			key = event.key.keysym;
