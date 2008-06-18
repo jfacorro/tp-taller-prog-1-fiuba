@@ -40,6 +40,7 @@ void BattleCityClient::StartPlaying()
         BattleCityDataPacket * packet = (BattleCityDataPacket *)BattleCityCommunicationProtocol::ReceiveDataPacket(this->socket);
 
         BattleCityPlayerNumberPacket * playerNumberPacket  = NULL;
+        BattleCityParametersPacket * parametersPacket = NULL;
         BattleCityCommandPacket * cmdPacket  = NULL;
         BattleCityTankPacket * tankPacket = NULL;
         BattleCityBulletPacket * bulletPacket = NULL;
@@ -56,9 +57,12 @@ void BattleCityClient::StartPlaying()
                     playerNumberPacket = (BattleCityPlayerNumberPacket *)packet;
                     this->clientNumber = playerNumberPacket->GetPlayerNumber();
                     break;
+                case PARAMETERS:
+                    parametersPacket = (BattleCityParametersPacket *)packet;
+                    this->parameters = parametersPacket->GetParameters();
+                    break;
                 case TANK:
                     tankPacket = (BattleCityTankPacket *)packet;
-                    //client.state.Tanks.clear();
                     for(int i = 0; i < tankPacket->tanks.size(); i++)
                     {
                         this->state.Tanks.push_back(tankPacket->tanks[i]);
@@ -66,7 +70,6 @@ void BattleCityClient::StartPlaying()
                     break;
                 case BULLET:
                     bulletPacket = (BattleCityBulletPacket *)packet;
-                    //client.state.Bullets.clear();
                     for(int i = 0; i < bulletPacket->bullets.size(); i++)
                     {
                         this->state.Bullets.push_back(bulletPacket->bullets[i]);
@@ -74,7 +77,6 @@ void BattleCityClient::StartPlaying()
                     break;
                 case BOMB:
                     bombPacket = (BattleCityBombPacket *)packet;
-                    //client.state.Bombs.clear();
                     for(int i = 0; i < bombPacket->bombs.size(); i++)
                     {
                         this->state.Bombs.push_back(bombPacket->bombs[i]);
@@ -82,7 +84,6 @@ void BattleCityClient::StartPlaying()
                     break;
                 case WALL:
                     wallPacket = (BattleCityWallPacket *)packet;
-                    //client.state.Walls.clear();
                     for(int i = 0; i < wallPacket->walls.size(); i++)
                     {
                         this->state.Walls.push_back(wallPacket->walls[i]);
@@ -149,10 +150,13 @@ void BattleCityClient::RenderScreenSDL()
 	Configuration config = this->sdlHelper.GetConfiguration();
 
 	this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
+    
+    int tankRadius = this->parameters.TankRadius;
+    int bulletRadius = this->parameters.BulletRadius;
+    int bombRadius = this->parameters.BulletRadius;
 
 	for(int i = 0; i <state.Tanks.size(); i++)
 	{
-		int tankRadius = 5;
 		this->sdlHelper.DrawRectangle((int)state.Tanks[i].Pos.X - tankRadius, (int)state.Tanks[i].Pos.Y - tankRadius, tankRadius * 2, tankRadius * 2, black, NULL, NULL);
 	}
 
@@ -160,17 +164,17 @@ void BattleCityClient::RenderScreenSDL()
 	{
 		if ( state.Bombs[i].TimeToDie >= 0 )
 		{
-			this->sdlHelper.DrawRectangle((int)state.Bombs[i].Pos.X - 2.5, (int)state.Bombs[i].Pos.Y - 2.5, 5, 5, blue, NULL, NULL);
+			this->sdlHelper.DrawRectangle((int)state.Bombs[i].Pos.X - bombRadius, (int)state.Bombs[i].Pos.Y - bombRadius, bombRadius * 2, bombRadius * 2, blue, NULL, NULL);
 		}
 		else
 		{
-			this->sdlHelper.DrawCircle((int)state.Bombs[i].Pos.X, (int)state.Bombs[i].Pos.Y, 10, red, NULL, NULL);
+			this->sdlHelper.DrawCircle((int)state.Bombs[i].Pos.X, (int)state.Bombs[i].Pos.Y, this->parameters.BombBlastRadius, red, NULL, NULL);
 		}
 	}
 
 	for ( int i = 0 ; i < state.Bullets.size() ; i++ )
 	{
-		this->sdlHelper.DrawRectangle((int)state.Bullets[i].Pos.X, (int)state.Bullets[i].Pos.Y, 10, 10, green, NULL, NULL);
+		this->sdlHelper.DrawRectangle((int)state.Bullets[i].Pos.X - bulletRadius, (int)state.Bullets[i].Pos.Y - bulletRadius, bulletRadius * 2, bulletRadius * 2, green, NULL, NULL);
 	}
 
 	for ( unsigned int j = 0 ; j < state.Walls.size() ; j++ )

@@ -77,7 +77,7 @@ class BattleCityTank : public BattleCityCollitionObject
 };
 
 
-class BattleCityBomb: public BattleCityCollitionObject
+class BattleCityBomb : public BattleCityCollitionObject
 {
 	public:
 		unsigned int	Tank;
@@ -85,13 +85,20 @@ class BattleCityBomb: public BattleCityCollitionObject
 };
 
 
-typedef struct _BattleCityBullet
+class BattleCityBullet : public BattleCityCollitionObject
 {
-	unsigned int	Tank;
-	int				DistanceToDie;
-	DoublePoint		Pos;
-	Direction		Direction;
-}
-	BattleCityBullet;
+    public:
+		BattleCityBullet(int size)
+		{
+			this->Width = size;
+			this->Height = size;
+		};
+
+	    unsigned int	Tank;
+	    int				DistanceToDie;
+	    Direction		Direction;
+
+        Rect GetRect();
+};
 
 #endif

@@ -1,5 +1,26 @@
 #include "BattleCityEngine.h"
 
+BattleCityClientParameters GetBattleCityClientParameters(BattleCityParameters params)
+{
+    BattleCityClientParameters clientParameters;
+    clientParameters.ArenaHeight = params.ArenaHeight;
+    clientParameters.ArenaWidth = params.ArenaWidth;
+
+    clientParameters.BombBlastDelay = params.BombBlastDelay;
+    clientParameters.BombBlastRadius = params.BombBlastRadius;
+    clientParameters.BombDelay = params.BombDelay;
+
+    clientParameters.BulletRadius = params.BulletRadius;
+    clientParameters.BulletScope = params.BulletScope;
+    clientParameters.BulletSpeed = params.BulletSpeed;
+
+    clientParameters.MaxBombs = params.MaxBombs;
+    clientParameters.MaxBullets = params.MaxBullets;
+    clientParameters.TankRadius = params.TankRadius;
+
+    return clientParameters;
+}
+
 BattleCityEngine::BattleCityEngine(BattleCityParameters parameters) : parameters(parameters)
 {
 	if ( parameters.ArenaWidth == 0 || parameters.ArenaHeight == 0 )
@@ -310,7 +331,7 @@ bool BattleCityEngine::ShootBullet(unsigned int tank)
 	if ( bulletCount >= parameters.MaxBullets )
 		return false;
 
-	BattleCityBullet b;
+    BattleCityBullet b(this->parameters.BulletRadius);
 	b.Tank = tank;
 	b.Pos.X = (int) tanks[tank].Pos.X;
 	b.Pos.Y = (int) tanks[tank].Pos.Y;

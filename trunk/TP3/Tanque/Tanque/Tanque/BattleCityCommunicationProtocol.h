@@ -4,6 +4,7 @@
 #include "winsock2.h"
 #include "BattleCityTypes.h"
 #include "BattleCityWall.h"
+#include "BattleCityEngine.h"
 #include "Socket.h"
 #include <vector>
 #include <list>
@@ -15,7 +16,7 @@ using namespace std;
 
 #define BATTLE_CITY_SOCKET      2488
 
-enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, COMMAND};
+enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, COMMAND, PARAMETERS};
 enum BattleCityCommandType {UPDATESCREEN};
 
 class BattleCityDataPacket : public SocketPacket
@@ -129,6 +130,17 @@ class BattleCityPlayerNumberPacket : public BattleCityDataPacket
 		BattleCityPlayerNumberPacket(char * data, int size);
 
         int GetPlayerNumber() {return this->playerNumber;};
+};
+
+class BattleCityParametersPacket : public BattleCityDataPacket
+{
+    private:
+        BattleCityClientParameters parameters;
+    public:
+        BattleCityParametersPacket(BattleCityClientParameters parameters);
+		BattleCityParametersPacket(char * data, int size);
+
+        BattleCityClientParameters GetParameters() { return this->parameters; };
 };
 
 class BattleCityCommandPacket : public BattleCityDataPacket
