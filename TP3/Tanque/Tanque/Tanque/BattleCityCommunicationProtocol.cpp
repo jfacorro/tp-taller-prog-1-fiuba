@@ -83,7 +83,7 @@ BattleCityBulletPacket::BattleCityBulletPacket(char * data, int size)
     for(int i = 0; i < numberOfBullets; i++)
     {
         offset = offset + sizeof(BattleCityBullet) * i;
-        BattleCityBullet bullet;
+        BattleCityBullet bullet(1);
         memcpy((void*)(&bullet), (void *)(offset), sizeof(BattleCityBullet));
         this->bullets.push_back(bullet);
     }
@@ -232,6 +232,36 @@ BattleCityPlayerNumberPacket::BattleCityPlayerNumberPacket(char * data, int size
 }
 
 /**********************************************************************************************************/
+// BattleCityParametersPacket
+/**********************************************************************************************************/
+BattleCityParametersPacket::BattleCityParametersPacket(BattleCityClientParameters parameters)
+{ 
+    this->parameters = parameters;
+    this->type = PARAMETERS; 
+    
+    this->data = new char[PACKET_HEADER_SIZE + sizeof(BattleCityClientParameters)];
+    
+    this->data[0] = PARAMETERS;
+    this->size = PACKET_HEADER_SIZE;
+
+    memcpy(this->data + this->size, (void*)&this->parameters, sizeof(BattleCityClientParameters));
+
+    this->size += sizeof(BattleCityClientParameters);
+
+    this->SetSizeInData();
+}
+
+BattleCityParametersPacket::BattleCityParametersPacket(char * data, int size)
+{
+	this->type = PARAMETERS;
+	this->size = size;
+
+	int offset = (int)data + PACKET_HEADER_SIZE;
+
+	memcpy((void*)&(this->parameters), (void * )offset, sizeof(BattleCityClientParameters));
+}
+
+/**********************************************************************************************************/
 // BattleCityCommunicationProtocol
 /**********************************************************************************************************/
 void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
@@ -250,7 +280,7 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
         /// {
             char * packetHeader = headerPacket.GetData();
 
-            int packetTotalLength = BattleCityDataPacket::GetSizeFromData(headerPacket.GetData()); ///((int) packetHeader[2] << 8) + packetHeader[1];
+            int packetTotalLength = BattleCityDataPacket::GetSizeFromData(headerPacket.GetData());
 
             if(packetTotalLength > 0)
             {
@@ -317,6 +347,12 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
 		                {
                             BattleCityPlayerNumberPacket * playerPacket = new BattleCityPlayerNumberPacket(packetData, packetTotalLength);
                             packet = playerPacket;
+		                }
+
+                        if ( packetData[0] == PARAMETERS)
+		                {
+                            BattleCityParametersPacket * parametersPacket = new BattleCityParametersPacket(packetData, packetTotalLength);
+                            packet = parametersPacket;
 		                }
                     }
 

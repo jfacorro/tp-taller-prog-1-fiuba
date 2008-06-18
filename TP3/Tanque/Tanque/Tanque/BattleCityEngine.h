@@ -18,8 +18,8 @@ typedef struct _BattleCityParameters
 	unsigned int TankRadius;
 	unsigned int BulletRadius;	
 	
-	vector<BattleCityTank>	Tanks;
-	vector<BattleCityWall>	Walls;
+	vector<BattleCityTank> Tanks;
+	vector<BattleCityWall> Walls;
 
 	unsigned int	MaxBullets;
 	double			BulletSpeed;
@@ -30,8 +30,27 @@ typedef struct _BattleCityParameters
 	unsigned int BombBlastDelay;
 	unsigned int BombBlastRadius;
 } 
-	BattleCityParameters;
+BattleCityParameters;
 
+typedef struct _BattleCityClientParameters
+{
+	unsigned int ArenaWidth;
+	unsigned int ArenaHeight;
+	unsigned int TankRadius;
+	unsigned int BulletRadius;	
+	
+	unsigned int	MaxBullets;
+	double			BulletSpeed;
+	unsigned int	BulletScope;
+
+	unsigned int MaxBombs;
+	unsigned int BombDelay;
+	unsigned int BombBlastDelay;
+	unsigned int BombBlastRadius;
+} 
+BattleCityClientParameters;
+
+BattleCityClientParameters GetBattleCityClientParameters(BattleCityParameters params);
 
 typedef struct _BattleCityState
 {

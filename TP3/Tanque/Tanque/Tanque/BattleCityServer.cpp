@@ -118,6 +118,9 @@ void BattleCityServer::NewConnection(SOCKET s)
         BattleCityPlayerNumberPacket playerPacket(first);
         playerPacket.Send(s);
 
+        BattleCityParametersPacket parametersPacket(GetBattleCityClientParameters(this->parameters));
+        parametersPacket.Send(s);
+
 		BCThreadParam* p = new BCThreadParam();
 		p->socketPos = first;
 		p->ptr = this;
