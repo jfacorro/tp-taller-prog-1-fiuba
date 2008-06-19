@@ -32,7 +32,7 @@ int BattleCityServer::Start()
 
    WSADATA wsaData; /* Utilizada para inicializacion del winsock */
    WORD wVersionReq = MAKEWORD(2, 2); /* Contiene la version */
-   SOCKET sockAceptado; /* Contiene la informacion del socket que acepto */   
+   SOCKET sockAceptado; /* Contiene la informacion del socket que acepto */
    //struct hostent* hostInfo; /* Se utiliza para convertir el nombre del host a su direccion IP */
    struct sockaddr_in sockAddrIn; /* Direccion de socket */
    int tamSockAddrIn; /* Se utiliza para aceptar el mensaje y obtener su info */
