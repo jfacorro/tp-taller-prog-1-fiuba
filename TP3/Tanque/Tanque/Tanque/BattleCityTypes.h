@@ -72,14 +72,18 @@ class BattleCityTank : public BattleCityCollitionObject
 		double			Speed;
 		Direction		Direction;
 		unsigned int	Life;
-
-		Rect GetRect();
 };
 
 
 class BattleCityBomb : public BattleCityCollitionObject
 {
 	public:
+		BattleCityBomb(int size)
+		{
+			this->Width = size;
+			this->Height = size;
+		};
+
 		unsigned int	Tank;
 		int				TimeToDie;
 };
@@ -97,8 +101,6 @@ class BattleCityBullet : public BattleCityCollitionObject
 	    unsigned int	Tank;
 	    int				DistanceToDie;
 	    Direction		Direction;
-
-        Rect GetRect();
 };
 
 #endif

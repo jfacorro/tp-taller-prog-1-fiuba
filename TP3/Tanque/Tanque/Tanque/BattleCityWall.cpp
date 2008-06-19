@@ -88,3 +88,14 @@ BattleCityWallTypes BattleCityWall::GetType()
 {
 	return type;
 }
+
+Rect BattleCityWall::GetRect()
+{
+	Rect rect;
+	rect.Height = this->Height;
+	rect.Width = this->Width;
+	rect.X = this->Pos.X;
+	rect.Y = this->Pos.Y;
+
+	return rect;
+}

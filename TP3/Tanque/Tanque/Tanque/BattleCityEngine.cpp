@@ -9,6 +9,7 @@ BattleCityClientParameters GetBattleCityClientParameters(BattleCityParameters pa
     clientParameters.BombBlastDelay = params.BombBlastDelay;
     clientParameters.BombBlastRadius = params.BombBlastRadius;
     clientParameters.BombDelay = params.BombDelay;
+    clientParameters.BombRadius = params.BombRadius;
 
     clientParameters.BulletRadius = params.BulletRadius;
     clientParameters.BulletScope = params.BulletScope;
@@ -147,6 +148,17 @@ bool BattleCityEngine::FindTankCollition(unsigned int tank, int x, int y)
 	for ( unsigned int j = 0 ; j < walls.size() ; j++ )
 		if ( walls[j].Intersects(nextPosTank) )
 			return true;
+
+    if
+    (
+        nextPosTank.GetRect().X < 0 || 
+        nextPosTank.GetRect().Y < 0 || 
+        nextPosTank.GetRect().X > this->parameters.ArenaWidth - nextPosTank.GetRect().Width || 
+        nextPosTank.GetRect().Y > this->parameters.ArenaHeight - nextPosTank.GetRect().Height
+    )
+    {
+        return true;
+    }
 
 	return false;
 }
@@ -310,7 +322,7 @@ bool BattleCityEngine::DropBomb(unsigned int tank)
 	if ( bombCount >= parameters.MaxBombs || hasBomb )
 		return false;
 
-	BattleCityBomb b;
+	BattleCityBomb b(this->parameters.BombRadius);
 	b.Tank = tank;
 	b.TimeToDie = parameters.BombDelay;
 	DoublePoint p = tanks[tank].Pos;

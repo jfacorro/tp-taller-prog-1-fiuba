@@ -24,6 +24,7 @@ public:
 
 	int	GetLife();
 	BattleCityWallTypes GetType();
+    Rect GetRect();
 
 private:
 	BattleCityWallTypes type;

@@ -11,8 +11,8 @@ Rect BattleCityCollitionObject::GetRect()
 	Rect rect;
 	rect.Height = this->Height;
 	rect.Width = this->Width;
-	rect.X = this->Pos.X;
-	rect.Y = this->Pos.Y;
+	rect.X = this->Pos.X - this->Width / 2;
+	rect.Y = this->Pos.Y - this->Height / 2;;
 
 	return rect;
 };
@@ -37,34 +37,5 @@ bool BattleCityCollitionObject::Intersects(BattleCityCollitionObject &collObject
 {
 	return Intersects(collObject.GetRect());
 }
-
-/**********************************************************************************************************/
-// BattleCityTank
-/**********************************************************************************************************/
-Rect BattleCityTank::GetRect()
-{
-	Rect rect;
-	rect.Height = this->Height;
-	rect.Width = this->Width;
-	rect.X = this->Pos.X - this->Width / 2;
-	rect.Y = this->Pos.Y - this->Height / 2;;
-
-	return rect;
-};
-
-/**********************************************************************************************************/
-// BattleCityBullet
-/**********************************************************************************************************/
-Rect BattleCityBullet::GetRect()
-{
-	Rect rect;
-	rect.Height = this->Height;
-	rect.Width = this->Width;
-	rect.X = this->Pos.X - this->Width / 2;
-	rect.Y = this->Pos.Y - this->Height / 2;;
-
-	return rect;
-};
-
 
 #endif
