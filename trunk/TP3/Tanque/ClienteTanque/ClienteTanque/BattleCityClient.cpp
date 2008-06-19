@@ -135,6 +135,9 @@ void BattleCityClient::RenderScreenSDL()
 	Color green;
 	green.B = green.R = 0;
 	green.G = 255;
+    Color greenLife;
+	greenLife.B = greenLife.R = 100;
+	greenLife.G = 255;
 	Color greyIron;
 	greyIron.B = greyIron.R = greyIron.G = 200;
 	Color greyWood;
@@ -152,6 +155,9 @@ void BattleCityClient::RenderScreenSDL()
 	{
         Rect tankRect = state.Tanks[i].GetRect();
 		this->sdlHelper.DrawRectangle(tankRect.X, tankRect.Y, tankRect.Width, tankRect.Height, black, NULL, NULL);
+
+        this->sdlHelper.DrawRectangle(this->parameters.ArenaWidth - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
+
 	}
 
 	for(int i = 0; i <state.Bombs.size(); i++)
