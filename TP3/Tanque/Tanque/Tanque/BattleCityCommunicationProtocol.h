@@ -17,7 +17,7 @@ using namespace std;
 #define BATTLE_CITY_SOCKET      2488
 
 enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, COMMAND, PARAMETERS};
-enum BattleCityCommandType {UPDATESCREEN};
+enum BattleCityCommandType {UPDATESCREEN, KEYPRESSED};
 
 /*****************************************************************************************/
 // BattleCityDataPacket
@@ -171,12 +171,22 @@ class BattleCityCommandPacket : public BattleCityDataPacket
 {
     private:
         BattleCityCommandType cmdType;
+        int auxValue;
+        int clientNumber;
+
+        void CstorHelper();
         
     public:
         BattleCityCommandPacket(BattleCityCommandType cmdType);
+        BattleCityCommandPacket(BattleCityCommandType cmdType, int clientNumber, int auxValue);
         BattleCityCommandPacket(char * data, int size);
 
         BattleCityCommandType GetCommandType() {return this->cmdType; };
+
+        bool FromClient() { return (this->clientNumber != -1); };
+
+        int GetClientNumber() { return this->clientNumber; };
+        int GetAuxValue() { return this->auxValue; };
 };
 
 /*****************************************************************************************/

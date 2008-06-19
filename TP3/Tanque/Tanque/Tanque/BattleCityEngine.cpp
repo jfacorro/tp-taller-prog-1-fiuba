@@ -172,10 +172,6 @@ void BattleCityEngine::UpdateTankPos(unsigned int tank,double nextX,double nextY
 		tanks[tank].Pos.X = nextX;
 		tanks[tank].Pos.Y = nextY;
 		
-		if ( tanks[tank].Pos.X <= 0 ) tanks[tank].Pos.X = 0;
-		if ( tanks[tank].Pos.X >= parameters.ArenaWidth) tanks[tank].Pos.X = parameters.ArenaWidth;
-		if ( tanks[tank].Pos.Y <= 0 ) tanks[tank].Pos.Y = 0;
-		if ( tanks[tank].Pos.Y >= parameters.ArenaHeight) tanks[tank].Pos.Y = parameters.ArenaHeight;
 		dirty = true;		
 	}
 }

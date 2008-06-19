@@ -174,21 +174,35 @@ BattleCityWallPacket::BattleCityWallPacket(char * data, int size)
 /**********************************************************************************************************/
 // BattleCityCommandPacket
 /**********************************************************************************************************/
-BattleCityCommandPacket::BattleCityCommandPacket(BattleCityCommandType cmdType)
-{ 
-    this->cmdType = cmdType;
+void BattleCityCommandPacket::CstorHelper()
+{
     this->type = COMMAND; 
+
+    int fullSize = PACKET_HEADER_SIZE + sizeof(BattleCityCommandType) + 2 * sizeof(int);
     
-    this->data = new char[PACKET_HEADER_SIZE + sizeof(BattleCityCommandType)];
+    this->data = new char[fullSize];
     
     this->data[0] = COMMAND;
     this->size = PACKET_HEADER_SIZE;
 
     memcpy(this->data + this->size, (void*)&this->cmdType, sizeof(BattleCityCommandType));
-
     this->size += sizeof(BattleCityCommandType);
+    memcpy(this->data + this->size, (void*)&this->clientNumber, sizeof(int));
+    this->size += sizeof(int);
+    memcpy(this->data + this->size, (void*)&this->auxValue, sizeof(int));
+    this->size += sizeof(int);
 
     this->SetSizeInData();
+}
+
+BattleCityCommandPacket::BattleCityCommandPacket(BattleCityCommandType cmdType, int clientNumber, int auxValue) : clientNumber(clientNumber), cmdType (cmdType), auxValue(auxValue)
+{ 
+    this->CstorHelper();
+};
+
+BattleCityCommandPacket::BattleCityCommandPacket(BattleCityCommandType cmdType) : cmdType (cmdType)
+{ 
+    this->CstorHelper();
 };
 
 BattleCityCommandPacket::BattleCityCommandPacket(char * data, int size)
@@ -199,6 +213,11 @@ BattleCityCommandPacket::BattleCityCommandPacket(char * data, int size)
     int offset = (int)data + PACKET_HEADER_SIZE;
 
     memcpy((void*)&(this->cmdType), (void * )offset, sizeof(BattleCityCommandType));
+    offset += sizeof(BattleCityCommandType);
+    memcpy((void*)&(this->clientNumber), (void * )offset, sizeof(int));
+    offset += sizeof(int);
+    memcpy((void*)&(this->auxValue), (void * )offset, sizeof(int));
+    offset += sizeof(int);
 }
 
 /**********************************************************************************************************/

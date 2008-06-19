@@ -109,18 +109,8 @@ void BattleCityClient::StartPlaying()
 
 void BattleCityClient::UpdateEngine (int tecla)
 {
-    SocketPacket keyPacket(6);
-
-    char * buffer = keyPacket.GetData();
-
-	buffer[0] = 2;
-	buffer[1] = 0;
-	buffer[2] = 6;
-	buffer[3] = 0;
-	buffer[4] = (tecla & 0xFF);
-	buffer[5] = (tecla >> 8);
-
-	send(this->socket.GetConnection().cxSocket, (char*)buffer, 6, 0);
+    BattleCityCommandPacket keyPacket(KEYPRESSED, this->clientNumber, tecla);
+    keyPacket.Send(this->socket.GetConnection().cxSocket);
 }
 
 void BattleCityClient::RenderScreenSDL()
