@@ -19,6 +19,9 @@ using namespace std;
 enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, COMMAND, PARAMETERS};
 enum BattleCityCommandType {UPDATESCREEN};
 
+/*****************************************************************************************/
+// BattleCityDataPacket
+/*****************************************************************************************/
 class BattleCityDataPacket : public SocketPacket
 { 
     protected:
@@ -57,6 +60,9 @@ class BattleCityDataPacket : public SocketPacket
         BattleCityPacketType GetType() { return this->type; };
 };
 
+/*****************************************************************************************/
+// BattleCityTankPacket
+/*****************************************************************************************/
 class BattleCityTankPacket : public BattleCityDataPacket
 {
     public:
@@ -73,6 +79,9 @@ class BattleCityTankPacket : public BattleCityDataPacket
         vector<BattleCityTank> tanks;
 };
 
+/*****************************************************************************************/
+// BattleCityBulletPacket
+/*****************************************************************************************/
 class BattleCityBulletPacket : public BattleCityDataPacket
 {
     public:
@@ -89,6 +98,9 @@ class BattleCityBulletPacket : public BattleCityDataPacket
         vector<BattleCityBullet> bullets;
 };
 
+/*****************************************************************************************/
+// BattleCityBombPacket
+/*****************************************************************************************/
 class BattleCityBombPacket : public BattleCityDataPacket
 {
     public:
@@ -105,6 +117,9 @@ class BattleCityBombPacket : public BattleCityDataPacket
         vector<BattleCityBomb> bombs;
 };
 
+/*****************************************************************************************/
+// BattleCityWallPacket
+/*****************************************************************************************/
 class BattleCityWallPacket : public BattleCityDataPacket
 {
     public:
@@ -121,6 +136,9 @@ class BattleCityWallPacket : public BattleCityDataPacket
         vector<BattleCityWall> walls;
 };
 
+/*****************************************************************************************/
+// BattleCityPlayerNumberPacket
+/*****************************************************************************************/
 class BattleCityPlayerNumberPacket : public BattleCityDataPacket
 {
     private:
@@ -132,6 +150,9 @@ class BattleCityPlayerNumberPacket : public BattleCityDataPacket
         int GetPlayerNumber() {return this->playerNumber;};
 };
 
+/*****************************************************************************************/
+// BattleCityParametersPacket
+/*****************************************************************************************/
 class BattleCityParametersPacket : public BattleCityDataPacket
 {
     private:
@@ -143,6 +164,9 @@ class BattleCityParametersPacket : public BattleCityDataPacket
         BattleCityClientParameters GetParameters() { return this->parameters; };
 };
 
+/*****************************************************************************************/
+// BattleCityCommandPacket
+/*****************************************************************************************/
 class BattleCityCommandPacket : public BattleCityDataPacket
 {
     private:
@@ -155,6 +179,9 @@ class BattleCityCommandPacket : public BattleCityDataPacket
         BattleCityCommandType GetCommandType() {return this->cmdType; };
 };
 
+/*****************************************************************************************/
+// BattleCityCommunicationProtocol
+/*****************************************************************************************/
 class BattleCityCommunicationProtocol
 {
     private:
@@ -163,6 +190,7 @@ class BattleCityCommunicationProtocol
 
     public:
         static void * ReceiveDataPacket(Socket socket);
+        static void * ReceiveDataPacket(SOCKET socket);
 };
 
 #endif

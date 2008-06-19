@@ -78,6 +78,11 @@ class Socket
 	public:
 		Socket() {};
 
+        Socket(SOCKET sock) 
+        {
+            this->connection.cxSocket = sock;
+        };
+
 		int Listen(int portNumber);
 		int Connect(const char * address, int portNumber);
 		int IsActive();
