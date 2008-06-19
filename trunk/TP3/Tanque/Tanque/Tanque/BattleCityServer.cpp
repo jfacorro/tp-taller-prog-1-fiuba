@@ -2,6 +2,7 @@
 #define BattleCityServer_cpp
 
 #include "BattleCityServer.h"
+#include "sdl_keysym.h"
 #include "Screen.h"
 #include "conio.h"
 #include "iostream"
@@ -136,19 +137,19 @@ void BattleCityServer::Stop()
 		closesocket(sockets[i]);
 }
 
-void BattleCityServer::OnKey(int tank,int tecla)
+void BattleCityServer::OnKey(int tank, int tecla)
 {
-	if ( tecla == 'a' )
-		engine->TurnTank(tank,LEFT);
-	else if ( tecla == 's' )
-		engine->TurnTank(tank,DOWN);
-	else if ( tecla == 'd' )
-		engine->TurnTank(tank,RIGHT);
-	else if ( tecla == 'w' )
+	if ( tecla == SDLK_LEFT )
+		engine->TurnTank(tank, LEFT);
+	else if ( tecla == SDLK_DOWN )
+		engine->TurnTank(tank, DOWN);
+	else if ( tecla == SDLK_RIGHT )
+		engine->TurnTank(tank, RIGHT);
+	else if ( tecla == SDLK_UP )
 		engine->TurnTank(tank,UP);
-	else if ( tecla == 'q' )
+	else if ( tecla == SDLK_c )
 		engine->DropBomb(tank);
-	else if ( tecla == 'e' )
+	else if ( tecla == SDLK_b )
 		engine->ShootBullet(tank);
 }
 
@@ -157,32 +158,24 @@ DWORD BattleCityServer::ThreadProc ( LPVOID param )
 	BCThreadParam* p = (BCThreadParam*) param;
 	bool salir = false;
 
-	char buffer[4096];
-	int offset = 0;
-	while ( !salir && !p->ptr->salir )
-	{
-		int br = recv(p->ptr->sockets[p->socketPos],buffer+offset,4096-offset,0);
-		if ( br == -1 )
-			salir = true;
-		else
-		{
-			offset += br;
-			if ( offset >= 4 )
-			{
-				int len = ((int) buffer[3] << 8) + buffer[2];
-				if ( offset >= len )
-				{
-					offset -= len;
-					if ( buffer[0] == 2 && buffer[1] == 0 )
-					{
-						WaitForSingleObject ( p->ptr->mutex , INFINITE );
-						p->ptr->OnKey ( p->socketPos , ((int) buffer[5] << 8) + buffer[4] );
-						ReleaseMutex ( p->ptr->mutex );
-					}
-				}
-			}
-		}
-	}		
+    while ( !salir && !p->ptr->salir )
+    {
+        BattleCityDataPacket * dataPacket = (BattleCityDataPacket *) BattleCityCommunicationProtocol::ReceiveDataPacket(p->ptr->sockets[p->socketPos]);
+        BattleCityCommandPacket * cmdPacket = NULL;
+
+        if(dataPacket != NULL && dataPacket->GetType() == COMMAND)
+        {
+            cmdPacket = (BattleCityCommandPacket *) dataPacket;
+            if(cmdPacket->GetCommandType() == KEYPRESSED)
+            {
+                WaitForSingleObject ( p->ptr->mutex , INFINITE );
+                p->ptr->OnKey ( cmdPacket->GetClientNumber(), cmdPacket->GetAuxValue());
+                ReleaseMutex ( p->ptr->mutex );
+            }
+        }
+
+        delete dataPacket;
+    }
 
 	p->ptr->sockets[p->socketPos] = SOCKET_ERROR;
 	delete p;
