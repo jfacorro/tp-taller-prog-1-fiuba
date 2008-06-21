@@ -179,10 +179,18 @@ void BattleCityEngine::UpdateTankPos(unsigned int tank,double nextX,double nextY
 bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,double currentY,double nextX,double nextY)
 {
 	bool hit = false;
+    Point nextPoint, currentPoint;
+    nextPoint.X = nextX;
+    nextPoint.Y = nextY;
+    currentPoint.X = currentX;
+    currentPoint.Y = currentY;
 	for ( unsigned int i = 0 ; i < tanks.size() && !hit ; i++ )
-		if ( bullets[bullet].Tank != i &&
-			 (((int) tanks[i].Pos.X == (int) nextX && (int) tanks[i].Pos.Y == (int) nextY) ||
-			  ((int) tanks[i].Pos.X == (int) currentX && (int) tanks[i].Pos.Y == (int) currentY)) )
+        if 
+        (
+            // bullets[bullet].Tank != i && 
+            tanks[i].Intersects(nextPoint) && 
+            tanks[i].Intersects(currentPoint) 
+        )
 		{
 			HitTank(i);
 			hit = true;
@@ -345,6 +353,24 @@ bool BattleCityEngine::ShootBullet(unsigned int tank)
 	b.Pos.Y = (int) tanks[tank].Pos.Y;
 	b.DistanceToDie = parameters.BulletScope;
 	b.Direction = tanks[tank].Direction;
-	bullets.push_back(b);
-	return true;
+
+    switch(b.Direction)
+    {
+        case LEFT:
+            b.Pos.X -= this->parameters.TankRadius + 1;
+            break;
+        case RIGHT:
+            b.Pos.X += this->parameters.TankRadius + 1;
+            break;
+        case UP:
+            b.Pos.Y -= this->parameters.TankRadius + 1;
+            break;
+        case DOWN:
+            b.Pos.Y += this->parameters.TankRadius + 1;
+            break;
+    }
+
+    bullets.push_back(b);
+
+    return true;
 }

@@ -276,8 +276,6 @@ void RenderScreen(BattleCityState& state)
 	for ( unsigned int i = 0 ; i < state.Tanks[1].Life ; i++ ) printf ( "x" );
 }
 
-
-
 DWORD BattleCityServer::MainThread(LPVOID param)
 {
 	BattleCityServer* p = (BattleCityServer*) param;
@@ -334,14 +332,6 @@ void BattleCityServer::UpdateClients(BattleCityState state)
     /************************************************/
     for(int tankIndex = 0; tankIndex < state.Tanks.size(); tankIndex++)
     {
-        /*
-        vector<BattleCityTank> tanks;
-        tanks.push_back(state.Tanks[tankIndex]);
-
-        BattleCityTankPacket tankPacket(tanks);
-        this->SendToClient(&tankPacket, sockets[tankIndex]);
-        */
-
         Rect quadrant;
 
         for(int i = 0; i < state.Tanks.size(); i++)

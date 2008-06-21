@@ -115,7 +115,10 @@ void BattleCityClient::UpdateEngine (int tecla)
 
 void BattleCityClient::RenderScreenSDL()
 {
-	if(!this->sdlHelper.VideoInitialized())
+	/************************************************/
+    /// Check if video is initialized
+    /************************************************/
+    if(!this->sdlHelper.VideoInitialized())
 	{
 		Configuration config;
 		config.SetResolucion(SDLHelper::ResolutionByWidth(this->parameters.ArenaWidth / 2));
@@ -163,18 +166,24 @@ void BattleCityClient::RenderScreenSDL()
         }
     }
 
-	for(int i = 0; i <state.Tanks.size(); i++)
+	/************************************************/
+    /// Draw Tanks
+    /************************************************/
+    for(int i = 0; i <state.Tanks.size(); i++)
 	{
         if(state.Tanks[i].Intersects(quadrant))
         {
             Rect tankRect = state.Tanks[i].GetRect();
 		    this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, NULL, NULL);
         }
-        
+        /// Draw all lifes
         this->sdlHelper.DrawRectangle(config.GetResolucion().w - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
 	}
 
-	for(int i = 0; i <state.Bombs.size(); i++)
+	/************************************************/
+    /// Draw Bombs
+    /************************************************/
+    for(int i = 0; i <state.Bombs.size(); i++)
 	{
 		if ( state.Bombs[i].TimeToDie >= 0 )
 		{
@@ -187,13 +196,19 @@ void BattleCityClient::RenderScreenSDL()
 		}
 	}
 
-	for ( int i = 0 ; i < state.Bullets.size() ; i++ )
+	/************************************************/
+    /// Draw Bullets
+    /************************************************/
+    for ( int i = 0 ; i < state.Bullets.size() ; i++ )
 	{
         Rect bulletRect = state.Bullets[i].GetRect();
 		this->sdlHelper.DrawRectangle(bulletRect.X - quadrant.X, bulletRect.Y - quadrant.Y, bulletRect.Width, bulletRect.Height, green, NULL, NULL);
 	}
 
-	for ( unsigned int j = 0 ; j < state.Walls.size() ; j++ )
+	/************************************************/
+    /// Draw Walls
+    /************************************************/
+    for ( unsigned int j = 0 ; j < state.Walls.size() ; j++ )
 	{
 		Rect rect = state.Walls[j].GetRect();
 		BattleCityWallTypes t = state.Walls[j].GetType();
