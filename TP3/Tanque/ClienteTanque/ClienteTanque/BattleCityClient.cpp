@@ -118,9 +118,11 @@ void BattleCityClient::RenderScreenSDL()
 	if(!this->sdlHelper.VideoInitialized())
 	{
 		Configuration config;
-		config.SetResolucion(SDLHelper::ResolutionByWidth(this->parameters.ArenaWidth));
+		config.SetResolucion(SDLHelper::ResolutionByWidth(this->parameters.ArenaWidth / 2));
 		this->sdlHelper.InitializeVideo(config);
 	}
+
+    BattleCityScenario scenario(this->parameters.ArenaWidth, this->parameters.ArenaHeight); 
 
 	Color white;
 	white.R = white.G = white.B = 255;
@@ -148,16 +150,28 @@ void BattleCityClient::RenderScreenSDL()
 	Configuration config = this->sdlHelper.GetConfiguration();
 
 	this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
-    
+
 	int bombBlastRadius = this->parameters.BombBlastRadius;
+
+    Rect quadrant;
+
+    for(int i = 0; i <state.Tanks.size(); i++)    
+    {
+        if(this->clientNumber == i)
+        {
+            quadrant = scenario.GetQuadrant(state.Tanks[i].Pos);
+        }
+    }
 
 	for(int i = 0; i <state.Tanks.size(); i++)
 	{
-        Rect tankRect = state.Tanks[i].GetRect();
-		this->sdlHelper.DrawRectangle(tankRect.X, tankRect.Y, tankRect.Width, tankRect.Height, black, NULL, NULL);
-
-        this->sdlHelper.DrawRectangle(this->parameters.ArenaWidth - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
-
+        if(state.Tanks[i].Intersects(quadrant))
+        {
+            Rect tankRect = state.Tanks[i].GetRect();
+		    this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, NULL, NULL);
+        }
+        
+        this->sdlHelper.DrawRectangle(config.GetResolucion().w - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
 	}
 
 	for(int i = 0; i <state.Bombs.size(); i++)
@@ -165,18 +179,18 @@ void BattleCityClient::RenderScreenSDL()
 		if ( state.Bombs[i].TimeToDie >= 0 )
 		{
             Rect bombRect = state.Bombs[i].GetRect();
-			this->sdlHelper.DrawRectangle(bombRect.X, bombRect.Y, bombRect.Width, bombRect.Height, blue, NULL, NULL);
+			this->sdlHelper.DrawRectangle(bombRect.X - quadrant.X, bombRect.Y - quadrant.Y, bombRect.Width, bombRect.Height, blue, NULL, NULL);
         }
 		else
 		{
-			this->sdlHelper.DrawCircle((int)state.Bombs[i].Pos.X, (int)state.Bombs[i].Pos.Y, bombBlastRadius, red, NULL, NULL);
+			this->sdlHelper.DrawCircle((int)state.Bombs[i].Pos.X - quadrant.X, (int)state.Bombs[i].Pos.Y - quadrant.Y, bombBlastRadius, red, NULL, NULL);
 		}
 	}
 
 	for ( int i = 0 ; i < state.Bullets.size() ; i++ )
 	{
         Rect bulletRect = state.Bullets[i].GetRect();
-		this->sdlHelper.DrawRectangle(bulletRect.X, bulletRect.Y, bulletRect.Width, bulletRect.Height, green, NULL, NULL);
+		this->sdlHelper.DrawRectangle(bulletRect.X - quadrant.X, bulletRect.Y - quadrant.Y, bulletRect.Width, bulletRect.Height, green, NULL, NULL);
 	}
 
 	for ( unsigned int j = 0 ; j < state.Walls.size() ; j++ )
@@ -198,7 +212,7 @@ void BattleCityClient::RenderScreenSDL()
 				break;
 		}
 		
-		this->sdlHelper.DrawRectangle(rect.X, rect.Y, rect.Width, rect.Height, wallColor, NULL, NULL);
+		this->sdlHelper.DrawRectangle(rect.X - quadrant.X, rect.Y - quadrant.Y, rect.Width, rect.Height, wallColor, NULL, NULL);
 	}
 
 	this->sdlHelper.Refresh();

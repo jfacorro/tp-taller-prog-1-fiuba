@@ -39,6 +39,7 @@ private:
 	void UpdateClients ( BattleCityState state );
     void SendToAllClients ( char * buffer, int size );
     void SendToAllClients(BattleCityDataPacket * packet);
+    void BattleCityServer::SendToClient(BattleCityDataPacket * packet, SOCKET sock);
 
 	void OnKey ( int tank , int key );
 

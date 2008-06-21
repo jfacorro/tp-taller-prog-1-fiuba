@@ -44,6 +44,8 @@ void SDLHelper::Initialize()
 
 void SDLHelper::InitializeVideo(Configuration config)
 {
+    this->configuration = config;
+
 	screen = SDL_SetVideoMode(config.GetResolucion().w, config.GetResolucion().h, 32, SDL_SWSURFACE);
 
     if ( screen == NULL ) 
