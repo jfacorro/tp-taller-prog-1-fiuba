@@ -57,6 +57,8 @@ class BattleCityCollitionObject
 		bool Intersects ( Rect rect );
 		bool Intersects ( BattleCityCollitionObject& collObject );
 
+        static bool Intersects ( Rect rect, Point p );
+
 		virtual Rect GetRect();
 };
 
@@ -101,6 +103,19 @@ class BattleCityBullet : public BattleCityCollitionObject
 	    unsigned int	Tank;
 	    int				DistanceToDie;
 	    Direction		Direction;
+};
+
+class BattleCityScenario
+{
+    private:
+        Rect quadrants[4];
+        int width, height;
+
+    public:
+        BattleCityScenario(int width, int height);
+
+        Rect GetQuadrant(DoublePoint point);
+        Rect GetQuadrant(Point point);
 };
 
 #endif

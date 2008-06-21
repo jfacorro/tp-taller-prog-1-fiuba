@@ -19,9 +19,14 @@ Rect BattleCityCollitionObject::GetRect()
 
 #define POINT_INSIDE_RECT(x,y,rect) (rect.X <= x && (rect.X + rect.Width) > x && rect.Y <= y && (rect.Y + rect.Height) > y)
 
+bool BattleCityCollitionObject::Intersects ( Rect rect, Point p )
+{
+    return POINT_INSIDE_RECT(p.X, p.Y, rect);
+}
+
 bool BattleCityCollitionObject::Intersects(Point p)
 {
-	return POINT_INSIDE_RECT(p.X,p.Y,this->GetRect());
+    return BattleCityCollitionObject::Intersects(this->GetRect(), p);
 }
 
 bool BattleCityCollitionObject::Intersects(Rect rval)
@@ -36,6 +41,60 @@ bool BattleCityCollitionObject::Intersects(Rect rval)
 bool BattleCityCollitionObject::Intersects(BattleCityCollitionObject &collObject)
 {
 	return Intersects(collObject.GetRect());
+}
+
+
+/**********************************************************************************************************/
+// BattleCityScenario
+/**********************************************************************************************************/
+BattleCityScenario::BattleCityScenario(int width, int height) : width(width), height(height)
+{
+    int quadrantHeight = height / 2;
+    int quadrantWidth = width / 2;
+    
+    this->quadrants[0].X = 0;
+    this->quadrants[0].Y = 0;
+    this->quadrants[0].Width = quadrantWidth;
+    this->quadrants[0].Height = quadrantHeight;
+
+    this->quadrants[1].X = quadrantWidth;
+    this->quadrants[1].Y = 0;
+    this->quadrants[1].Width = quadrantWidth;
+    this->quadrants[1].Height = quadrantHeight;
+
+    this->quadrants[2].X = 0;
+    this->quadrants[2].Y = quadrantHeight;
+    this->quadrants[2].Width = quadrantWidth;
+    this->quadrants[2].Height = quadrantHeight;
+
+    this->quadrants[3].X = quadrantWidth;
+    this->quadrants[3].Y = quadrantHeight;
+    this->quadrants[3].Width = quadrantWidth;
+    this->quadrants[3].Height = quadrantHeight;
+}
+
+Rect BattleCityScenario::GetQuadrant(DoublePoint point)
+{
+    Point p;
+    p.X = (int)point.X;
+    p.Y = (int)point.Y;
+
+    return this->GetQuadrant(p);
+}
+
+Rect BattleCityScenario::GetQuadrant(Point point)
+{
+    Rect quadrant;
+
+    for(int i = 0; i < 4; i++)
+    {
+        if(BattleCityCollitionObject::Intersects(this->quadrants[i], point))
+        {
+            quadrant = this->quadrants[i];
+        }
+    }
+
+    return quadrant;
 }
 
 #endif

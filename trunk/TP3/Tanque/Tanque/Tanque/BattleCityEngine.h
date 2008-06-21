@@ -56,7 +56,7 @@ BattleCityClientParameters GetBattleCityClientParameters(BattleCityParameters pa
 
 typedef struct _BattleCityState
 {
-	vector<BattleCityTank>		Tanks;
+    vector<BattleCityTank>		Tanks;
 	vector<BattleCityBomb>		Bombs;
 	vector<BattleCityBullet>	Bullets;
 	vector<BattleCityWall>		Walls;

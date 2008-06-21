@@ -25,7 +25,6 @@ BattleCityServer::~BattleCityServer()
 	CloseHandle ( mutex );
 }
 
-
 int BattleCityServer::Start()
 {
 	CreateThread ( NULL , 0 , MainThread , (void*) this , 0 , NULL );
@@ -182,8 +181,6 @@ DWORD BattleCityServer::ThreadProc ( LPVOID param )
 	return 0;
 }
 
-
-
 void UpdateEngine(BattleCityEngine& e, int tecla)
 {
 	if ( tecla == 'a' )
@@ -330,54 +327,86 @@ DWORD BattleCityServer::MainThread(LPVOID param)
 
 void BattleCityServer::UpdateClients(BattleCityState state)
 {
+    BattleCityScenario scenario(this->parameters.ArenaWidth, this->parameters.ArenaHeight); 
+
     /************************************************/
     /* Send Tanks state                           */
     /************************************************/
-    for(int i = 0; i < state.Tanks.size(); i++)
+    for(int tankIndex = 0; tankIndex < state.Tanks.size(); tankIndex++)
     {
+        /*
         vector<BattleCityTank> tanks;
-        tanks.push_back(state.Tanks[i]);
+        tanks.push_back(state.Tanks[tankIndex]);
 
         BattleCityTankPacket tankPacket(tanks);
-        this->SendToAllClients(&tankPacket);
+        this->SendToClient(&tankPacket, sockets[tankIndex]);
+        */
+
+        Rect quadrant;
+
+        for(int i = 0; i < state.Tanks.size(); i++)
+        {
+            /// Send all tanks even if they are not in the current
+            /// client's quadrant, so the life of all other tanks is shown
+            /// in every tank's screen.
+            vector<BattleCityTank> tanks;
+            tanks.push_back(state.Tanks[i]);
+
+            BattleCityTankPacket tankPacket(tanks);
+            this->SendToClient(&tankPacket, sockets[tankIndex]);
+
+            if(i == tankIndex)
+            {
+                quadrant = scenario.GetQuadrant(state.Tanks[tankIndex].Pos);
+            }
+        }
+
+        /************************************************/
+        /* Send Bullets state                           */
+        /************************************************/
+        for(int i = 0; i < state.Bullets.size(); i++)
+        {
+            if(state.Bullets[i].Intersects(quadrant))
+            {
+                vector<BattleCityBullet> bullets;
+                bullets.push_back(state.Bullets[i]);
+                BattleCityBulletPacket bulletPacket(bullets);
+                this->SendToClient(&bulletPacket, sockets[tankIndex]);
+            }
+        }
+
+        /************************************************/
+        /* Send Bombs state                           */
+        /************************************************/
+        for(int i = 0; i < state.Bombs.size(); i++)
+        {
+            if(state.Bombs[i].Intersects(quadrant))
+            {
+                vector<BattleCityBomb> bombs;
+                bombs.push_back(state.Bombs[i]);
+
+                BattleCityBombPacket bombPacket(bombs);
+                this->SendToClient(&bombPacket, sockets[tankIndex]);
+            }
+        }
+
+        /************************************************/
+        /* Send Walls state                           */
+        /************************************************/
+        for(int i = 0; i < state.Walls.size(); i++)
+        {
+            if(state.Walls[i].Intersects(quadrant))
+            {
+                vector<BattleCityWall> walls;
+                walls.push_back(state.Walls[i]);
+                BattleCityWallPacket wallPacket(walls);
+                this->SendToClient(&wallPacket, sockets[tankIndex]);
+            }
+        }
     }
 
     /************************************************/
-    /* Send Bullets state                           */
-    /************************************************/
-    for(int i = 0; i < state.Bullets.size(); i++)
-    {
-        vector<BattleCityBullet> bullets;
-        bullets.push_back(state.Bullets[i]);
-        BattleCityBulletPacket bulletPacket(bullets);
-        this->SendToAllClients(&bulletPacket);
-    }
-
-    /************************************************/
-    /* Send Bombs state                           */
-    /************************************************/
-    for(int i = 0; i < state.Bombs.size(); i++)
-    {
-        vector<BattleCityBomb> bombs;
-        bombs.push_back(state.Bombs[i]);
-
-        BattleCityBombPacket bombPacket(bombs);
-        this->SendToAllClients(&bombPacket);
-    }
-
-    /************************************************/
-    /* Send Walls state                           */
-    /************************************************/
-    for(int i = 0; i < state.Walls.size(); i++)
-    {
-        vector<BattleCityWall> walls;
-        walls.push_back(state.Walls[i]);
-        BattleCityWallPacket wallPacket(walls);
-        this->SendToAllClients(&wallPacket);
-    }
-
-    /************************************************/
-    /* Send Walls state                           */
+    /* Update screen                                */
     /************************************************/
     BattleCityCommandPacket cmdPacket(UPDATESCREEN);
     this->SendToAllClients(&cmdPacket);
@@ -387,8 +416,15 @@ void BattleCityServer::SendToAllClients(BattleCityDataPacket * packet)
 {
 	for ( int i = 0 ; i < BATTLE_CITY_MAX_PLAYERS ; i++ )
     {
-		if ( sockets[i] != SOCKET_ERROR )
-            packet->Send(sockets[i]);
+        this->SendToClient(packet, sockets[i]);
+    }
+}
+
+void BattleCityServer::SendToClient(BattleCityDataPacket * packet, SOCKET sock)
+{
+    if ( sock != SOCKET_ERROR )
+    {
+        packet->Send(sock);
     }
 }
 
