@@ -121,6 +121,9 @@ void BattleCityServer::NewConnection(SOCKET s)
         BattleCityParametersPacket parametersPacket(GetBattleCityClientParameters(this->parameters));
         parametersPacket.Send(s);
 
+        BattleCityTexturePacket texturePacket("tank01", "C:\\tank01.bmp");
+        texturePacket.Send(s);
+
 		BCThreadParam* p = new BCThreadParam();
 		p->socketPos = first;
 		p->ptr = this;

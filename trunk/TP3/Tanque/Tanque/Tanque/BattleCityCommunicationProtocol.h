@@ -1,6 +1,7 @@
 #ifndef BattleCityCommunicationProtocol_h
 #define BattleCityCommunicationProtocol_h
 
+#include "SDL.h"
 #include "winsock2.h"
 #include "BattleCityTypes.h"
 #include "BattleCityWall.h"
@@ -14,9 +15,11 @@ using namespace std;
 #define PACKET_DATA_MAX_SIZE    4096
 #define PACKET_HEADER_SIZE      3
 
+#define TEXTURE_NAME_MAX_LENGTH 50
+
 #define BATTLE_CITY_SOCKET      2488
 
-enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, COMMAND, PARAMETERS};
+enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, COMMAND, PARAMETERS, TEXTURE};
 enum BattleCityCommandType {UPDATESCREEN, KEYPRESSED};
 
 /*****************************************************************************************/
@@ -163,7 +166,22 @@ class BattleCityParametersPacket : public BattleCityDataPacket
 
         BattleCityClientParameters GetParameters() { return this->parameters; };
 };
+/*****************************************************************************************/
+// BattleCityTexturePacket
+/*****************************************************************************************/
+class BattleCityTexturePacket : public BattleCityDataPacket
+{
+    private:
+        char name[TEXTURE_NAME_MAX_LENGTH];
+    public:
+        BattleCityTexturePacket(char * name, const char * path);
+		BattleCityTexturePacket(char * data, int size);
 
+        char * SaveBitmap();
+        char * GetBitmapData() { return this->data + (PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH); };
+        char * GetBitmapName() { return this->name; };
+        int GetBitmapSize() { return this->size - (PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH); };
+};
 /*****************************************************************************************/
 // BattleCityCommandPacket
 /*****************************************************************************************/

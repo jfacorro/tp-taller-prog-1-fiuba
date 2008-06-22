@@ -12,6 +12,8 @@ class BattleCityClient
 		SDLHelper sdlHelper;
         BattleCityClientParameters parameters;
         BattleCityState state;
+
+        vector<Texture> textures;
         
         bool isConnected;
         int clientNumber;
@@ -19,6 +21,8 @@ class BattleCityClient
         void UpdateEngine (int tecla);
         void RenderScreenChars();
 		void RenderScreenSDL();
+        void AddTexture(char * name, char * filename);
+        SDL_Surface * GetTexture(char * name);
         
     public:
         BattleCityClient() {};
