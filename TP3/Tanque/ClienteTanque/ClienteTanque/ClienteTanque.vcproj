@@ -203,11 +203,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SDL_rotozoom.cpp"
+				RelativePath="..\..\Tanque\Tanque\SDL_rotozoom.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SDLHelper.cpp"
+				RelativePath="..\..\Tanque\Tanque\SDLHelper.cpp"
 				>
 			</File>
 			<File
@@ -219,7 +219,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\StringHelper.cpp"
+				RelativePath="..\..\Tanque\Tanque\StringHelper.cpp"
 				>
 			</File>
 		</Filter>
@@ -245,11 +245,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Common.h"
+				RelativePath="..\..\Tanque\Tanque\Common.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Exception.h"
+				RelativePath="..\..\Tanque\Tanque\Exception.h"
 				>
 			</File>
 			<File
@@ -261,11 +261,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SDL_rotozoom.h"
+				RelativePath="..\..\Tanque\Tanque\SDL_rotozoom.h"
 				>
 			</File>
 			<File
-				RelativePath=".\SDLHelper.h"
+				RelativePath="..\..\Tanque\Tanque\SDLHelper.h"
 				>
 			</File>
 			<File
@@ -277,7 +277,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\StringHelper.h"
+				RelativePath="..\..\Tanque\Tanque\StringHelper.h"
 				>
 			</File>
 		</Filter>

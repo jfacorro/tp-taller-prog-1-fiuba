@@ -44,6 +44,7 @@ void BattleCityClient::StartPlaying()
         BattleCityBulletPacket * bulletPacket = NULL;
         BattleCityBombPacket * bombPacket = NULL;
         BattleCityWallPacket * wallPacket = NULL;
+        BattleCityTexturePacket * texturePacket = NULL;
 
         if(packet != NULL)
         {
@@ -87,6 +88,10 @@ void BattleCityClient::StartPlaying()
                         this->state.Walls.push_back(wallPacket->walls[i]);
                     }
                     break;
+                case TEXTURE:
+                    texturePacket = (BattleCityTexturePacket *)packet;
+                    this->AddTexture(texturePacket->GetBitmapName(), texturePacket->SaveBitmap());
+                    break;
                 case COMMAND:
                     cmdPacket = (BattleCityCommandPacket *)packet;
                     if(cmdPacket->GetCommandType() == UPDATESCREEN)
@@ -105,6 +110,27 @@ void BattleCityClient::StartPlaying()
 
         delete packet;
 	}
+}
+
+void BattleCityClient::AddTexture(char * name, char * filename)
+{
+    Texture texture(name, filename);
+
+    this->textures.push_back(texture);
+}
+
+SDL_Surface * BattleCityClient::GetTexture(char * name)
+{
+    for(int i = 0; i < this->textures.size(); i++)
+    {
+        if(strcmp(this->textures[i].GetId(), name) == 0)
+        {
+            return this->textures[i].GetBitmap();
+
+        }
+    }
+
+    return NULL;
 }
 
 void BattleCityClient::UpdateEngine (int tecla)
@@ -174,7 +200,8 @@ void BattleCityClient::RenderScreenSDL()
         if(state.Tanks[i].Intersects(quadrant))
         {
             Rect tankRect = state.Tanks[i].GetRect();
-		    this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, NULL, NULL);
+            SDL_Surface * bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("tank01"), tankRect.Width, tankRect.Height);
+		    this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, bitmap, NULL);
         }
         /// Draw all lifes
         this->sdlHelper.DrawRectangle(config.GetResolucion().w - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);

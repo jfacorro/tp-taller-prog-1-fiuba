@@ -40,6 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="SDL\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib $(NoInherit) ws2_32.lib"
+				AdditionalDependencies="kernel32.lib ws2_32.lib SDL\SDL.lib SDL\SDLmain.lib $(NOINHERIT)"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -209,6 +210,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\StringHelper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Tanque.cpp"
 				>
 			</File>
@@ -248,6 +253,10 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StringHelper.h"
 				>
 			</File>
 		</Filter>

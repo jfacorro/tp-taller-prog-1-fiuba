@@ -1,8 +1,11 @@
 #ifndef BattleCityCommunicationProtocol_cpp
 #define BattleCityCommunicationProtocol_cpp
 
+#include <fstream>
 #include "BattleCityCommunicationProtocol.h"
 #include "Screen.h"
+#include "StringHelper.h"
+#include "SDL.h"
 
 /**********************************************************************************************************/
 // BattleCityTankPacket
@@ -281,6 +284,77 @@ BattleCityParametersPacket::BattleCityParametersPacket(char * data, int size)
 }
 
 /**********************************************************************************************************/
+// BattleCityTexturePacket
+/**********************************************************************************************************/
+
+BattleCityTexturePacket::BattleCityTexturePacket(char * name, const char * path)
+{    
+    StringHelper::Copy(name, this->name, strlen(name));
+    this->type = TEXTURE;
+
+    FILE * file;
+	file = fopen(path, "rb");
+
+    long filesize = 0;
+
+	/// Load bitmap file data
+    if(file != NULL)
+	{
+	    fseek(file, 0, SEEK_END);		
+	    filesize = ftell(file);
+
+	    this->data = new char[PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH + filesize];
+
+	    fseek(file, 0, SEEK_SET);
+	    fread(this->data + PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH, sizeof(char), filesize, file);
+
+	    fclose(file);
+    }
+    else
+    {
+        this->data = new char[PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH + filesize];
+    }
+    
+    this->data[0] = TEXTURE;
+    this->size = PACKET_HEADER_SIZE;
+
+    /// Load bitmap name into data
+    memcpy(this->data + this->size, (void*)this->name, TEXTURE_NAME_MAX_LENGTH);
+    this->size += TEXTURE_NAME_MAX_LENGTH + filesize;
+
+    this->SetSizeInData();
+}
+
+BattleCityTexturePacket::BattleCityTexturePacket(char * data, int size)
+{
+    this->type = TEXTURE;
+	this->size = size;
+
+    this->data = new char[size];
+
+    memcpy(this->data, data , size);    
+    memcpy(this->name, data + PACKET_HEADER_SIZE, TEXTURE_NAME_MAX_LENGTH);
+    
+}
+
+char * BattleCityTexturePacket::SaveBitmap()
+{
+    char * bitmap = this->GetBitmapData();
+    int filesize = this->GetBitmapSize();
+
+    char * filename = StringHelper::AppendString(this->name, "_temp.bmp");
+
+    FILE * file;
+    file = fopen(filename, "wb");
+
+    fwrite(bitmap, sizeof(char), filesize, file);
+
+    fclose(file);
+
+    return filename;       
+}
+
+/**********************************************************************************************************/
 // BattleCityCommunicationProtocol
 /**********************************************************************************************************/
 void * BattleCityCommunicationProtocol::ReceiveDataPacket(Socket socket)
@@ -379,6 +453,12 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET sock)
 		                {
                             BattleCityParametersPacket * parametersPacket = new BattleCityParametersPacket(packetData, packetTotalLength);
                             packet = parametersPacket;
+		                }
+
+                        if ( packetData[0] == TEXTURE)
+		                {
+                            BattleCityTexturePacket * texturePacket = new BattleCityTexturePacket(packetData, packetTotalLength);
+                            packet = texturePacket;
 		                }
                     }
 

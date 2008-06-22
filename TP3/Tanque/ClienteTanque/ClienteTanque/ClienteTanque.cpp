@@ -12,7 +12,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     BattleCityClient client;
     
-    client.Connect("127.0.0.1", BATTLE_CITY_SOCKET);
+    client.Connect("190.244.19.22", BATTLE_CITY_SOCKET);
     
     if(client.IsConnected())
     {
