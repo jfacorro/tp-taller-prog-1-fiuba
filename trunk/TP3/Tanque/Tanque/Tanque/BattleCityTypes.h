@@ -1,12 +1,12 @@
 #ifndef BATTLECITYTYPES_INCLUDED
 #define BATTLECITYTYPES_INCLUDED
 
-
 #include "list"
 #include "vector"
 
 using namespace std;
 
+#define TEXTURE_NAME_MAX_LENGTH 50
 
 typedef struct _Point
 {
@@ -74,6 +74,7 @@ class BattleCityTank : public BattleCityCollitionObject
 		double			Speed;
 		Direction		Direction;
 		unsigned int	Life;
+        char        	TextureName[TEXTURE_NAME_MAX_LENGTH];
 };
 
 
@@ -116,6 +117,18 @@ class BattleCityScenario
 
         Rect GetQuadrant(DoublePoint point);
         Rect GetQuadrant(Point point);
+};
+
+class BattleCityTexture
+{
+    private:
+        char name[TEXTURE_NAME_MAX_LENGTH];
+        char * path;
+    public:
+        BattleCityTexture(char * name, char * path);
+
+        char * GetName() { return this->name; };
+        char * GetPath() { return this->path; };
 };
 
 #endif

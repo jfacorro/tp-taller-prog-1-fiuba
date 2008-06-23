@@ -2,6 +2,7 @@
 #define BattleCityTypes_cpp
 
 #include "BattleCityTypes.h"
+#include "StringHelper.h"
 
 /**********************************************************************************************************/
 // BattleCityCollitionObject
@@ -95,6 +96,19 @@ Rect BattleCityScenario::GetQuadrant(Point point)
     }
 
     return quadrant;
+}
+
+
+
+/**********************************************************************************************************/
+// BattleCityTexture
+/**********************************************************************************************************/
+BattleCityTexture::BattleCityTexture(char * name, char * path)
+{
+    this->path = new char[strlen(path)];
+
+    StringHelper::Copy(name, this->name, strlen(name));
+    StringHelper::Copy(path, this->path, strlen(path));
 }
 
 #endif

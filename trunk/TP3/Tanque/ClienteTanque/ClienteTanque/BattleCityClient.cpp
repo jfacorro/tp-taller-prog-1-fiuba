@@ -200,7 +200,22 @@ void BattleCityClient::RenderScreenSDL()
         if(state.Tanks[i].Intersects(quadrant))
         {
             Rect tankRect = state.Tanks[i].GetRect();
-            SDL_Surface * bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("tank01"), tankRect.Width, tankRect.Height);
+            SDL_Surface * bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture(state.Tanks[i].TextureName), tankRect.Width, tankRect.Height);
+            switch(state.Tanks[i].Direction)
+            {
+                case LEFT:
+                    bitmap = SDLHelper::SDLRotateBitmap(bitmap, 90);
+                    break;
+                case RIGHT:
+                    bitmap = SDLHelper::SDLRotateBitmap(bitmap, -90);
+                    break;
+                case UP:
+                    bitmap = SDLHelper::SDLRotateBitmap(bitmap, 0);
+                    break;
+                case DOWN:
+                    bitmap = SDLHelper::SDLRotateBitmap(bitmap, 180);
+                    break;
+            }
 		    this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, bitmap, NULL);
         }
         /// Draw all lifes

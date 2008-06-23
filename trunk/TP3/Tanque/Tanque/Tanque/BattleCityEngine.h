@@ -21,6 +21,7 @@ typedef struct _BattleCityParameters
 	
 	vector<BattleCityTank> Tanks;
 	vector<BattleCityWall> Walls;
+    vector<BattleCityTexture> Textures;
 
 	unsigned int	MaxBullets;
 	double			BulletSpeed;
