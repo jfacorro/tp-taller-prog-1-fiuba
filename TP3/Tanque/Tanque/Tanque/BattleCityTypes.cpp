@@ -86,14 +86,21 @@ Rect BattleCityScenario::GetQuadrant(DoublePoint point)
 Rect BattleCityScenario::GetQuadrant(Point point)
 {
     Rect quadrant;
+	bool foundQuadrant = false;
 
     for(int i = 0; i < 4; i++)
     {
         if(BattleCityCollitionObject::Intersects(this->quadrants[i], point))
         {
+			foundQuadrant = true;
             quadrant = this->quadrants[i];
         }
     }
+
+	if(!foundQuadrant)
+	{
+		quadrant = this->quadrants[0];
+	}
 
     return quadrant;
 }

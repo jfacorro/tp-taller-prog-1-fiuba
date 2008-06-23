@@ -9,7 +9,7 @@
 
 void BattleCityClient::Connect(char * dir, int socketNumber)
 {
-    int resultado = this->socket.Connect("127.0.0.1", BATTLE_CITY_SOCKET);
+    int resultado = this->socket.Connect(dir, BATTLE_CITY_SOCKET);
 
     this->isConnected = (resultado == RES_OK);
 }
