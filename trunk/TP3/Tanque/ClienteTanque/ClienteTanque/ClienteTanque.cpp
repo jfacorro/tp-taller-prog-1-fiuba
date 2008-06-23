@@ -11,13 +11,19 @@ int _tmain(int argc, _TCHAR* argv[])
     int nroTanque = 0;
 
     BattleCityClient client;
+
+	char * ip = "10.13.5.37";
     
-    client.Connect("190.244.19.22", BATTLE_CITY_SOCKET);
+    client.Connect(ip, BATTLE_CITY_SOCKET);
     
     if(client.IsConnected())
     {
         client.StartPlaying();
     }
+	else
+	{
+		printf("Not able to connect to %s", ip);
+	}
 
     return 0;
 }
