@@ -51,7 +51,6 @@ private:
     int numPlayersConnected;
 	bool salir;
 
-	SOCKET sock; 
 	SOCKET sockets[BATTLE_CITY_MAX_PLAYERS];
 
 	HANDLE mutex;
