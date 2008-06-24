@@ -32,63 +32,31 @@ int BattleCityServer::Start()
 {
     CreateThread ( NULL , 0 , MainThread , (void*) this , 0 , NULL );
 
-   WSADATA wsaData; /* Utilizada para inicializacion del winsock */
-   WORD wVersionReq = MAKEWORD(2, 2); /* Contiene la version */
-   SOCKET sockAceptado; /* Contiene la informacion del socket que acepto */
-   //struct hostent* hostInfo; /* Se utiliza para convertir el nombre del host a su direccion IP */
-   struct sockaddr_in sockAddrIn; /* Direccion de socket */
-   int tamSockAddrIn; /* Se utiliza para aceptar el mensaje y obtener su info */
-   int codError = 0; /* Codigo de error que se evalua dentro de la funcion */
-   
-   int resultado = RES_ERROR_UNKNOWN; /* Codigo de error que se devolvera */
+    int resultado = 0;
 
-   /* Inicializa el socket */
-   codError = WSAStartup(wVersionReq, &wsaData);
-   if (codError != 0) {
-      resultado = RES_ERROR_STARTUP;
+    while ( !salir)
+	{
+        Socket listeningSocket;
 
-   } else {
-      /* Crea un socket */
-      sock = socket(AF_INET, SOCK_STREAM, 0);
-      if (sock == INVALID_SOCKET) {
-         resultado = RES_INVALID_SOCKET;
-         
-      } else {
-         /* Carga los valores de sockAddrIn */
-         sockAddrIn.sin_family = AF_INET;     /* Protocolo ipv4 */
-         sockAddrIn.sin_port = htons(port); /* Puerto indicado */
-         sockAddrIn.sin_addr.s_addr = INADDR_ANY; /* Cualquier direccion IP */
-         
-         codError = bind(sock, (sockaddr*) &sockAddrIn, sizeof(sockAddrIn));
-         if (codError != 0) {
-            resultado = RES_ERROR_BIND;
+        printf("Waiting for clients.\n");
 
-         } else {
-            /* Escucha una sola conexion */
-            codError = listen(sock, 5);
-            if (codError != 0) {
-               resultado = RES_ERROR_LISTEN;
-            } else {
-
-				while ( !salir )
-				{
-					/* Acepta la conexion */
-					sockAceptado = SOCKET_ERROR;
-					tamSockAddrIn = sizeof(sockAddrIn);
-                    printf("Waiting for clients.\n");
-					sockAceptado = accept(sock, (sockaddr*) &sockAddrIn, &tamSockAddrIn);
-
-					if ( sockAceptado != SOCKET_ERROR )
-						NewConnection(sockAceptado);
-				}
-
-				resultado = RES_OK;
+        if(listeningSocket.Listen(this->port) == RES_OK)
+        {
+            if(this->numPlayersConnected < BATTLE_CITY_MAX_PLAYERS)
+            {
+			    NewConnection(listeningSocket.GetConnection().cxSocket);
             }
-         }
-      }
-   }
+            else
+            {
+                printf("Maximum number of player already connected.\n");
+            }
+        }
 
-   return resultado;
+        if(listeningSocket.IsActive())
+            listeningSocket.Close();
+	}
+
+    return resultado;
 }
 
 struct BCThreadParam
@@ -160,7 +128,7 @@ void BattleCityServer::NewConnection(SOCKET s)
 void BattleCityServer::Stop()
 {
 	salir = true;
-	closesocket(sock);
+	//closesocket(sock);
 	for ( int i = 0 ; i < BATTLE_CITY_MAX_PLAYERS ; i++ )
 		closesocket(sockets[i]);
 }

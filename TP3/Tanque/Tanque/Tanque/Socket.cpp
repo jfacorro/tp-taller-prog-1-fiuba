@@ -81,6 +81,8 @@ int Socket::Listen(int port)
 						this->connection.cxSocket = sockAceptado;
 						resultado = RES_OK;
 					}
+
+                    closesocket(sock);
 				}
 			}
       }
