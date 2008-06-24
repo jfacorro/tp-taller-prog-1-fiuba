@@ -118,4 +118,17 @@ BattleCityTexture::BattleCityTexture(char * name, char * path)
     StringHelper::Copy(path, this->path, strlen(path));
 }
 
+/**********************************************************************************************************/
+// BattleCityBomb
+/**********************************************************************************************************/
+Rect BattleCityBomb::GetExplodedRect()
+{
+	Rect rect;
+    rect.Height = this->explodingHeight;
+    rect.Width = this->explodingWidth;
+	rect.X = this->Pos.X - this->explodingWidth / 2;
+	rect.Y = this->Pos.Y - this->explodingHeight / 2;;
+
+	return rect;
+}
 #endif

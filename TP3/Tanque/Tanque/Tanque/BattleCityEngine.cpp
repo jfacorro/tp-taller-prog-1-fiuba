@@ -79,18 +79,15 @@ void BattleCityEngine::UpdateBombs()
 		else if ( iter->TimeToDie <= 0 && (iter->TimeToDie + (int) nextTick - (int) lastTick) > 0)
 		{
 			dirty = true;
-			int blastradius = parameters.BombBlastRadius * parameters.BombBlastRadius;
 
 			for ( unsigned int i = 0 ; i < tanks.size() ; i++ )
 			{
-				int distance = (((int) tanks[i].Pos.X - iter->Pos.X) * ((int) tanks[i].Pos.X - iter->Pos.X) +
-								((int) tanks[i].Pos.Y - iter->Pos.Y) * ((int) tanks[i].Pos.Y - iter->Pos.Y));
-				if ( distance <= blastradius ) 
+                if (tanks[i].Intersects(iter->GetExplodedRect())) 
 					HitTank(i);
 			}
 
 			for ( unsigned int j = 0 ; j < walls.size() ; j++ )
-				if ( walls[j].Distance(iter->Pos) <= parameters.BombBlastRadius )
+				if ( walls[j].Intersects(iter->GetExplodedRect()))
 					if ( walls[j].Blast() <= 0 )
 					{
 						walls.erase(walls.begin()+j);
@@ -326,7 +323,7 @@ bool BattleCityEngine::DropBomb(unsigned int tank)
 	if ( bombCount >= parameters.MaxBombs || hasBomb )
 		return false;
 
-	BattleCityBomb b(this->parameters.BombRadius);
+    BattleCityBomb b(this->parameters.BombRadius * 2, this->parameters.BombBlastRadius * 2);
 	b.Tank = tank;
 	b.TimeToDie = parameters.BombDelay;
 	DoublePoint p = tanks[tank].Pos;
@@ -347,7 +344,7 @@ bool BattleCityEngine::ShootBullet(unsigned int tank)
 	if ( bulletCount >= parameters.MaxBullets )
 		return false;
 
-    BattleCityBullet b(this->parameters.BulletRadius);
+    BattleCityBullet b(this->parameters.BulletRadius * 2);
 	b.Tank = tank;
 	b.Pos.X = (int) tanks[tank].Pos.X;
 	b.Pos.Y = (int) tanks[tank].Pos.Y;

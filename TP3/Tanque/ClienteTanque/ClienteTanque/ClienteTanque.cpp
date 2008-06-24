@@ -13,12 +13,15 @@ int _tmain(int argc, _TCHAR* argv[])
     BattleCityClient client;
 
 	/// char * ip = "jfacorro.no-ip.org";
-    char * ip = "127.0.0.1";
+    char ip[50]; 
+    printf("Please enter the server's ip or hostname: ");
+    scanf("%s", ip);
     
     client.Connect(ip, BATTLE_CITY_SOCKET);
     
     if(client.IsConnected())
     {
+        printf("Connect to %s\n", ip);
         client.StartPlaying();
     }
 	else

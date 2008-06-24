@@ -80,17 +80,24 @@ class BattleCityTank : public BattleCityCollitionObject
 
 class BattleCityBomb : public BattleCityCollitionObject
 {
-	public:
-		BattleCityBomb(int size)
+    private:
+        int explodingWidth;
+        int explodingHeight;	
+    public:
+		BattleCityBomb(int size, int explodingSize)
 		{
 			this->Width = size;
 			this->Height = size;
+
+            this->explodingWidth = explodingSize;
+            this->explodingHeight = explodingSize;
 		};
+
+        Rect GetExplodedRect();
 
 		unsigned int	Tank;
 		int				TimeToDie;
 };
-
 
 class BattleCityBullet : public BattleCityCollitionObject
 {
