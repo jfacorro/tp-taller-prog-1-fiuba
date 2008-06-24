@@ -6,6 +6,7 @@
 #include "Screen.h"
 #include "conio.h"
 #include "iostream"
+#include "Socket.h"
 
 BattleCityServer::BattleCityServer(int port,BattleCityParameters parameters) 
 	: port(port), salir(false), engine(NULL), parameters(parameters)
@@ -15,6 +16,8 @@ BattleCityServer::BattleCityServer(int port,BattleCityParameters parameters)
 
 	engine = new BattleCityEngine ( parameters );
 	mutex = CreateMutex ( NULL , FALSE , NULL );
+
+    this->numPlayersConnected = 0;
 }
 
 BattleCityServer::~BattleCityServer()
@@ -27,7 +30,7 @@ BattleCityServer::~BattleCityServer()
 
 int BattleCityServer::Start()
 {
-	CreateThread ( NULL , 0 , MainThread , (void*) this , 0 , NULL );
+    CreateThread ( NULL , 0 , MainThread , (void*) this , 0 , NULL );
 
    WSADATA wsaData; /* Utilizada para inicializacion del winsock */
    WORD wVersionReq = MAKEWORD(2, 2); /* Contiene la version */
@@ -72,6 +75,7 @@ int BattleCityServer::Start()
 					/* Acepta la conexion */
 					sockAceptado = SOCKET_ERROR;
 					tamSockAddrIn = sizeof(sockAddrIn);
+                    printf("Waiting for clients.\n");
 					sockAceptado = accept(sock, (sockaddr*) &sockAddrIn, &tamSockAddrIn);
 
 					if ( sockAceptado != SOCKET_ERROR )
@@ -115,17 +119,35 @@ void BattleCityServer::NewConnection(SOCKET s)
 	{
 		sockets[first] = s;
 
+        /// Listen on a new socket for this client
+        Socket sockClient;
+
+        int newPortNumber = port + first + 1;
+        /// Send the new number to the socket
+        BattleCityPortNumberPacket portNumberPacket(newPortNumber);
+        portNumberPacket.Send(s);
+
+        /// Listen on the new port
+        sockClient.Listen(newPortNumber);
+        sockets[first] = sockClient.GetSocket();
+
+        /// Increment the number of players connected
+        this->numPlayersConnected++;
+
+        printf("Client %d connected on port %d.\n", first + 1, newPortNumber);
+
         BattleCityPlayerNumberPacket playerPacket(first);
-        playerPacket.Send(s);
+        playerPacket.Send(sockets[first]);
 
         BattleCityParametersPacket parametersPacket(GetBattleCityClientParameters(this->parameters));
-        parametersPacket.Send(s);
+        parametersPacket.Send(sockets[first]);
 
         for(int textureIndex = 0; textureIndex < this->parameters.Textures.size();textureIndex++)
         {
             BattleCityTexture texture = this->parameters.Textures[textureIndex];
             BattleCityTexturePacket texturePacket(texture.GetName(), texture.GetPath());
-            texturePacket.Send(s);
+
+            texturePacket.Send(sockets[first]);
         }
 
 		BCThreadParam* p = new BCThreadParam();
@@ -363,13 +385,15 @@ void BattleCityServer::UpdateClients(BattleCityState state)
         /************************************************/
         for(int i = 0; i < state.Bullets.size(); i++)
         {
+            vector<BattleCityBullet> bullets;
+
             if(state.Bullets[i].Intersects(quadrant))
             {
-                vector<BattleCityBullet> bullets;
                 bullets.push_back(state.Bullets[i]);
-                BattleCityBulletPacket bulletPacket(bullets);
-                this->SendToClient(&bulletPacket, sockets[tankIndex]);
             }
+
+            BattleCityBulletPacket bulletPacket(bullets);
+            this->SendToClient(&bulletPacket, sockets[tankIndex]);
         }
 
         /************************************************/
@@ -377,14 +401,13 @@ void BattleCityServer::UpdateClients(BattleCityState state)
         /************************************************/
         for(int i = 0; i < state.Bombs.size(); i++)
         {
+            vector<BattleCityBomb> bombs;
             if(state.Bombs[i].Intersects(quadrant))
             {
-                vector<BattleCityBomb> bombs;
                 bombs.push_back(state.Bombs[i]);
-
-                BattleCityBombPacket bombPacket(bombs);
-                this->SendToClient(&bombPacket, sockets[tankIndex]);
             }
+            BattleCityBombPacket bombPacket(bombs);
+            this->SendToClient(&bombPacket, sockets[tankIndex]);
         }
 
         /************************************************/
@@ -392,13 +415,13 @@ void BattleCityServer::UpdateClients(BattleCityState state)
         /************************************************/
         for(int i = 0; i < state.Walls.size(); i++)
         {
+            vector<BattleCityWall> walls;
             if(state.Walls[i].Intersects(quadrant))
             {
-                vector<BattleCityWall> walls;
                 walls.push_back(state.Walls[i]);
-                BattleCityWallPacket wallPacket(walls);
-                this->SendToClient(&wallPacket, sockets[tankIndex]);
             }
+            BattleCityWallPacket wallPacket(walls);
+            this->SendToClient(&wallPacket, sockets[tankIndex]);
         }
     }
 
