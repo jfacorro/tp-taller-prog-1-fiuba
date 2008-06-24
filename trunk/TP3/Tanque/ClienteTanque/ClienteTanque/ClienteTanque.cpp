@@ -12,7 +12,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
     BattleCityClient client;
 
-	char * ip = "10.13.5.37";
+	/// char * ip = "jfacorro.no-ip.org";
+    char * ip = "127.0.0.1";
     
     client.Connect(ip, BATTLE_CITY_SOCKET);
     

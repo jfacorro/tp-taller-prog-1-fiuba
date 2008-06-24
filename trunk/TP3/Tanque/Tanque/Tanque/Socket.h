@@ -93,6 +93,8 @@ class Socket
 
 		char * GetIP();
 		int GetPort();
+
+        SOCKET GetSocket() { return this->connection.cxSocket; };
         Connection GetConnection() { return this->connection;};
 };
 

@@ -17,7 +17,7 @@ using namespace std;
 
 #define BATTLE_CITY_SOCKET      2488
 
-enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, COMMAND, PARAMETERS, TEXTURE};
+enum BattleCityPacketType {DUMMY, TANK, BULLET, BOMB, WALL, CLRSCR, PLAYERNUMBER, PORTNUMBER, COMMAND, PARAMETERS, TEXTURE};
 enum BattleCityCommandType {UPDATESCREEN, KEYPRESSED};
 
 /*****************************************************************************************/
@@ -149,6 +149,20 @@ class BattleCityPlayerNumberPacket : public BattleCityDataPacket
 		BattleCityPlayerNumberPacket(char * data, int size);
 
         int GetPlayerNumber() {return this->playerNumber;};
+};
+
+/*****************************************************************************************/
+// BattleCitySocketNumberPacket
+/*****************************************************************************************/
+class BattleCityPortNumberPacket : public BattleCityDataPacket
+{
+    private:
+        int portNumber;
+    public:
+        BattleCityPortNumberPacket(int portNumber);
+		BattleCityPortNumberPacket(char * data, int size);
+
+        int GetPortNumber() {return this->portNumber;};
 };
 
 /*****************************************************************************************/

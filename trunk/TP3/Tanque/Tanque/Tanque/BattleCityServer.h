@@ -5,6 +5,7 @@
 
 #include "BattleCityEngine.h"
 #include "BattleCityCommunicationProtocol.h"
+#include "Socket.h"
 
 /* Resulados de las funciones.*/
 /* Los errores que siguen deben empezar con RES_ seguido de un nombre, por ejemplo RES_TIMEOUT */
@@ -47,6 +48,7 @@ private:
 	BattleCityEngine* engine;
 
 	int port;
+    int numPlayersConnected;
 	bool salir;
 
 	SOCKET sock; 

@@ -254,6 +254,36 @@ BattleCityPlayerNumberPacket::BattleCityPlayerNumberPacket(char * data, int size
 }
 
 /**********************************************************************************************************/
+// BattleCitySocketNumberPacket
+/**********************************************************************************************************/
+BattleCityPortNumberPacket::BattleCityPortNumberPacket(int portNumber)
+{ 
+    this->portNumber = portNumber;
+    this->type = PORTNUMBER; 
+    
+    this->data = new char[PACKET_HEADER_SIZE + sizeof(int)];
+    
+    this->data[0] = PORTNUMBER;
+    this->size = PACKET_HEADER_SIZE;
+
+    memcpy(this->data + this->size, (void*)&this->portNumber, sizeof(int));
+
+    this->size += sizeof(int);
+
+    this->SetSizeInData();
+}
+
+BattleCityPortNumberPacket::BattleCityPortNumberPacket(char * data, int size)
+{
+	this->type = PORTNUMBER;
+	this->size = size;
+
+	int offset = (int)data + PACKET_HEADER_SIZE;
+
+	memcpy((void*)&(this->portNumber), (void * )offset, sizeof(int));
+}
+
+/**********************************************************************************************************/
 // BattleCityParametersPacket
 /**********************************************************************************************************/
 BattleCityParametersPacket::BattleCityParametersPacket(BattleCityClientParameters parameters)
@@ -286,7 +316,6 @@ BattleCityParametersPacket::BattleCityParametersPacket(char * data, int size)
 /**********************************************************************************************************/
 // BattleCityTexturePacket
 /**********************************************************************************************************/
-
 BattleCityTexturePacket::BattleCityTexturePacket(char * name, const char * path)
 {    
     StringHelper::Copy(name, this->name, strlen(name));
@@ -447,6 +476,12 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET sock)
 		                {
                             BattleCityPlayerNumberPacket * playerPacket = new BattleCityPlayerNumberPacket(packetData, packetTotalLength);
                             packet = playerPacket;
+		                }
+
+                        if ( packetData[0] == PORTNUMBER)
+		                {
+                            BattleCityPortNumberPacket * portNumberPacket = new BattleCityPortNumberPacket (packetData, packetTotalLength);
+                            packet = portNumberPacket;
 		                }
 
                         if ( packetData[0] == PARAMETERS)

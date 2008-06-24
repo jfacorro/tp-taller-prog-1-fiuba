@@ -3,6 +3,7 @@
 
 #include "BattleCityClient.h"
 #include "Screen.h"
+#include "Socket.h"
 #include "BattleCityCommunicationProtocol.h"
 #include "iostream"
 #include "conio.h"
@@ -45,6 +46,8 @@ void BattleCityClient::StartPlaying()
         BattleCityBombPacket * bombPacket = NULL;
         BattleCityWallPacket * wallPacket = NULL;
         BattleCityTexturePacket * texturePacket = NULL;
+        BattleCityPortNumberPacket * portNumberPacket = NULL;
+        Socket newSocket;
 
         if(packet != NULL)
         {
@@ -55,6 +58,12 @@ void BattleCityClient::StartPlaying()
                 case PLAYERNUMBER:
                     playerNumberPacket = (BattleCityPlayerNumberPacket *)packet;
                     this->clientNumber = playerNumberPacket->GetPlayerNumber();
+                    break;
+                case PORTNUMBER:
+                    portNumberPacket = (BattleCityPortNumberPacket *)packet;
+                    newSocket.Connect(this->socket.GetConnection().cxIP, portNumberPacket->GetPortNumber());
+                    this->socket.Close();
+                    this->socket = newSocket;
                     break;
                 case PARAMETERS:
                     parametersPacket = (BattleCityParametersPacket *)packet;
