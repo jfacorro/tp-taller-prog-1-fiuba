@@ -127,7 +127,7 @@ BattleCityBombPacket::BattleCityBombPacket(char * data, int size)
     for(int i = 0; i < numberOfBombs; i++)
     {
         offset = offset + sizeof(BattleCityBomb) * i;
-        BattleCityBomb bomb(1);
+        BattleCityBomb bomb(1, 1);
         memcpy((void*)(&bomb), (void *)(offset), sizeof(BattleCityBomb));
         this->bombs.push_back(bomb);
     }
