@@ -14,6 +14,13 @@ class BattleCityClient
         BattleCityState state;
 
         vector<Texture *> textures;
+
+		int nextTick;
+		int lastTick;
+
+		void InitializeTicks();
+		void UpdateTicks();
+		int GetDelayTime() { return nextTick - lastTick; };
         
         bool isConnected;
         int clientNumber;

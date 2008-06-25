@@ -8,6 +8,18 @@
 #include "iostream"
 #include "conio.h"
 
+void BattleCityClient::InitializeTicks()
+{
+	this->lastTick = GetTickCount();
+	this->nextTick = this->lastTick + 1000.0 / FRAMES_PER_SECOND;
+}
+
+void BattleCityClient::UpdateTicks()
+{
+	this->lastTick = this->nextTick;
+	this->nextTick += 1000.0 / FRAMES_PER_SECOND;
+}
+
 void BattleCityClient::Connect(char * dir, int socketNumber)
 {
     int resultado = this->socket.Connect(dir, BATTLE_CITY_SOCKET);
@@ -19,7 +31,8 @@ void BattleCityClient::StartPlaying()
 {
 	bool salir = false;
 
-	this->sdlHelper.Initialize();
+	this->sdlHelper.Initialize();	
+	this->InitializeTicks();
 
     while ( !salir )
 	{
@@ -107,6 +120,11 @@ void BattleCityClient::StartPlaying()
                     {
                         RenderScreenSDL();
 
+						/// Wait some time
+						/// SDL_Delay(this->GetDelayTime());
+
+						this->UpdateTicks();
+
                         this->state.Tanks.clear();
                         this->state.Bullets.clear();
                         this->state.Bombs.clear();
@@ -144,7 +162,8 @@ SDL_Surface * BattleCityClient::GetTexture(char * name)
 
 void BattleCityClient::UpdateEngine (int tecla)
 {
-    BattleCityCommandPacket keyPacket(KEYPRESSED, this->clientNumber, tecla);
+	printf("Key was pressed = %d\n", tecla);
+	BattleCityCommandPacket keyPacket(KEYPRESSED, this->clientNumber, tecla);
     keyPacket.Send(this->socket.GetConnection().cxSocket);
 }
 
