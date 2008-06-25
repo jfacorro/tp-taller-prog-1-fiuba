@@ -405,102 +405,99 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET sock)
 
     if(result == RES_OK)
     {
-        /// if ( bytesRead >= 3 )
-        /// {
-            char * packetHeader = headerPacket.GetData();
+        char * packetHeader = headerPacket.GetData();
 
-            int packetTotalLength = BattleCityDataPacket::GetSizeFromData(headerPacket.GetData());
+        int packetTotalLength = BattleCityDataPacket::GetSizeFromData(headerPacket.GetData());
 
-            if(packetTotalLength > 0)
+        if(packetTotalLength > 0)
+        {
+            int packetDataLength = packetTotalLength - PACKET_HEADER_SIZE;
+
+            char * packetData = new char[packetTotalLength];
+
+            if(packetData != 0)
             {
-                int packetDataLength = packetTotalLength - PACKET_HEADER_SIZE;
+                packetData[0] = packetHeader[0];
+                packetData[1] = packetHeader[1];
+                packetData[2] = packetHeader[2];
 
-                char * packetData = new char[packetTotalLength];
+                int tmp;
+                int cantRecibida = 0, totalRecibido = 0;
 
-                if(packetData != 0)
+                bool successTransfer = true;
+
+                while ( totalRecibido < packetDataLength )
                 {
-                    packetData[0] = packetHeader[0];
-                    packetData[1] = packetHeader[1];
-                    packetData[2] = packetHeader[2];
+                    cantRecibida = recv (socket.GetConnection().cxSocket, packetData + PACKET_HEADER_SIZE + totalRecibido, packetDataLength - totalRecibido, 0);
 
-                    int tmp;
-                    int cantRecibida = 0, totalRecibido = 0;
+                    if ( cantRecibida == 0 || cantRecibida == -1 )
+                        successTransfer = false;
 
-                    bool successTransfer = true;
-
-                    while ( totalRecibido < packetDataLength )
-                    {
-                        cantRecibida = recv (socket.GetConnection().cxSocket, packetData + PACKET_HEADER_SIZE + totalRecibido, packetDataLength - totalRecibido, 0);
-
-                        if ( cantRecibida == 0 || cantRecibida == -1 )
-                            successTransfer = false;
-
-                        totalRecibido += cantRecibida;
-                        if (totalRecibido >= packetDataLength) 
-                            break;
-                    }
-
-                    if(successTransfer)
-                    {
-                        if ( packetData[0] == TANK)
-		                {
-                            BattleCityTankPacket * tankPacket = new BattleCityTankPacket(packetData, packetTotalLength);
-                            packet = tankPacket;
-		                }
-
-                        if ( packetData[0] == BULLET)
-		                {
-                            BattleCityBulletPacket * bulletPacket = new BattleCityBulletPacket(packetData, packetTotalLength);
-                            packet = bulletPacket;
-		                }
-
-                        if ( packetData[0] == BOMB)
-		                {
-                            BattleCityBombPacket * bombPacket = new BattleCityBombPacket(packetData, packetTotalLength);
-                            packet = bombPacket;
-		                }
-
-                        if ( packetData[0] == WALL)
-		                {
-                            BattleCityWallPacket * wallPacket = new BattleCityWallPacket(packetData, packetTotalLength);
-                            packet = wallPacket;
-		                }
-
-                        if ( packetData[0] == COMMAND)
-		                {
-                            BattleCityCommandPacket * cmdPacket = new BattleCityCommandPacket(packetData, packetTotalLength);
-                            packet = cmdPacket;
-		                }
-
-						if ( packetData[0] == PLAYERNUMBER)
-		                {
-                            BattleCityPlayerNumberPacket * playerPacket = new BattleCityPlayerNumberPacket(packetData, packetTotalLength);
-                            packet = playerPacket;
-		                }
-
-                        if ( packetData[0] == PORTNUMBER)
-		                {
-                            BattleCityPortNumberPacket * portNumberPacket = new BattleCityPortNumberPacket (packetData, packetTotalLength);
-                            packet = portNumberPacket;
-		                }
-
-                        if ( packetData[0] == PARAMETERS)
-		                {
-                            BattleCityParametersPacket * parametersPacket = new BattleCityParametersPacket(packetData, packetTotalLength);
-                            packet = parametersPacket;
-		                }
-
-                        if ( packetData[0] == TEXTURE)
-		                {
-                            BattleCityTexturePacket * texturePacket = new BattleCityTexturePacket(packetData, packetTotalLength);
-                            packet = texturePacket;
-		                }
-                    }
-
-                    delete packetData;
+                    totalRecibido += cantRecibida;
+                    if (totalRecibido >= packetDataLength) 
+                        break;
                 }
+
+                if(successTransfer)
+                {
+                    if ( packetData[0] == TANK)
+	                {
+                        BattleCityTankPacket * tankPacket = new BattleCityTankPacket(packetData, packetTotalLength);
+                        packet = tankPacket;
+	                }
+
+                    if ( packetData[0] == BULLET)
+	                {
+                        BattleCityBulletPacket * bulletPacket = new BattleCityBulletPacket(packetData, packetTotalLength);
+                        packet = bulletPacket;
+	                }
+
+                    if ( packetData[0] == BOMB)
+	                {
+                        BattleCityBombPacket * bombPacket = new BattleCityBombPacket(packetData, packetTotalLength);
+                        packet = bombPacket;
+	                }
+
+                    if ( packetData[0] == WALL)
+	                {
+                        BattleCityWallPacket * wallPacket = new BattleCityWallPacket(packetData, packetTotalLength);
+                        packet = wallPacket;
+	                }
+
+                    if ( packetData[0] == COMMAND)
+	                {
+                        BattleCityCommandPacket * cmdPacket = new BattleCityCommandPacket(packetData, packetTotalLength);
+                        packet = cmdPacket;
+	                }
+
+					if ( packetData[0] == PLAYERNUMBER)
+	                {
+                        BattleCityPlayerNumberPacket * playerPacket = new BattleCityPlayerNumberPacket(packetData, packetTotalLength);
+                        packet = playerPacket;
+	                }
+
+                    if ( packetData[0] == PORTNUMBER)
+	                {
+                        BattleCityPortNumberPacket * portNumberPacket = new BattleCityPortNumberPacket (packetData, packetTotalLength);
+                        packet = portNumberPacket;
+	                }
+
+                    if ( packetData[0] == PARAMETERS)
+	                {
+                        BattleCityParametersPacket * parametersPacket = new BattleCityParametersPacket(packetData, packetTotalLength);
+                        packet = parametersPacket;
+	                }
+
+                    if ( packetData[0] == TEXTURE)
+	                {
+                        BattleCityTexturePacket * texturePacket = new BattleCityTexturePacket(packetData, packetTotalLength);
+                        packet = texturePacket;
+	                }
+                }
+
+                delete packetData;
             }
-        /// }
+        }
     }
 
     return packet;

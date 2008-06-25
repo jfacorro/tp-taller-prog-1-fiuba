@@ -123,7 +123,7 @@ void BattleCityClient::StartPlaying()
 
 void BattleCityClient::AddTexture(char * name, char * filename)
 {
-    Texture texture(name, filename);
+    Texture * texture = new Texture(name, filename);
 
     this->textures.push_back(texture);
 }
@@ -132,9 +132,9 @@ SDL_Surface * BattleCityClient::GetTexture(char * name)
 {
     for(int i = 0; i < this->textures.size(); i++)
     {
-        if(strcmp(this->textures[i].GetId(), name) == 0)
+        if(strcmp(this->textures[i]->GetId(), name) == 0)
         {
-            return this->textures[i].GetBitmap();
+            return this->textures[i]->GetBitmap();
 
         }
     }
@@ -209,23 +209,30 @@ void BattleCityClient::RenderScreenSDL()
         if(state.Tanks[i].Intersects(quadrant))
         {
             Rect tankRect = state.Tanks[i].GetRect();
+
             SDL_Surface * bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture(state.Tanks[i].TextureName), tankRect.Width, tankRect.Height);
+            SDL_Surface * rotatedbitmap = NULL;
+
             switch(state.Tanks[i].Direction)
             {
                 case LEFT:
-                    bitmap = SDLHelper::SDLRotateBitmap(bitmap, 90);
+                    rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 90);
                     break;
                 case RIGHT:
-                    bitmap = SDLHelper::SDLRotateBitmap(bitmap, -90);
+                    rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, -90);
                     break;
                 case UP:
-                    bitmap = SDLHelper::SDLRotateBitmap(bitmap, 0);
+                    rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 0);
                     break;
                 case DOWN:
-                    bitmap = SDLHelper::SDLRotateBitmap(bitmap, 180);
+                    rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 180);
                     break;
             }
-		    this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, bitmap, NULL);
+		    
+            this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, rotatedbitmap, NULL);
+
+            SDL_FreeSurface(rotatedbitmap);
+            SDL_FreeSurface(bitmap);
         }
         /// Draw all lifes
         this->sdlHelper.DrawRectangle(config.GetResolucion().w - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
