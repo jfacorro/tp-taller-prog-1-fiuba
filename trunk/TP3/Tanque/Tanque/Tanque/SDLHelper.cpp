@@ -16,6 +16,11 @@ Texture::Texture(char * id, char * filePath)
     this->bitmap = SDLHelper::LoadBitmap(filePath);
 }
 
+Texture::~Texture()
+{
+    SDL_FreeSurface(this->bitmap);
+}
+
 Configuration::Configuration()
 {
 	this->resolucion = SDLHelper::ResolutionByWidth(640);
@@ -235,7 +240,20 @@ void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , SD
 	}
 	else
 	{
-		SDL_BlitSurface(texture, NULL, this->screen, &rect);
+        if ( SDL_MUSTLOCK(screen) ) 
+        {
+            if ( SDL_LockSurface(screen) < 0 ) {
+                fprintf(stderr, "Can't lock screen: %s\n", SDL_GetError());
+                return;
+            }
+        }
+
+        SDL_BlitSurface(texture, NULL, this->screen, &rect);
+
+        if ( SDL_MUSTLOCK(screen) ) 
+        {
+            SDL_UnlockSurface(this->screen);
+        }        
 	}
 }
 

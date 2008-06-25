@@ -121,7 +121,7 @@ void BattleCityEngine::UpdateNextTick()
 			max = parameters.Tanks[i].Speed;
     */
 
-	nextTick += (int) (1000.0 / 24);
+	nextTick += (int) (1000.0 / FRAMES_PER_SECOND);
 }
 
 void BattleCityEngine::HitTank(unsigned int tank)

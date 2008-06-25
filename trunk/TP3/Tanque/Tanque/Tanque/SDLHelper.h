@@ -32,6 +32,7 @@ class Texture
 	public:
         Texture(){};
         Texture(char * id, char * filePath);
+        Texture::~Texture();
 
 		char * GetId() { return this->id; };
 		void SetId(char * id) { this->id  = StringHelper::Substring(id, 0, strlen(id)); };

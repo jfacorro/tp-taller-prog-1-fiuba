@@ -13,7 +13,7 @@ class BattleCityClient
         BattleCityClientParameters parameters;
         BattleCityState state;
 
-        vector<Texture> textures;
+        vector<Texture *> textures;
         
         bool isConnected;
         int clientNumber;
