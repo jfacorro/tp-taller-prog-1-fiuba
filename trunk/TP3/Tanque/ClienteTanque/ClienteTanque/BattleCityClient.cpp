@@ -153,7 +153,6 @@ SDL_Surface * BattleCityClient::GetTexture(char * name)
         if(strcmp(this->textures[i]->GetId(), name) == 0)
         {
             return this->textures[i]->GetBitmap();
-
         }
     }
 
@@ -162,7 +161,10 @@ SDL_Surface * BattleCityClient::GetTexture(char * name)
 
 void BattleCityClient::UpdateEngine (int tecla)
 {
-	printf("Key was pressed = %d\n", tecla);
+    #ifdef DEBUG
+    printf("Key was pressed = %d\n", tecla);
+    #endif
+
 	BattleCityCommandPacket keyPacket(KEYPRESSED, this->clientNumber, tecla);
     keyPacket.Send(this->socket.GetConnection().cxSocket);
 }
@@ -230,28 +232,43 @@ void BattleCityClient::RenderScreenSDL()
             Rect tankRect = state.Tanks[i].GetRect();
 
             SDL_Surface * bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture(state.Tanks[i].TextureName), tankRect.Width, tankRect.Height);
-            SDL_Surface * rotatedbitmap = NULL;
 
-            switch(state.Tanks[i].Direction)
+            printf("Tank %d with life %d.\n", i, state.Tanks[i].Life);
+
+            if(state.Tanks[i].Life > 0)
             {
-                case LEFT:
-                    rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 90);
-                    break;
-                case RIGHT:
-                    rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, -90);
-                    break;
-                case UP:
-                    rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 0);
-                    break;
-                case DOWN:
-                    rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 180);
-                    break;
-            }
-		    
-            this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, rotatedbitmap, NULL);
+                SDL_Surface * rotatedbitmap = NULL;
 
-            SDL_FreeSurface(rotatedbitmap);
-            SDL_FreeSurface(bitmap);
+                switch(state.Tanks[i].Direction)
+                {
+                    case LEFT:
+                        rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 90);
+                        break;
+                    case RIGHT:
+                        rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, -90);
+                        break;
+                    case UP:
+                        rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 0);
+                        break;
+                    case DOWN:
+                        rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 180);
+                        break;
+                }
+
+                if(bitmap != NULL) SDL_FreeSurface(bitmap);
+
+                bitmap = rotatedbitmap;
+            }
+
+            printf("Drawing tank %d...\n", i);
+
+            this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, bitmap, NULL);
+
+            printf("Drew tank %d.\n", i);
+
+            if(bitmap != NULL) SDL_FreeSurface(bitmap);
+
+            printf("Freeing tank %d.\n", i);
         }
         /// Draw all lifes
         this->sdlHelper.DrawRectangle(config.GetResolucion().w - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
@@ -308,6 +325,11 @@ void BattleCityClient::RenderScreenSDL()
 	}
 
 	this->sdlHelper.Refresh();
+
+    if(state.Tanks[0].Life <= 0 && state.Tanks[1].Life <= 0)
+    {
+        printf("Refreshed...\n");
+    }
 }
 
 void BattleCityClient::RenderScreenChars()

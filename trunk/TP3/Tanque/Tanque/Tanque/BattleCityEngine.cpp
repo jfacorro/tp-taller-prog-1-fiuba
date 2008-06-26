@@ -254,14 +254,17 @@ void BattleCityEngine::Tick()
 	double dt = (double) (nextTick - lastTick) / 1000.0;
 	for ( i = 0 ; i < tanks.size() ; i++ )
 	{
-		if ( tanks[i].Direction == LEFT ) 
-			UpdateTankPos ( i , tanks[i].Pos.X - dt * tanks[i].Speed , tanks[i].Pos.Y );
-		else if ( tanks[i].Direction == RIGHT ) 
-			UpdateTankPos ( i , tanks[i].Pos.X + dt * tanks[i].Speed , tanks[i].Pos.Y );
-		else if ( tanks[i].Direction == UP ) 
-			UpdateTankPos ( i , tanks[i].Pos.X , tanks[i].Pos.Y - dt * tanks[i].Speed );
-		else if ( tanks[i].Direction == DOWN )
-			UpdateTankPos ( i , tanks[i].Pos.X , tanks[i].Pos.Y + dt * tanks[i].Speed );
+        if(tanks[i].Life > 0)
+        {
+            if ( tanks[i].Direction == LEFT ) 
+			    UpdateTankPos ( i , tanks[i].Pos.X - dt * tanks[i].Speed , tanks[i].Pos.Y );
+		    else if ( tanks[i].Direction == RIGHT ) 
+			    UpdateTankPos ( i , tanks[i].Pos.X + dt * tanks[i].Speed , tanks[i].Pos.Y );
+		    else if ( tanks[i].Direction == UP ) 
+			    UpdateTankPos ( i , tanks[i].Pos.X , tanks[i].Pos.Y - dt * tanks[i].Speed );
+		    else if ( tanks[i].Direction == DOWN )
+			    UpdateTankPos ( i , tanks[i].Pos.X , tanks[i].Pos.Y + dt * tanks[i].Speed );
+        }
 	}
 
 	list<unsigned long> bulletsToDie;
