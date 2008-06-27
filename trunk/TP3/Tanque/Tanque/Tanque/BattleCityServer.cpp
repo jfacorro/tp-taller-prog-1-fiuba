@@ -15,7 +15,8 @@ BattleCityServer::BattleCityServer(int port,BattleCityParameters parameters)
 		sockets[i] = SOCKET_ERROR;
 
 	engine = new BattleCityEngine ( parameters );
-	mutex = CreateMutex ( NULL , FALSE , NULL );
+	
+    mutex = CreateMutex ( NULL , FALSE , NULL );
 
     this->numPlayersConnected = 0;
 }
