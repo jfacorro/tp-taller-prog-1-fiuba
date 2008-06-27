@@ -34,27 +34,24 @@ int BattleCityServer::Start()
 
     int resultado = 0;
 
+    Socket listeningSocket;
+
+    listeningSocket.Listen(this->port, BATTLE_CITY_MAX_PLAYERS);
+
     while ( !salir)
 	{
-        Socket listeningSocket;
-
         printf("Waiting for clients.\n");
 
-        if(listeningSocket.Listen(this->port) == RES_OK)
-        {
-            if(this->numPlayersConnected < BATTLE_CITY_MAX_PLAYERS)
-            {
-			    NewConnection(listeningSocket.GetConnection().cxSocket);
-            }
-            else
-            {
-                printf("Maximum number of player already connected.\n");
-            }
-        }
+        Socket newSocket;
 
-        if(listeningSocket.IsActive())
-            listeningSocket.Close();
+        if(listeningSocket.Accept(&newSocket) == RES_OK)
+        {
+            NewConnection(newSocket.GetConnection().cxSocket);
+        }
 	}
+
+    if(listeningSocket.IsActive())
+        listeningSocket.Close();
 
     return resultado;
 }
@@ -87,22 +84,10 @@ void BattleCityServer::NewConnection(SOCKET s)
 	{
 		sockets[first] = s;
 
-        /// Listen on a new socket for this client
-        Socket sockClient;
-
-        int newPortNumber = port + first + 1;
-        /// Send the new number to the socket
-        BattleCityPortNumberPacket portNumberPacket(newPortNumber);
-        portNumberPacket.Send(s);
-
-        /// Listen on the new port
-        sockClient.Listen(newPortNumber);
-        sockets[first] = sockClient.GetSocket();
-
         /// Increment the number of players connected
         this->numPlayersConnected++;
 
-        printf("Client %d connected on port %d.\n", first + 1, newPortNumber);
+        printf("Client %d connected on port %d.\n", first + 1, port);
 
         BattleCityPlayerNumberPacket playerPacket(first);
         playerPacket.Send(sockets[first]);

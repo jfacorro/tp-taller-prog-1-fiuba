@@ -112,14 +112,6 @@ void BattleCityEngine::UpdateBombs()
 void BattleCityEngine::UpdateNextTick()
 {
 	lastTick = nextTick;
-    
-    /*
-
-	double max = parameters.BulletSpeed;
-	for ( unsigned int i = 0 ; i < parameters.Tanks.size() ; i++ )
-		if ( parameters.Tanks[i].Speed > max )
-			max = parameters.Tanks[i].Speed;
-    */
 
 	nextTick += (int) (1000.0 / FRAMES_PER_SECOND);
 }

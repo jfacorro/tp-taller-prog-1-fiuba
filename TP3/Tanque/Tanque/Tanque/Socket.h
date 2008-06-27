@@ -83,7 +83,8 @@ class Socket
             this->connection.cxSocket = sock;
         };
 
-		int Listen(int portNumber);
+		int Listen(int port, int backlog);
+        int Accept(Socket * acceptedSocket);
 		int Connect(const char * address, int portNumber);
 		int IsActive();
 		int Close();
@@ -96,6 +97,7 @@ class Socket
 
         SOCKET GetSocket() { return this->connection.cxSocket; };
         Connection GetConnection() { return this->connection;};
+        void SetConnection(Connection conn) { this->connection = conn; };
 };
 
 #endif
