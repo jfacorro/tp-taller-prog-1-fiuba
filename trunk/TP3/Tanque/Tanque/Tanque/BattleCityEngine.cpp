@@ -231,8 +231,12 @@ bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,doubl
 				hit = true;
 
 		if ( (int) currentX != (int) nextX || (int) currentY != (int) nextY )
-			if ( bullets[bullet].DistanceToDie-- == 0 ) 
+        {
+            bullets[bullet].DistanceToDie -= abs((nextX - currentX) + (nextY - currentY));
+
+			if ( bullets[bullet].DistanceToDie <= 0 ) 
 				hit = true;
+        }
 	}
 
 	return hit;
