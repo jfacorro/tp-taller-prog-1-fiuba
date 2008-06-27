@@ -8,7 +8,7 @@
 #define IP_SIZE		16 /* Longitud maxima de una direccion IP */
 
 
-int Socket::Listen(int port)
+int Socket::Listen(int port, int backlog)
 {
 	WSADATA wsaData; /* Utilizada para inicializacion del winsock */
 
@@ -57,36 +57,59 @@ int Socket::Listen(int port)
 			else 
 			{
 				/* Escucha una sola conexion */
-				codError = listen(sock, 1);
+				codError = listen(sock, backlog);
 				if (codError != 0) 
 				{
 					resultado = RES_ERROR_LISTEN;
-				} 
-				else 
-				{
-					/* Acepta la conexion */
-					sockAceptado = SOCKET_ERROR;
-					tamSockAddrIn = sizeof(sockAddrIn);
-					sockAceptado = accept(sock, (struct sockaddr*)&sockAddrIn, &tamSockAddrIn);
-
-					if (sockAceptado == SOCKET_ERROR) 
-					{
-						resultado = RES_ERROR_ACCEPT;
-					}
-					else 
-					{
-						this->connection.cxPuerto = port;
-						this->connection.cxIP = (char*) malloc(IP_SIZE);
-						this->connection.cxIP = GetIPAddressFromSocket(sockAddrIn);
-						this->connection.cxSocket = sockAceptado;
-						resultado = RES_OK;
-					}
-
-                    closesocket(sock);
 				}
+                else
+                {
+	                this->connection.cxPuerto = port;
+	                this->connection.cxIP = (char*) malloc(IP_SIZE);
+	                this->connection.cxIP = GetIPAddressFromSocket(sockAddrIn);
+	                this->connection.cxSocket = sock;
+                }
 			}
-      }
-   }
+        }
+    }
+
+    return resultado;
+}
+
+int Socket::Accept(Socket * acceptedSocket)
+{
+    int resultado;
+
+    SOCKET sockAceptado;
+
+    struct sockaddr_in sockAddrIn; /* Direccion de socket */
+    int tamSockAddrIn;
+
+    sockAddrIn.sin_family = AF_INET;     /* Protocolo ipv4 */
+    sockAddrIn.sin_port = htons(this->connection.cxPuerto); /* Puerto indicado */
+    sockAddrIn.sin_addr.s_addr = INADDR_ANY; /* Cualquier direccion IP */
+
+    /* Acepta la conexion */
+    sockAceptado = SOCKET_ERROR;
+    tamSockAddrIn = sizeof(sockAddrIn);
+    sockAceptado = accept(this->connection.cxSocket, (struct sockaddr*)&sockAddrIn, &tamSockAddrIn);
+
+    if (sockAceptado == SOCKET_ERROR) 
+    {
+        resultado = RES_ERROR_ACCEPT;
+    }
+    else 
+    {
+        Connection conn;
+        conn.cxSocket = this->connection.cxPuerto;
+        conn.cxIP = (char*) malloc(IP_SIZE);
+        conn.cxIP = GetIPAddressFromSocket(sockAddrIn);
+        conn.cxSocket = sockAceptado;
+
+        acceptedSocket->SetConnection(conn);
+
+        resultado = RES_OK;
+    }
 
     return resultado;
 }
