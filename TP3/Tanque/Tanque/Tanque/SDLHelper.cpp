@@ -59,12 +59,11 @@ void SDLHelper::Initialize()
 
 void SDLHelper::InitializeVideo(Configuration config)
 {
-    this->configuration = config;
-
     WaitForSingleObject(this->mutex, INFINITE);
+    
+    this->configuration = config;
     this->screen = SDL_SetVideoMode(config.GetResolucion().w, config.GetResolucion().h, 32, SDL_SWSURFACE);
-    ReleaseMutex(this->mutex);
-
+    
     if ( screen == NULL ) 
 	{
 		throw Exception(SDL_GetError());
@@ -79,6 +78,8 @@ void SDLHelper::InitializeVideo(Configuration config)
 	{
 		this->DrawRectangle(0, 0, this->screen->clip_rect.w, this->screen->clip_rect.h, config.GetColorFondoGraf(), config.GetTextura(), NULL);
 	}
+
+    ReleaseMutex(this->mutex);
 }
 
 void SDLHelper::Quit()

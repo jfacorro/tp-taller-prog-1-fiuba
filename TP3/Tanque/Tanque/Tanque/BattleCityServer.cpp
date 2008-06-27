@@ -308,11 +308,6 @@ void BattleCityServer::UpdateClients(BattleCityState state)
 {
     BattleCityScenario scenario(this->parameters.ArenaWidth, this->parameters.ArenaHeight); 
 
-    if(state.Tanks[0].Life <= 0 && state.Tanks[1].Life <= 0)
-    {
-        printf("Refreshed...\n");
-    }
-
     /************************************************/
     /* Send Tanks state                           */
     /************************************************/

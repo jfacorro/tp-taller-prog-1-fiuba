@@ -2,6 +2,7 @@
 #define BattleCityClient_h
 
 #include "Socket.h"
+#include "BattleCityCommunicationProtocol.h"
 #include "BattleCityEngine.h"
 #include "SDLHelper.h"
 
@@ -31,7 +32,10 @@ class BattleCityClient
         void AddTexture(char * name, char * filename);
         SDL_Surface * GetTexture(char * name);
 
+        void ReceiveParameters();
+
         static DWORD __stdcall ReceiveDataFromServer ( LPVOID param );
+        static void ProcessPacket(BattleCityClient * client, BattleCityDataPacket * packet);
 
         HANDLE mutex;
 

@@ -29,13 +29,24 @@ void BattleCityClient::Connect(char * dir, int socketNumber)
 
 void BattleCityClient::StartPlaying()
 {
-	bool salir = false;
+	bool salir = false;	
 
+    /// First get the parameters from the server
+    this->ReceiveParameters();
+
+    /// Initialize Video
+    this->sdlHelper.Initialize();
+    Configuration config;
+    config.SetResolucion(SDLHelper::ResolutionByWidth(this->parameters.ArenaWidth / 2));
+    this->sdlHelper.InitializeVideo(config);
+
+    /// Initialize Counter
+    this->InitializeTicks();
+
+    /// Start receiving data and rendering thread
     CreateThread (NULL, 0, ReceiveDataFromServer, (void *) this, 0, NULL);
 
-	this->sdlHelper.Initialize();	
-	this->InitializeTicks();
-
+    /// Handle key presses
     while ( !salir )
 	{
 		SDL_keysym keyPressed;
@@ -53,6 +64,27 @@ void BattleCityClient::StartPlaying()
 	}
 }
 
+void BattleCityClient::ReceiveParameters()
+{
+    bool salir = false;
+
+    while(!salir)
+    {
+        BattleCityDataPacket * packet = (BattleCityDataPacket *)BattleCityCommunicationProtocol::ReceiveDataPacket(this->socket);
+
+        BattleCityParametersPacket * parametersPacket = NULL;
+
+        if(packet != NULL)
+        {
+            BattleCityClient::ProcessPacket(this, packet);
+
+            salir = (packet->GetType() == PARAMETERS);
+        }
+
+        delete packet;
+    }
+}
+
 DWORD __stdcall BattleCityClient::ReceiveDataFromServer ( LPVOID param )
 {
     bool salir = false;
@@ -63,98 +95,92 @@ DWORD __stdcall BattleCityClient::ReceiveDataFromServer ( LPVOID param )
     {
         BattleCityDataPacket * packet = (BattleCityDataPacket *)BattleCityCommunicationProtocol::ReceiveDataPacket(client->socket);
 
-        BattleCityPlayerNumberPacket * playerNumberPacket  = NULL;
-        BattleCityParametersPacket * parametersPacket = NULL;
-        BattleCityCommandPacket * cmdPacket  = NULL;
-        BattleCityTankPacket * tankPacket = NULL;
-        BattleCityBulletPacket * bulletPacket = NULL;
-        BattleCityBombPacket * bombPacket = NULL;
-        BattleCityWallPacket * wallPacket = NULL;
-        BattleCityTexturePacket * texturePacket = NULL;
-        BattleCityPortNumberPacket * portNumberPacket = NULL;
-        Socket newSocket;
-
-        if(packet != NULL)
-        {
-            WaitForSingleObject(client->mutex, INFINITE);
-
-            switch(packet->GetType())
-            {
-                case DUMMY:
-                    break;
-                case PLAYERNUMBER:
-                    playerNumberPacket = (BattleCityPlayerNumberPacket *)packet;
-                    client->clientNumber = playerNumberPacket->GetPlayerNumber();
-                    break;
-                case PORTNUMBER:
-                    portNumberPacket = (BattleCityPortNumberPacket *)packet;
-                    newSocket.Connect(client->socket.GetConnection().cxIP, portNumberPacket->GetPortNumber());
-                    client->socket.Close();
-                    client->socket = newSocket;
-                    break;
-                case PARAMETERS:
-                    parametersPacket = (BattleCityParametersPacket *)packet;
-                    client->parameters = parametersPacket->GetParameters();
-                    break;
-                case TANK:
-                    tankPacket = (BattleCityTankPacket *)packet;
-                    for(int i = 0; i < tankPacket->tanks.size(); i++)
-                    {
-                        client->state.Tanks.push_back(tankPacket->tanks[i]);
-                    }
-                    break;
-                case BULLET:
-                    bulletPacket = (BattleCityBulletPacket *)packet;
-                    for(int i = 0; i < bulletPacket->bullets.size(); i++)
-                    {
-                        client->state.Bullets.push_back(bulletPacket->bullets[i]);
-                    }
-                    break;
-                case BOMB:
-                    bombPacket = (BattleCityBombPacket *)packet;
-                    for(int i = 0; i < bombPacket->bombs.size(); i++)
-                    {
-                        client->state.Bombs.push_back(bombPacket->bombs[i]);
-                    }
-                    break;
-                case WALL:
-                    wallPacket = (BattleCityWallPacket *)packet;
-                    for(int i = 0; i < wallPacket->walls.size(); i++)
-                    {
-                        client->state.Walls.push_back(wallPacket->walls[i]);
-                    }
-                    break;
-                case TEXTURE:
-                    texturePacket = (BattleCityTexturePacket *)packet;
-                    client->AddTexture(texturePacket->GetBitmapName(), texturePacket->SaveBitmap());
-                    break;
-                case COMMAND:
-                    cmdPacket = (BattleCityCommandPacket *)packet;
-                    if(cmdPacket->GetCommandType() == UPDATESCREEN)
-                    {                        
-                        client->RenderScreenSDL();
-
-					    /// Wait some time
-					    /// SDL_Delay(client->GetDelayTime());
-
-					    client->UpdateTicks();
-
-                        client->state.Tanks.clear();
-                        client->state.Bullets.clear();
-                        client->state.Bombs.clear();
-                        client->state.Walls.clear();
-                    }
-
-                    break;
-            }
-
-            ReleaseMutex(client->mutex);
-        }
+        BattleCityClient::ProcessPacket(client, packet);
 
         delete packet;
     }
 
     return 0;
+}
+
+void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPacket * packet)
+{
+    BattleCityPlayerNumberPacket * playerNumberPacket  = NULL;
+    BattleCityParametersPacket * parametersPacket = NULL;
+    BattleCityCommandPacket * cmdPacket  = NULL;
+    BattleCityTankPacket * tankPacket = NULL;
+    BattleCityBulletPacket * bulletPacket = NULL;
+    BattleCityBombPacket * bombPacket = NULL;
+    BattleCityWallPacket * wallPacket = NULL;
+    BattleCityTexturePacket * texturePacket = NULL;
+
+    if(packet != NULL)
+    {
+        WaitForSingleObject(client->mutex, INFINITE);
+
+        switch(packet->GetType())
+        {
+            case DUMMY:
+                break;
+            case PLAYERNUMBER:
+                playerNumberPacket = (BattleCityPlayerNumberPacket *)packet;
+                client->clientNumber = playerNumberPacket->GetPlayerNumber();
+                break;
+            case PARAMETERS:
+                parametersPacket = (BattleCityParametersPacket *)packet;
+                client->parameters = parametersPacket->GetParameters();
+                break;
+            case TANK:
+                tankPacket = (BattleCityTankPacket *)packet;
+                for(int i = 0; i < tankPacket->tanks.size(); i++)
+                {
+                    client->state.Tanks.push_back(tankPacket->tanks[i]);
+                }
+                break;
+            case BULLET:
+                bulletPacket = (BattleCityBulletPacket *)packet;
+                for(int i = 0; i < bulletPacket->bullets.size(); i++)
+                {
+                    client->state.Bullets.push_back(bulletPacket->bullets[i]);
+                }
+                break;
+            case BOMB:
+                bombPacket = (BattleCityBombPacket *)packet;
+                for(int i = 0; i < bombPacket->bombs.size(); i++)
+                {
+                    client->state.Bombs.push_back(bombPacket->bombs[i]);
+                }
+                break;
+            case WALL:
+                wallPacket = (BattleCityWallPacket *)packet;
+                for(int i = 0; i < wallPacket->walls.size(); i++)
+                {
+                    client->state.Walls.push_back(wallPacket->walls[i]);
+                }
+                break;
+            case TEXTURE:
+                texturePacket = (BattleCityTexturePacket *)packet;
+                client->AddTexture(texturePacket->GetBitmapName(), texturePacket->SaveBitmap());
+                break;
+            case COMMAND:
+                cmdPacket = (BattleCityCommandPacket *)packet;
+                if(cmdPacket->GetCommandType() == UPDATESCREEN)
+                {                        
+                    client->RenderScreenSDL();
+
+				    client->UpdateTicks();
+
+                    client->state.Tanks.clear();
+                    client->state.Bullets.clear();
+                    client->state.Bombs.clear();
+                    client->state.Walls.clear();
+                }
+
+                break;
+        }
+
+        ReleaseMutex(client->mutex);
+    }
 }
 
 void BattleCityClient::AddTexture(char * name, char * filename)
@@ -180,7 +206,7 @@ SDL_Surface * BattleCityClient::GetTexture(char * name)
 void BattleCityClient::UpdateEngine (int tecla)
 {
     #ifdef DEBUG
-    printf("Key was pressed = %d\n", tecla);
+    /// printf("Key was pressed = %d\n", tecla);
     #endif
 
 	BattleCityCommandPacket keyPacket(KEYPRESSED, this->clientNumber, tecla);
@@ -251,8 +277,6 @@ void BattleCityClient::RenderScreenSDL()
 
             SDL_Surface * bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture(state.Tanks[i].TextureName), tankRect.Width, tankRect.Height);
 
-            printf("Tank %d with life %d.\n", i, state.Tanks[i].Life);
-
             if(state.Tanks[i].Life > 0)
             {
                 SDL_Surface * rotatedbitmap = NULL;
@@ -277,16 +301,15 @@ void BattleCityClient::RenderScreenSDL()
 
                 bitmap = rotatedbitmap;
             }
-
-            printf("Drawing tank %d...\n", i);
+            else
+            {
+                bitmap = this->GetTexture("explosion01");
+                bitmap = SDLHelper::SDLResizeBitmap(bitmap, bitmap->w, bitmap->h);
+            }
 
             this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, bitmap, NULL);
 
-            printf("Drew tank %d.\n", i);
-
             if(bitmap != NULL) SDL_FreeSurface(bitmap);
-
-            printf("Freeing tank %d.\n", i);
         }
         /// Draw all lifes
         this->sdlHelper.DrawRectangle(config.GetResolucion().w - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
@@ -343,11 +366,6 @@ void BattleCityClient::RenderScreenSDL()
 	}
 
 	this->sdlHelper.Refresh();
-
-    if(state.Tanks[0].Life <= 0 && state.Tanks[1].Life <= 0)
-    {
-        printf("Refreshed...\n");
-    }
 }
 
 void BattleCityClient::RenderScreenChars()
