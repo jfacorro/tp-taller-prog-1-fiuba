@@ -53,13 +53,17 @@ void SDLHelper::Initialize()
 		throw Exception(SDL_GetError());
 		exit(1);
     }
+
+    this->mutex = CreateMutex(NULL, FALSE, NULL);
 }
 
 void SDLHelper::InitializeVideo(Configuration config)
 {
     this->configuration = config;
 
-	screen = SDL_SetVideoMode(config.GetResolucion().w, config.GetResolucion().h, 32, SDL_SWSURFACE);
+    WaitForSingleObject(this->mutex, INFINITE);
+    this->screen = SDL_SetVideoMode(config.GetResolucion().w, config.GetResolucion().h, 32, SDL_SWSURFACE);
+    ReleaseMutex(this->mutex);
 
     if ( screen == NULL ) 
 	{

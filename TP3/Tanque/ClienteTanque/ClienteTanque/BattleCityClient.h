@@ -30,9 +30,16 @@ class BattleCityClient
 		void RenderScreenSDL();
         void AddTexture(char * name, char * filename);
         SDL_Surface * GetTexture(char * name);
-        
+
+        static DWORD __stdcall ReceiveDataFromServer ( LPVOID param );
+
+        HANDLE mutex;
+
     public:
-        BattleCityClient() {};
+        BattleCityClient() 
+        {
+            this->mutex = CreateMutex ( NULL , FALSE , NULL );
+        };
 
         void Connect(char * dir, int socketNumber);
         bool IsConnected() { return this->isConnected; };

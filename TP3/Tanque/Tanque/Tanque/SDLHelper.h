@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Exception.h"
 #include "StringHelper.h"
+#include "windows.h"
 
 #ifndef SDLHelper_h
 
@@ -84,6 +85,8 @@ class SDLHelper
 
 		void DrawPixel(SDL_Surface * screen, int x, int y, Uint8 R, Uint8 G, Uint8 B);
 		void GetPixel(SDL_Surface * screen, int x, int y, Uint8* R, Uint8* G, Uint8* B);
+
+        HANDLE mutex;
 	public:
 		SDLHelper();
 		~SDLHelper() {};
