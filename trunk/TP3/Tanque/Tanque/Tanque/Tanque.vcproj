@@ -179,6 +179,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\ArrayList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\BattleCityCommunicationProtocol.cpp"
 				>
 			</File>
@@ -215,7 +219,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Tag.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TagProperty.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Tanque.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\XMLParser.cpp"
 				>
 			</File>
 		</Filter>
@@ -224,6 +240,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\ArrayList.h"
+				>
+			</File>
 			<File
 				RelativePath=".\BattleCityCommunicationProtocol.h"
 				>
@@ -245,6 +265,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Screen.h"
 				>
 			</File>
@@ -260,12 +284,32 @@
 				RelativePath=".\StringHelper.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Tag.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TagProperty.h"
+				>
+			</File>
+			<File
+				RelativePath=".\XMLParser.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="Arenas"
+			>
+			<File
+				RelativePath=".\Arena01.xml"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

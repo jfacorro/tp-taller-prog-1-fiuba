@@ -88,14 +88,18 @@ void BattleCityServer::NewConnection(SOCKET s)
         /// Increment the number of players connected
         this->numPlayersConnected++;
 
+        /// Print message to screen
         printf("Client %d connected on port %d.\n", first + 1, port);
 
+        /// Send what number of player the client is
         BattleCityPlayerNumberPacket playerPacket(first);
         playerPacket.Send(sockets[first]);
 
+        /// Send parameters to client
         BattleCityParametersPacket parametersPacket(GetBattleCityClientParameters(this->parameters));
         parametersPacket.Send(sockets[first]);
 
+        /// Send all textures to client
         for(int textureIndex = 0; textureIndex < this->parameters.Textures.size();textureIndex++)
         {
             BattleCityTexture texture = this->parameters.Textures[textureIndex];
@@ -103,6 +107,9 @@ void BattleCityServer::NewConnection(SOCKET s)
 
             texturePacket.Send(sockets[first]);
         }
+
+        /// Send state for the first time
+        this->UpdateClients(this->engine->GetState());
 
 		BCThreadParam* p = new BCThreadParam();
 		p->socketPos = first;

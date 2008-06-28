@@ -289,6 +289,7 @@ void BattleCityClient::RenderScreenSDL()
                     case RIGHT:
                         rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, -90);
                         break;
+                    case NONE:
                     case UP:
                         rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 0);
                         break;

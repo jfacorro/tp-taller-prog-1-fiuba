@@ -26,7 +26,7 @@ DoublePoint;
 
 typedef enum _Direction
 {
-	UP, DOWN, LEFT, RIGHT
+	UP, DOWN, LEFT, RIGHT, NONE
 }
 Direction;	
 
@@ -69,6 +69,7 @@ class BattleCityTank : public BattleCityCollitionObject
 		{
 			this->Width = size;
 			this->Height = size;
+            this->Direction = NONE;
 		};
 
 		double			Speed;
