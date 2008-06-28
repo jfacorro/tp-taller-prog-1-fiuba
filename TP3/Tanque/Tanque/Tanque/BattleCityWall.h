@@ -6,9 +6,9 @@
 
 enum BattleCityWallTypes
 {
-	WOOD,
-	ROCK,
-	IRON
+	WOOD = 0,
+	ROCK = 1,
+	IRON = 2
 };
 
 class BattleCityWall : public BattleCityCollitionObject
