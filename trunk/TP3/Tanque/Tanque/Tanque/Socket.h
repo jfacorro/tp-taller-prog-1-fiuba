@@ -31,7 +31,7 @@ enum DataType { INT_TYPE, CHAR_TYPE, FLOAT_TYPE, DOUBLE_TYPE };
 class SocketPacket
 {
 	protected:
-		int size;
+		long size;
 		char * data;
 
 	public:

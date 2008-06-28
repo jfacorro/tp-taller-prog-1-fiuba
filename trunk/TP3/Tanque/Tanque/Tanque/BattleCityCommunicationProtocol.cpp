@@ -426,16 +426,31 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET sock)
 
                 bool successTransfer = true;
 
+                fd_set readSocket;
+                FD_ZERO(&readSocket);
+                FD_SET(socket.GetConnection().cxSocket, &readSocket);
+
+                int selectResult = 0;
+                int highestSock = socket.GetConnection().cxSocket + 1;
+
                 while ( totalRecibido < packetDataLength )
                 {
-                    cantRecibida = recv (socket.GetConnection().cxSocket, packetData + PACKET_HEADER_SIZE + totalRecibido, packetDataLength - totalRecibido, 0);
+                    selectResult = select(1, &readSocket, NULL, NULL, NULL);
+                    if(selectResult == 1)
+                    {
+                        cantRecibida = recv (socket.GetConnection().cxSocket, packetData + PACKET_HEADER_SIZE + totalRecibido, packetDataLength - totalRecibido, 0);
 
-                    if ( cantRecibida == 0 || cantRecibida == -1 )
-                        successTransfer = false;
+                        if ( cantRecibida == -1 )
+                            successTransfer = false;
 
-                    totalRecibido += cantRecibida;
-                    if (totalRecibido >= packetDataLength) 
-                        break;
+                        totalRecibido += cantRecibida;
+                        if (totalRecibido >= packetDataLength) 
+                            break;
+                    }
+                    else
+                    {
+                        selectResult = 0;
+                    }
                 }
 
                 if(successTransfer)
@@ -505,7 +520,6 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET sock)
 
 void BattleCityCommunicationProtocol::WriteLog(const char * msg)
 {
-    /*    
     FILE * file;
 
     file = fopen("log.txt", "a");
@@ -515,7 +529,6 @@ void BattleCityCommunicationProtocol::WriteLog(const char * msg)
         fputs (msg, file);
         fclose (file);
     }
-    */
 }
 
 #endif

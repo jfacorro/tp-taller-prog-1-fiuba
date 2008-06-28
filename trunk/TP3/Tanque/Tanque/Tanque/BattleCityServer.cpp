@@ -108,13 +108,13 @@ void BattleCityServer::NewConnection(SOCKET s)
             texturePacket.Send(sockets[first]);
         }
 
-        /// Send state for the first time
-        this->UpdateClients(this->engine->GetState());
-
 		BCThreadParam* p = new BCThreadParam();
 		p->socketPos = first;
 		p->ptr = this;
 		CreateThread ( NULL , 0 , ThreadProc , (LPVOID) p , 0 , NULL );
+
+        /// Send state for the first time
+        this->UpdateClients(this->engine->GetState());
 	}
 }
 
