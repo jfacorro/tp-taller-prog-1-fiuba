@@ -29,6 +29,7 @@ void BattleCityClient::Connect(char * dir, int socketNumber)
 
 void BattleCityClient::StartPlaying()
 {
+    BattleCityCommunicationProtocol::WriteLog("---------------------------------------.\n");
 	bool salir = false;	
 
     /// First get the parameters from the server
@@ -121,16 +122,20 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
         switch(packet->GetType())
         {
             case DUMMY:
+                BattleCityCommunicationProtocol::WriteLog("Received DUMMY.\n");
                 break;
             case PLAYERNUMBER:
+                BattleCityCommunicationProtocol::WriteLog("Received PLAYERNUMBER.\n");
                 playerNumberPacket = (BattleCityPlayerNumberPacket *)packet;
                 client->clientNumber = playerNumberPacket->GetPlayerNumber();
                 break;
             case PARAMETERS:
+                BattleCityCommunicationProtocol::WriteLog("Received PARAMETERS.\n");
                 parametersPacket = (BattleCityParametersPacket *)packet;
                 client->parameters = parametersPacket->GetParameters();
                 break;
             case TANK:
+                BattleCityCommunicationProtocol::WriteLog("Received TANK.\n");
                 tankPacket = (BattleCityTankPacket *)packet;
                 for(int i = 0; i < tankPacket->tanks.size(); i++)
                 {
@@ -138,6 +143,7 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
                 }
                 break;
             case BULLET:
+                BattleCityCommunicationProtocol::WriteLog("Received BULLET.\n");
                 bulletPacket = (BattleCityBulletPacket *)packet;
                 for(int i = 0; i < bulletPacket->bullets.size(); i++)
                 {
@@ -145,6 +151,7 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
                 }
                 break;
             case BOMB:
+                BattleCityCommunicationProtocol::WriteLog("Received BOMB.\n");
                 bombPacket = (BattleCityBombPacket *)packet;
                 for(int i = 0; i < bombPacket->bombs.size(); i++)
                 {
@@ -152,6 +159,7 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
                 }
                 break;
             case WALL:
+                BattleCityCommunicationProtocol::WriteLog("Received WALL.\n");
                 wallPacket = (BattleCityWallPacket *)packet;
                 for(int i = 0; i < wallPacket->walls.size(); i++)
                 {
@@ -159,10 +167,12 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
                 }
                 break;
             case TEXTURE:
+                BattleCityCommunicationProtocol::WriteLog("Received TEXTURE.\n");
                 texturePacket = (BattleCityTexturePacket *)packet;
                 client->AddTexture(texturePacket->GetBitmapName(), texturePacket->SaveBitmap());
                 break;
             case COMMAND:
+                BattleCityCommunicationProtocol::WriteLog("Received COMMAND.\n");
                 cmdPacket = (BattleCityCommandPacket *)packet;
                 if(cmdPacket->GetCommandType() == UPDATESCREEN)
                 {                        
@@ -271,6 +281,8 @@ void BattleCityClient::RenderScreenSDL()
     /************************************************/
     for(int i = 0; i <state.Tanks.size(); i++)
 	{
+        /// All tanks are sent to all clients in order
+        /// to show life and points
         if(state.Tanks[i].Intersects(quadrant))
         {
             Rect tankRect = state.Tanks[i].GetRect();
@@ -350,20 +362,27 @@ void BattleCityClient::RenderScreenSDL()
 		BattleCityWallTypes t = state.Walls[j].GetType();
 		Color wallColor;
 
+        SDL_Surface * bitmap = NULL;
+
 		switch(t)
 		{
 			case WOOD:
 				wallColor = greyWood;
+                bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("wood"), rect.Width, rect.Height);
 				break;
 			case IRON:
 				wallColor = greyIron;
+                bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("iron"), rect.Width, rect.Height);
 				break;
 			case ROCK:
 				wallColor = greyRock;
+                bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("rock"), rect.Width, rect.Height);
 				break;
 		}
 		
-		this->sdlHelper.DrawRectangle(rect.X - quadrant.X, rect.Y - quadrant.Y, rect.Width, rect.Height, wallColor, NULL, NULL);
+		this->sdlHelper.DrawRectangle(rect.X - quadrant.X, rect.Y - quadrant.Y, rect.Width, rect.Height, wallColor, bitmap, NULL);
+
+        if(bitmap != NULL) SDL_FreeSurface(bitmap);
 	}
 
 	this->sdlHelper.Refresh();

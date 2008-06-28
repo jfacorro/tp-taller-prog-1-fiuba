@@ -53,9 +53,14 @@ class BattleCityDataPacket : public SocketPacket
             send(socket, this->data, this->size, 0);
         };
 
-        static int GetSizeFromData(char * data)
+        static long GetSizeFromData(char * data)
         {
-            return ((int) data[2] << 8) + data[1];
+            long size;
+
+            size = (long) (data[2] << 8);
+            size += (long)(data[1] & 0xFF);
+
+            return size;
         };
 
         BattleCityPacketType GetType() { return this->type; };
@@ -226,11 +231,12 @@ class BattleCityCommunicationProtocol
 {
     private:
         BattleCityCommunicationProtocol() {};
-        static void WriteLog(const char * msg);
 
     public:
         static void * ReceiveDataPacket(Socket socket);
         static void * ReceiveDataPacket(SOCKET socket);
+
+        static void WriteLog(const char * msg);
 };
 
 #endif

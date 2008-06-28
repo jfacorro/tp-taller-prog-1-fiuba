@@ -199,17 +199,28 @@ int Socket::Receive(SocketPacket * packet)
     int resultado = RES_ERROR_UNKNOWN;
     int cantRecibida = 0, totalRecibido = 0, tamano;   
 
+    fd_set readSocket;
+    FD_ZERO(&readSocket);
+    FD_SET(this->connection.cxSocket, &readSocket);
+
+    int selectResult = 0;
+    int highestSock = this->connection.cxSocket + 1;
+
     tamano = packet->GetSize();
     while ( totalRecibido < tamano )
     {
-	    cantRecibida = recv (this->connection.cxSocket, (char *)((char *)packet->GetData() + totalRecibido), tamano - totalRecibido, 0);
+        selectResult = select(1, &readSocket, NULL, NULL, NULL);
+        if(selectResult == 1)
+        {
+	        cantRecibida = recv (this->connection.cxSocket, (char *)((char *)packet->GetData() + totalRecibido), tamano - totalRecibido, 0);
 
-	    if ( cantRecibida == 0 || cantRecibida == -1 )
-		    return RES_ERROR_RECEIVE;
+	        if (cantRecibida == -1 )
+		        return RES_ERROR_RECEIVE;
 
-	    totalRecibido += cantRecibida;
-	    if (totalRecibido >= tamano) 
-		    break;
+	        totalRecibido += cantRecibida;
+	        if (totalRecibido >= tamano) 
+		        break;
+        }
     }
 
     return RES_OK;
