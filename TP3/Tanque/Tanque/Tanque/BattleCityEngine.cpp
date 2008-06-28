@@ -82,17 +82,32 @@ void BattleCityEngine::UpdateBombs()
 
 			for ( unsigned int i = 0 ; i < tanks.size() ; i++ )
 			{
-                if (tanks[i].Intersects(iter->GetExplodedRect())) 
+                if (tanks[i].Intersects(iter->GetExplodedRect()))
+                {
 					HitTank(i);
+                }
 			}
 
 			for ( unsigned int j = 0 ; j < walls.size() ; j++ )
+            {
 				if ( walls[j].Intersects(iter->GetExplodedRect()))
+                {
 					if ( walls[j].Blast() <= 0 )
 					{
-						walls.erase(walls.begin()+j);
+                        switch(walls[j].GetType())
+                        {
+                            case WOOD:
+                                tanks[iter->Tank].Points += BATTLE_CITY_POINTS_WOOD;
+                                break;
+                            case ROCK:
+                                tanks[iter->Tank].Points += BATTLE_CITY_POINTS_ROCK;
+                                break;
+                        }
+                        walls.erase(walls.begin()+j);
 						j--;
 					}
+                }
+            }
 		}
 	}
 
@@ -171,17 +186,18 @@ void BattleCityEngine::UpdateTankPos(unsigned int tank,double nextX,double nextY
 bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,double currentY,double nextX,double nextY)
 {
 	bool hit = false;
-    Point nextPoint, currentPoint;
-    nextPoint.X = nextX;
-    nextPoint.Y = nextY;
-    currentPoint.X = currentX;
-    currentPoint.Y = currentY;
+    BattleCityBullet currentBullet = bullets[bullet];
+    
+    Rect currentRect = currentBullet.GetRect();
+    Rect nextRect = currentBullet.GetRect();
+    nextRect.X = nextX;
+    nextRect.Y = nextY;
+
 	for ( unsigned int i = 0 ; i < tanks.size() && !hit ; i++ )
         if 
         (
-            // bullets[bullet].Tank != i && 
-            tanks[i].Intersects(nextPoint) && 
-            tanks[i].Intersects(currentPoint) 
+            tanks[i].Intersects(currentRect) && 
+            tanks[i].Intersects(nextRect) 
         )
 		{
 			HitTank(i);
@@ -190,22 +206,26 @@ bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,doubl
 
 	if ( !hit )
 	{
-		Point p;
-		p.X = (int) nextX;
-		p.Y = (int) nextY;
 		for ( unsigned int j = 0 ; j < walls.size() && !hit ; j++ )
-			if ( walls[j].Intersects(p) )
+            if ( walls[j].Intersects(nextRect))
 			{
 				if ( walls[j].GetType() == IRON )
 				{
-					if ( bullets[bullet].Direction == LEFT ) 
-						bullets[bullet].Direction = RIGHT;
-					else if ( bullets[bullet].Direction == RIGHT )
-						bullets[bullet].Direction = LEFT;
-					else if ( bullets[bullet].Direction == UP )
-						bullets[bullet].Direction = DOWN;
-					else if ( bullets[bullet].Direction == DOWN )
-						bullets[bullet].Direction = UP;
+					switch(bullets[bullet].Direction)
+                    {
+                        case LEFT:
+						    bullets[bullet].Direction = RIGHT;
+                            break;
+                        case RIGHT:
+    						bullets[bullet].Direction = LEFT;
+                            break;
+                        case UP:
+    						bullets[bullet].Direction = DOWN;
+                            break;
+                        case DOWN:
+    						bullets[bullet].Direction = UP;
+                            break;
+                    }
 				}
 				else 
 				{
@@ -356,16 +376,16 @@ bool BattleCityEngine::ShootBullet(unsigned int tank)
     switch(b.Direction)
     {
         case LEFT:
-            b.Pos.X -= this->parameters.TankRadius + 1;
+            b.Pos.X -= this->parameters.TankRadius + b.GetRect().Width / 2 + 1;
             break;
         case RIGHT:
-            b.Pos.X += this->parameters.TankRadius + 1;
+            b.Pos.X += this->parameters.TankRadius + b.GetRect().Width / 2 + 1;
             break;
         case UP:
-            b.Pos.Y -= this->parameters.TankRadius + 1;
+            b.Pos.Y -= this->parameters.TankRadius + b.GetRect().Height / 2 + 1;
             break;
         case DOWN:
-            b.Pos.Y += this->parameters.TankRadius + 1;
+            b.Pos.Y += this->parameters.TankRadius + b.GetRect().Height / 2 + 1;
             break;
     }
 
