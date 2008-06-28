@@ -3,6 +3,11 @@
 
 #include "BattleCityTypes.h"
 
+#define BATTLE_CITY_POINTS_WOOD 25
+#define BATTLE_CITY_POINTS_ROCK 25
+
+#define BATTLE_CITY_WOOD_INITIAL_ENERGY 2
+#define BATTLE_CITY_ROCK_INITIAL_ENERGY 4
 
 enum BattleCityWallTypes
 {

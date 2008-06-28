@@ -8,6 +8,9 @@ using namespace std;
 
 #define TEXTURE_NAME_MAX_LENGTH 50
 
+#define BATTLE_CITY_BOMB_HIT_ENERGY 2
+#define BATTLE_CITY_BULLET_HIT_ENERGY 1
+
 typedef struct _Point
 {
 	int X;
@@ -70,11 +73,14 @@ class BattleCityTank : public BattleCityCollitionObject
 			this->Width = size;
 			this->Height = size;
             this->Direction = NONE;
+
+            this->Points = 0;
 		};
 
 		double			Speed;
 		Direction		Direction;
 		unsigned int	Life;
+        unsigned int	Points;
         char        	TextureName[TEXTURE_NAME_MAX_LENGTH];
 };
 

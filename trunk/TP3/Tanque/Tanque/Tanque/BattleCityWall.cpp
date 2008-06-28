@@ -3,7 +3,6 @@
 #include "math.h"
 #include "exception"
 
-
 BattleCityWall::BattleCityWall(Rect rect,BattleCityWallTypes type) : type(type)
 {
 	this->Pos.X = rect.X;
@@ -12,9 +11,9 @@ BattleCityWall::BattleCityWall(Rect rect,BattleCityWallTypes type) : type(type)
 	this->Height = rect.Height;
 
 	if ( type == WOOD )
-		life = 2;
+		life = BATTLE_CITY_WOOD_INITIAL_ENERGY;
 	else if ( type == ROCK )
-		life = 4;
+		life = BATTLE_CITY_ROCK_INITIAL_ENERGY;
 	else if ( type == IRON )
 		life = 1;
 	else 
@@ -64,7 +63,7 @@ unsigned int BattleCityWall::Distance(DoublePoint p)
 int BattleCityWall::Shoot()
 {
 	if ( type != IRON )
-		life--;
+		life -= BATTLE_CITY_BULLET_HIT_ENERGY;
 
 	return life;
 }
@@ -73,7 +72,7 @@ int BattleCityWall::Shoot()
 int BattleCityWall::Blast()
 {
 	if ( type != IRON )
-		life -= 2;
+		life -= BATTLE_CITY_BOMB_HIT_ENERGY;
 
 	return life;
 }
