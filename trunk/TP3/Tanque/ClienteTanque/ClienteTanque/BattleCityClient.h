@@ -5,12 +5,14 @@
 #include "BattleCityCommunicationProtocol.h"
 #include "BattleCityEngine.h"
 #include "SDLHelper.h"
+#include "SDL_ttf.h"
 
 class BattleCityClient
 {
     private:
         Socket socket;
 		SDLHelper sdlHelper;
+        TTF_Font * sdlFont;
         BattleCityClientParameters parameters;
         BattleCityState state;
 
