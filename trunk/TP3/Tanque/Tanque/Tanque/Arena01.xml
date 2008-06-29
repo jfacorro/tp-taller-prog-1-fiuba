@@ -1,15 +1,15 @@
 <Arena>
   <Configuration>
     <BackgroundTexture>background</BackgroundTexture>
+    <ExplosionTexture>explosion</ExplosionTexture>
   </Configuration>
   <Textures>
-    <Texture id="tank01" path="textures\tank01.bmp" />
-    <Texture id="tank02" path="textures\tank02.bmp" />
-    <Texture id="explosion01" path="textures\explosion.bmp" />
+    <Texture id="1" path="textures\tank01.jpg" />
+    <Texture id="tank02" path="textures\tank02.jpg" />
+    <Texture id="explosion" path="textures\explosion.jpg" />
     <Texture id="iron" path="textures\iron.jpg" />
     <Texture id="rock" path="textures\rock.jpg" />
     <Texture id="wood" path="textures\wood.jpg" />
-    <Texture id="background" path="textures\dirt.jpg" />
   </Textures>
   <Tanks>
     <Tank texture="tank01" x="200" y="100"/>

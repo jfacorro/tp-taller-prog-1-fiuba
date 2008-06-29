@@ -22,6 +22,7 @@ typedef struct _BattleCityParameters
     unsigned int PixelsPerUM;
 
     char BackGroundTextureId[TEXTURE_NAME_MAX_LENGTH];
+    char ExplosionTextureId[TEXTURE_NAME_MAX_LENGTH];
 	
 	vector<BattleCityTank> Tanks;
 	vector<BattleCityWall> Walls;
@@ -49,6 +50,7 @@ typedef struct _BattleCityClientParameters
     unsigned int PixelsPerUM;
 
     char BackGroundTextureId[TEXTURE_NAME_MAX_LENGTH];
+    char ExplosionTextureId[TEXTURE_NAME_MAX_LENGTH];
 
 	unsigned int	MaxBullets;
 	double			BulletSpeed;

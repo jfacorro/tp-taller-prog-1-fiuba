@@ -35,12 +35,6 @@ void BattleCityClient::StartPlaying()
     /// First get the parameters from the server
     this->ReceiveParametersAndTextures();
 
-    /// Initialize Video
-    this->sdlHelper.Initialize();
-    Configuration config;
-    config.SetResolucion(SDLHelper::ResolutionByWidth(800));
-    this->sdlHelper.InitializeVideo(config);
-
     /// Initialize Counter
     this->InitializeTicks();
 
@@ -229,7 +223,9 @@ void BattleCityClient::RenderScreenSDL()
     /************************************************/
     if(!this->sdlHelper.VideoInitialized())
 	{
-        return;
+        Configuration config;
+        config.SetResolucion(SDLHelper::ResolutionByWidth(800));
+        this->sdlHelper.InitializeVideo(config);
 	}
 
     BattleCityScenario scenario(this->parameters.ArenaWidth, this->parameters.ArenaHeight); 
@@ -339,14 +335,16 @@ void BattleCityClient::RenderScreenSDL()
             }
             else
             {
-                bitmap = this->GetTexture("explosion01");
-                bitmap = SDLHelper::SDLResizeBitmap(bitmap, bitmap->w, bitmap->h);
+                bitmap = this->GetTexture(this->parameters.ExplosionTextureId);
+                
                 tankRect.Width = bitmap->w;
                 tankRect.Height = bitmap->h;
-                tankRect.X = state.Tanks[i].Pos.X - tankRect.Width;
-                tankRect.Y = state.Tanks[i].Pos.Y - tankRect.Height;
+                tankRect.X = state.Tanks[i].Pos.X - tankRect.Width / 2;
+                tankRect.Y = state.Tanks[i].Pos.Y - tankRect.Height / 2;
 
                 tankRect = this->GetScaledRectangle(tankRect, quadrant, pixelsPerUM);
+
+                bitmap = SDLHelper::SDLResizeBitmap(bitmap, tankRect.Width, tankRect.Height);                
             }
 
             this->sdlHelper.DrawRectangle
@@ -396,10 +394,10 @@ void BattleCityClient::RenderScreenSDL()
 		{
 			this->sdlHelper.DrawCircle
             (
-                state.Bombs[i].Pos.X * pixelsPerUM,
-                state.Bombs[i].Pos.Y * pixelsPerUM,
-                bombBlastRadius * pixelsPerUM, 
-                red, 
+                (state.Bombs[i].Pos.X - quadrant.X) * pixelsPerUM,
+                (state.Bombs[i].Pos.Y - quadrant.Y) * pixelsPerUM,
+                bombBlastRadius * pixelsPerUM,
+                red,
                 NULL, 
                 NULL
             );
