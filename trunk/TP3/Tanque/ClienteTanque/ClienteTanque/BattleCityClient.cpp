@@ -391,9 +391,6 @@ void BattleCityClient::RenderScreenSDL()
         sText = TTF_RenderText_Solid( this->sdlFont, pointsStr, fontColor );
         this->sdlHelper.DrawRectangle(infoX, infoY, sText->w, sText->h, greenLife, sText, NULL);
         SDL_FreeSurface( sText );
-
-        gotoxy(1,10 + i);
-        printf("Tank %d point's: %d\n", i+1, state.Tanks[i].Points);
 	}
 
 	/************************************************/
