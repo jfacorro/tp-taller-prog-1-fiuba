@@ -232,6 +232,16 @@ bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,doubl
 					hit = true;
 					if ( walls[j].Shoot() <= 0 )
 					{
+                        switch(walls[j].GetType())
+                        {
+                            case WOOD:
+                                tanks[bullets[bullet].Tank].Points += BATTLE_CITY_POINTS_WOOD;
+                                break;
+                            case ROCK:
+                                tanks[bullets[bullet].Tank].Points += BATTLE_CITY_POINTS_ROCK;
+                                break;
+                        }
+
 						walls.erase(walls.begin() + j);
 						j--;
 					}

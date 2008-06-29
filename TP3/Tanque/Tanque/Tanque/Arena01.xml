@@ -1,0 +1,19 @@
+<Arena>
+  <Textures>
+    <Texture id="tank01" path="textures\tank01.bmp" />
+    <Texture id="tank02" path="textures\tank02.bmp" />
+    <Texture id="explosion01" path="textures\explosion.bmp" />
+    <Texture id="iron" path="textures\iron.bmp" />
+    <Texture id="rock" path="textures\rock.bmp" />
+    <Texture id="wood" path="textures\wood.bmp" />
+  </Textures>
+  <Tanks>
+    <Tank texture="tank01" x="200" y="100"/>
+    <Tank texture="tank02" x="100" y="400"/>
+  </Tanks>
+  <Walls>
+    <Wall type="0" x="500" y="300" height="200" width="20"/>
+    <Wall type="1" x="100" y="500" height="30" width="300"/>
+    <Wall type="2" x="200" y="400" height="40" width="40"/>
+  </Walls>  
+</Arena>
