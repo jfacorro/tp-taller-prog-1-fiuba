@@ -227,40 +227,78 @@ void SDLHelper::DrawCircle ( int x , int y , int r , Color color , SDL_Surface* 
 
 void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , SDL_Surface* texture , char * nodeId )
 {
-	if ( x < 0 || y < 0 || b <= 0 || h <= 0 )
+	if ( x + b < 0 || y + h < 0 || b <= 0 || h <= 0 )
 	{
-//		cout << "Warning!!! Invalid rectangle coordinates (" << x << "," << y 
-//			<< "," << b << "," << h << ") in node " << nodeId << endl;
+        printf("Warning!!! Invalid rectangle coordinates (%d,%d,%d,%d) in node %s.\n", x, y, b, h, nodeId); 
 		return;
 	}
 
-	SDL_Rect rect;
-	rect.h = h;
-	rect.w = b;
-	rect.x = x;
-	rect.y = y;
+    SDL_Rect destRect;
+    destRect.x = x;
+	destRect.y = y;
+	destRect.h = h;
+	destRect.w = b;
 
-	if ( texture == NULL )
-	{
-		SDL_FillRect(this->screen, &rect, SDL_MapRGB(screen->format, color.R, color.G, color.B));
-	}
-	else
-	{
-        if ( SDL_MUSTLOCK(screen) ) 
+    if ( SDL_MUSTLOCK(screen) ) 
+    {
+        if ( SDL_LockSurface(screen) < 0 ) 
         {
-            if ( SDL_LockSurface(screen) < 0 ) {
-                fprintf(stderr, "Can't lock screen: %s\n", SDL_GetError());
-                return;
+            fprintf(stderr, "Can't lock screen: %s\n", SDL_GetError());
+            return;
+        }
+    }
+
+    if ( texture == NULL )
+	{
+        if(destRect.x < 0 || destRect.y < 0)
+        {
+            if(destRect.x < 0)
+            {
+                destRect.w += destRect.x;
+                destRect.x = 0;
+            }
+            
+            if(destRect.y < 0)
+            {                
+                destRect.h += destRect.y;
+                destRect.y = 0;
             }
         }
 
-        SDL_BlitSurface(texture, NULL, this->screen, &rect);
-
-        if ( SDL_MUSTLOCK(screen) ) 
-        {
-            SDL_UnlockSurface(this->screen);
-        }        
+        SDL_FillRect(this->screen, &destRect, SDL_MapRGB(screen->format, color.R, color.G, color.B));
 	}
+	else
+	{
+	    SDL_Rect rectTexture;
+	    rectTexture.x = 0;
+	    rectTexture.y = 0;
+	    rectTexture.h = h;
+	    rectTexture.w = b;
+
+        if(destRect.x < 0 || destRect.y < 0)
+        {
+            if(destRect.x < 0)
+            {
+                rectTexture.x = -destRect.x;
+                rectTexture.w -= rectTexture.x;
+                destRect.x = 0;
+            }
+            
+            if(destRect.y < 0)
+            {                
+                rectTexture.y = -destRect.y;
+                rectTexture.h -= rectTexture.y;
+                destRect.y = 0;
+            }
+        }
+
+        SDL_BlitSurface(texture, &rectTexture, this->screen, &destRect);
+	}
+
+    if ( SDL_MUSTLOCK(screen) ) 
+    {
+        SDL_UnlockSurface(this->screen);
+    }
 }
 
 #define USE_ANTIALIASING	

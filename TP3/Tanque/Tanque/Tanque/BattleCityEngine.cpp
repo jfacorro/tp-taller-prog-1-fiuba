@@ -17,6 +17,7 @@ BattleCityClientParameters GetBattleCityClientParameters(BattleCityParameters pa
 
     clientParameters.PixelsPerUM = params.PixelsPerUM;
     StringHelper::Copy(params.BackGroundTextureId, clientParameters.BackGroundTextureId, strlen(params.BackGroundTextureId));
+    StringHelper::Copy(params.ExplosionTextureId, clientParameters.ExplosionTextureId, strlen(params.ExplosionTextureId));
 
     clientParameters.BulletRadius = params.BulletRadius;
     clientParameters.BulletScope = params.BulletScope;
