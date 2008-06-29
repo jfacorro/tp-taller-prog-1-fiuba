@@ -36,7 +36,7 @@ void BattleCityClient::StartPlaying()
     this->sdlHelper.Initialize();
     TTF_Init();
     atexit(TTF_Quit);
-    this->sdlFont = TTF_OpenFont("fonts\\cour.ttf", 12);
+    this->sdlFont = TTF_OpenFont("fonts\\cour.ttf", 14);
 
     /// First get the parameters from the server
     this->ReceiveParametersAndTextures();
