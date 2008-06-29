@@ -7,6 +7,7 @@
 #include "BattleCityCommunicationProtocol.h"
 #include "iostream"
 #include "conio.h"
+#include "SDL_ttf.h"
 
 void BattleCityClient::InitializeTicks()
 {
@@ -31,6 +32,11 @@ void BattleCityClient::StartPlaying()
 {
     BattleCityCommunicationProtocol::WriteLog("---------------------------------------.\n");
 	bool salir = false;	
+
+    this->sdlHelper.Initialize();
+    TTF_Init();
+    atexit(TTF_Quit);
+    this->sdlFont = TTF_OpenFont("fonts\\cour.ttf", 12);
 
     /// First get the parameters from the server
     this->ReceiveParametersAndTextures();
@@ -57,6 +63,8 @@ void BattleCityClient::StartPlaying()
 			}
 		}
 	}
+
+    TTF_CloseFont(this->sdlFont);
 }
 
 void BattleCityClient::ReceiveParametersAndTextures()
@@ -253,6 +261,8 @@ void BattleCityClient::RenderScreenSDL()
 	Color greyRock;
 	greyRock.B = greyRock.R = greyRock.G = 100;
 
+    SDL_Color fontColor = {0,0,0,0};  // Blue ("Fg" is foreground)
+
 	Configuration config = this->sdlHelper.GetConfiguration();
 
 	int bombBlastRadius = this->parameters.BombBlastRadius;
@@ -362,7 +372,25 @@ void BattleCityClient::RenderScreenSDL()
         }
 
         /// Draw all lifes
-        this->sdlHelper.DrawRectangle(config.GetResolucion().w - 100, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
+        int infoX = config.GetResolucion().w - 100;
+        int infoY = 15 * i + 5;
+        this->sdlHelper.DrawRectangle(infoX, infoY, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
+
+        /// Print points
+        infoY += 50;
+        SDL_Surface * sText = TTF_RenderText_Solid( this->sdlFont, "Points:", fontColor );
+        this->sdlHelper.DrawRectangle(infoX, infoY, sText->w, sText->h, greenLife, sText, NULL);
+
+        infoX += sText->w + 5;
+
+        SDL_FreeSurface( sText );
+
+        char pointsStr[10];
+        itoa(state.Tanks[i].Points, pointsStr, 10);
+
+        sText = TTF_RenderText_Solid( this->sdlFont, pointsStr, fontColor );
+        this->sdlHelper.DrawRectangle(infoX, infoY, sText->w, sText->h, greenLife, sText, NULL);
+        SDL_FreeSurface( sText );
 
         gotoxy(1,10 + i);
         printf("Tank %d point's: %d\n", i+1, state.Tanks[i].Points);

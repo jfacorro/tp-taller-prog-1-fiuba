@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib ws2_32.lib SDL\SDL.lib SDL\SDLmain.lib SDL\SDL_image.lib $(NOINHERIT)"
+				AdditionalDependencies="kernel32.lib ws2_32.lib SDL\SDL.lib SDL\SDLmain.lib SDL\SDL_image.lib SDL\SDL_ttf.lib $(NOINHERIT)"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
