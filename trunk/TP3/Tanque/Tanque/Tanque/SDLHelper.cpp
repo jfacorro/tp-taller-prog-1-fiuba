@@ -205,8 +205,7 @@ void SDLHelper::DrawCircle ( int x , int y , int r , Color color , SDL_Surface* 
 {
 	if ( x < 0 || y < 0 || r <= 0 )
 	{
-//		cout << "Warning!!! Invalid circle coordinates (" << x << "," << y 
-//			<< "," << r << ") in node " << nodeId << endl;
+        //printf("Warning!!! Invalid circle coordinates (%d,%d,%d) in node %s.\n", x, y, r, nodeId); 
 		return;
 	}
 
@@ -229,7 +228,7 @@ void SDLHelper::DrawRectangle ( int x , int y , int b , int h , Color color , SD
 {
 	if ( x + b < 0 || y + h < 0 || b <= 0 || h <= 0 )
 	{
-        printf("Warning!!! Invalid rectangle coordinates (%d,%d,%d,%d) in node %s.\n", x, y, b, h, nodeId); 
+        //printf("Warning!!! Invalid rectangle coordinates (%d,%d,%d,%d) in node %s.\n", x, y, b, h, nodeId); 
 		return;
 	}
 

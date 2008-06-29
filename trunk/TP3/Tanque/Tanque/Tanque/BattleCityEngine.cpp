@@ -90,9 +90,16 @@ void BattleCityEngine::UpdateBombs()
 
 			for ( unsigned int i = 0 ; i < tanks.size() ; i++ )
 			{
-                if (tanks[i].Intersects(iter->GetExplodedRect()))
+                if (tanks[i].Intersects(iter->GetExplodedRect()) && tanks[i].Life > 0)
                 {
-					HitTank(i);
+					HitTank(i, BATTLE_CITY_BOMB_HIT_ENERGY);
+
+                    BattleCityTank hittedTank = tanks[i];
+
+                    if((hittedTank.Life <= 0) && (i != iter->Tank))
+                    {
+                        tanks[iter->Tank].Points += BATTLE_CITY_POINTS_TANK;
+                    }
                 }
 			}
 
@@ -139,13 +146,15 @@ void BattleCityEngine::UpdateNextTick()
 	nextTick += (int) (1000.0 / FRAMES_PER_SECOND);
 }
 
-void BattleCityEngine::HitTank(unsigned int tank)
+void BattleCityEngine::HitTank(unsigned int tank, int decrementedEnergy)
 {
-	if ( tanks[tank].Life != 0 )
-		tanks[tank].Life--;
+	if ( tanks[tank].Life > 0 )
+    {
+		tanks[tank].Life -= decrementedEnergy;
+    }
 	else
 	{
-
+        
 	}
 }
 
@@ -202,15 +211,21 @@ bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,doubl
     nextRect.Y = nextY;
 
 	for ( unsigned int i = 0 ; i < tanks.size() && !hit ; i++ )
-        if 
-        (
-            tanks[i].Intersects(currentRect) && 
-            tanks[i].Intersects(nextRect) 
-        )
+    {
+        if (tanks[i].Intersects(currentRect) && tanks[i].Intersects(nextRect) && tanks[i].Life > 0)
 		{
-			HitTank(i);
+			HitTank(i, BATTLE_CITY_BULLET_HIT_ENERGY);
+
+            BattleCityTank hittedTank = tanks[i];
+
+            if((hittedTank.Life <= 0) && (i != bullets[bullet].Tank))
+            {
+                tanks[bullets[bullet].Tank].Points += BATTLE_CITY_POINTS_TANK;
+            }
+
 			hit = true;
 		}
+    }
 
 	if ( !hit )
 	{
