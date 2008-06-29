@@ -172,10 +172,11 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
                 client->AddTexture(texturePacket->GetBitmapName(), texturePacket->SaveBitmap());
                 break;
             case COMMAND:
-                BattleCityCommunicationProtocol::WriteLog("Received COMMAND.\n");
+                BattleCityCommunicationProtocol::WriteLog("Received COMMAND:");
                 cmdPacket = (BattleCityCommandPacket *)packet;
                 if(cmdPacket->GetCommandType() == UPDATESCREEN)
-                {                        
+                {
+                    BattleCityCommunicationProtocol::WriteLog(" UPDATESCREEN.\n");
                     client->RenderScreenSDL();
 
 				    client->UpdateTicks();
@@ -225,7 +226,7 @@ void BattleCityClient::UpdateEngine (int tecla)
 
 void BattleCityClient::RenderScreenSDL()
 {
-	/************************************************/
+    /************************************************/
     /// Check if video is initialized
     /************************************************/
     if(!this->sdlHelper.VideoInitialized())
@@ -267,14 +268,19 @@ void BattleCityClient::RenderScreenSDL()
 	int bombBlastRadius = this->parameters.BombBlastRadius;
 
     Rect quadrant;
-
+    bool receivedLocalTank = false;
+    
     for(int i = 0; i <state.Tanks.size(); i++)    
     {
         if(this->clientNumber == i)
         {
             quadrant = scenario.GetQuadrant(state.Tanks[i].Pos);
+            receivedLocalTank = true;
         }
     }
+
+    /// Just in case the tank was not sent
+    if(!receivedLocalTank) return;
 
 	/************************************************/
     /// Draw Tanks
@@ -326,6 +332,8 @@ void BattleCityClient::RenderScreenSDL()
         }
         /// Draw all lifes
         this->sdlHelper.DrawRectangle(config.GetResolucion().w - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
+
+        printf("Tank %d point's: %d\n", i+1, state.Tanks[i].Points);
 	}
 
 	/************************************************/
