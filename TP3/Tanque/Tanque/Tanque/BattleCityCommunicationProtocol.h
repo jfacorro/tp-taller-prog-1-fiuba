@@ -13,7 +13,7 @@
 using namespace std;
 
 #define PACKET_DATA_MAX_SIZE    4096
-#define PACKET_HEADER_SIZE      3
+#define PACKET_HEADER_SIZE      (sizeof(char) + sizeof(long))
 
 #define BATTLE_CITY_SOCKET      2488
 
@@ -28,8 +28,7 @@ class BattleCityDataPacket : public SocketPacket
     protected:
         void SetSizeInData()
         {
-            this->data[1] = (size & 0xFF);
-            this->data[2] = (size >> 8);
+            memcpy((void *)(int)(data + 1), (void *)(&size), sizeof(long));
         };
 
         BattleCityPacketType type;
@@ -57,8 +56,7 @@ class BattleCityDataPacket : public SocketPacket
         {
             long size;
 
-            size = (long) (data[2] << 8);
-            size += (long)(data[1] & 0xFF);
+            memcpy((void *)&size, (void *)(data + 1), sizeof(long));
 
             return size;
         };
@@ -190,14 +188,16 @@ class BattleCityTexturePacket : public BattleCityDataPacket
 {
     private:
         char name[TEXTURE_NAME_MAX_LENGTH];
+        char filename[TEXTURE_NAME_MAX_LENGTH];        
     public:
-        BattleCityTexturePacket(char * name, const char * path);
+        BattleCityTexturePacket(char * name, char * path);
 		BattleCityTexturePacket(char * data, int size);
 
         char * SaveBitmap();
-        char * GetBitmapData() { return this->data + (PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH); };
+        char * GetBitmapData() { return this->data + (PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH * 2); };
         char * GetBitmapName() { return this->name; };
-        int GetBitmapSize() { return this->size - (PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH); };
+        char * GetBitmapFileName() { return this->filename; };
+        int GetBitmapSize() { return this->size - (PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH * 2); };
 };
 /*****************************************************************************************/
 // BattleCityCommandPacket

@@ -316,9 +316,11 @@ BattleCityParametersPacket::BattleCityParametersPacket(char * data, int size)
 /**********************************************************************************************************/
 // BattleCityTexturePacket
 /**********************************************************************************************************/
-BattleCityTexturePacket::BattleCityTexturePacket(char * name, const char * path)
+BattleCityTexturePacket::BattleCityTexturePacket(char * name, char * path)
 {    
     StringHelper::Copy(name, this->name, strlen(name));
+    StringHelper::Copy(path, this->filename, strlen(path));
+    
     this->type = TEXTURE;
 
     FILE * file;
@@ -326,22 +328,24 @@ BattleCityTexturePacket::BattleCityTexturePacket(char * name, const char * path)
 
     long filesize = 0;
 
+    int packetSizeWithoutFile = PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH * 2;
+
 	/// Load bitmap file data
     if(file != NULL)
 	{
 	    fseek(file, 0, SEEK_END);		
 	    filesize = ftell(file);
 
-	    this->data = new char[PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH + filesize];
+	    this->data = new char[packetSizeWithoutFile + filesize];
 
 	    fseek(file, 0, SEEK_SET);
-	    fread(this->data + PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH, sizeof(char), filesize, file);
+	    fread(this->data + packetSizeWithoutFile , sizeof(char), filesize, file);
 
 	    fclose(file);
     }
     else
     {
-        this->data = new char[PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH + filesize];
+        this->data = new char[packetSizeWithoutFile];
     }
     
     this->data[0] = TEXTURE;
@@ -349,6 +353,8 @@ BattleCityTexturePacket::BattleCityTexturePacket(char * name, const char * path)
 
     /// Load bitmap name into data
     memcpy(this->data + this->size, (void*)this->name, TEXTURE_NAME_MAX_LENGTH);
+    this->size += TEXTURE_NAME_MAX_LENGTH;
+    memcpy(this->data + this->size, (void*)this->filename, TEXTURE_NAME_MAX_LENGTH);
     this->size += TEXTURE_NAME_MAX_LENGTH + filesize;
 
     this->SetSizeInData();
@@ -363,7 +369,7 @@ BattleCityTexturePacket::BattleCityTexturePacket(char * data, int size)
 
     memcpy(this->data, data , size);    
     memcpy(this->name, data + PACKET_HEADER_SIZE, TEXTURE_NAME_MAX_LENGTH);
-    
+    memcpy(this->filename, data + PACKET_HEADER_SIZE + TEXTURE_NAME_MAX_LENGTH, TEXTURE_NAME_MAX_LENGTH);    
 }
 
 char * BattleCityTexturePacket::SaveBitmap()
@@ -371,7 +377,11 @@ char * BattleCityTexturePacket::SaveBitmap()
     char * bitmap = this->GetBitmapData();
     int filesize = this->GetBitmapSize();
 
-    char * filename = StringHelper::AppendString(this->name, "_temp.bmp");
+    char * filename = new char[TEXTURE_NAME_MAX_LENGTH];
+
+    StringHelper::Copy(this->filename, filename, strlen(this->filename));
+
+    StringHelper::GetFileNameFromPath(filename, filename);
 
     FILE * file;
     file = fopen(filename, "wb");
@@ -435,22 +445,14 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET sock)
 
                 while ( totalRecibido < packetDataLength )
                 {
-                    selectResult = select(1, &readSocket, NULL, NULL, NULL);
-                    if(selectResult == 1)
-                    {
-                        cantRecibida = recv (socket.GetConnection().cxSocket, packetData + PACKET_HEADER_SIZE + totalRecibido, packetDataLength - totalRecibido, 0);
+                    cantRecibida = recv (socket.GetConnection().cxSocket, packetData + PACKET_HEADER_SIZE + totalRecibido, packetDataLength - totalRecibido, 0);
 
-                        if ( cantRecibida == -1 )
-                            successTransfer = false;
+                    if ( cantRecibida == -1 )
+                        successTransfer = false;
 
-                        totalRecibido += cantRecibida;
-                        if (totalRecibido >= packetDataLength) 
-                            break;
-                    }
-                    else
-                    {
-                        selectResult = 0;
-                    }
+                    totalRecibido += cantRecibida;
+                    if (totalRecibido >= packetDataLength) 
+                        break;
                 }
 
                 if(successTransfer)
@@ -520,6 +522,7 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET sock)
 
 void BattleCityCommunicationProtocol::WriteLog(const char * msg)
 {
+    /*
     FILE * file;
 
     file = fopen("log.txt", "a");
@@ -529,6 +532,7 @@ void BattleCityCommunicationProtocol::WriteLog(const char * msg)
         fputs (msg, file);
         fclose (file);
     }
+    */
 }
 
 #endif

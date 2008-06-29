@@ -108,7 +108,7 @@ class SDLHelper
 
 		Configuration GetConfiguration() { return this->configuration; };
 
-		static SDL_Surface * LoadBitmap(char * bitmap);
+		static SDL_Surface * LoadImage(char * imgPath);
 
 		static Color GetDefaultFrontColor()
 		{

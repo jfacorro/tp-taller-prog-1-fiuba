@@ -12,6 +12,35 @@
 
 #define BLANK_SPACE ' '
 
+Tag::~Tag()
+{
+    if(!this->childTags.IsEmpty())
+    {
+        this->childTags.MoveFirst();
+
+        do
+        {
+            Tag * childTag = (Tag *)this->childTags.GetCurrent();
+
+            delete childTag;
+
+        }while(this->childTags.MoveNext());
+    }
+
+    if(!this->properties.IsEmpty())
+    {
+        this->properties.MoveFirst();
+
+        do
+        {
+            TagProperty * tagProperty = (TagProperty *)this->properties.GetCurrent();
+
+            delete tagProperty;
+
+        }while(this->properties.MoveNext());
+    }
+}
+
 void Tag::ParseTagString(char * tagString)
 {
 	/// Reemplazar todos los caracteres newline (\n), tab (\t) y
@@ -268,23 +297,19 @@ Tag * Tag::GetChildTag(char * tagName)
 	{
 		this->childTags.MoveFirst();
 
-		//bool found = false;
 		int count = 0;
-
 		do
 		{
 			childTag = (Tag *)this->childTags.GetCurrent();
 
-			//found = (strcmp(childTag->GetName(), tagName) == 0);
 			if ( (strcmp(childTag->GetName(), tagName) == 0) )
 			{
 				childTagFound = childTag;
 				count++;
 			}
 		}
-		while(this->childTags.MoveNext() /* && !found */);
+		while(this->childTags.MoveNext());
 
-		//if(!found) 
 		if ( count == 1 )
 			childTag = NULL;
 		else if ( count > 1 )
@@ -295,30 +320,6 @@ Tag * Tag::GetChildTag(char * tagName)
 
 			throw Exception(msg);
 		}
-
-
-		/*
-		else
-		{
-			found = false;
-
-			while(this->childTags.MoveNext() && !found)
-			{
-				childTag = (Tag *)this->childTags.GetCurrent();
-
-				found = (strcmp(childTag->GetName(), tagName) == 0);
-			}
-
-			if(found) 
-			{
-				char * msg = StringHelper::AppendString("Repeated child element ", tagName);
-				msg = StringHelper::AppendString(msg, " in tag ");
-				msg = StringHelper::AppendString(msg, this->GetName());
-
-				throw Exception(msg);
-			}
-		}
-		*/
 	}
 
 	return childTagFound;
