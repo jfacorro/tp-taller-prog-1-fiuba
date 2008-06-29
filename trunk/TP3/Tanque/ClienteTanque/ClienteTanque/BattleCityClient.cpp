@@ -38,7 +38,7 @@ void BattleCityClient::StartPlaying()
     /// Initialize Video
     this->sdlHelper.Initialize();
     Configuration config;
-    config.SetResolucion(SDLHelper::ResolutionByWidth(this->parameters.ArenaWidth / 2));
+    config.SetResolucion(SDLHelper::ResolutionByWidth(800));
     this->sdlHelper.InitializeVideo(config);
 
     /// Initialize Counter
@@ -231,9 +231,7 @@ void BattleCityClient::RenderScreenSDL()
     /************************************************/
     if(!this->sdlHelper.VideoInitialized())
 	{
-		Configuration config;
-		config.SetResolucion(SDLHelper::ResolutionByWidth(this->parameters.ArenaWidth / 2));
-		this->sdlHelper.InitializeVideo(config);
+        return;
 	}
 
     BattleCityScenario scenario(this->parameters.ArenaWidth, this->parameters.ArenaHeight); 
@@ -266,6 +264,7 @@ void BattleCityClient::RenderScreenSDL()
 	this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
 
 	int bombBlastRadius = this->parameters.BombBlastRadius;
+    int pixelsPerUM = this->parameters.PixelsPerUM;
 
     Rect quadrant;
     bool receivedLocalTank = false;
@@ -293,7 +292,14 @@ void BattleCityClient::RenderScreenSDL()
         {
             Rect tankRect = state.Tanks[i].GetRect();
 
-            SDL_Surface * bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture(state.Tanks[i].TextureName), tankRect.Width, tankRect.Height);
+            tankRect = this->GetScaledRectangle(tankRect, quadrant, pixelsPerUM);
+
+            SDL_Surface * bitmap = SDLHelper::SDLResizeBitmap
+            (
+                this->GetTexture(state.Tanks[i].TextureName), 
+                tankRect.Width, 
+                tankRect.Height
+            );
 
             if(state.Tanks[i].Life > 0)
             {
@@ -324,15 +330,32 @@ void BattleCityClient::RenderScreenSDL()
             {
                 bitmap = this->GetTexture("explosion01");
                 bitmap = SDLHelper::SDLResizeBitmap(bitmap, bitmap->w, bitmap->h);
+                tankRect.Width = bitmap->w;
+                tankRect.Height = bitmap->h;
+                tankRect.X = state.Tanks[i].Pos.X - tankRect.Width;
+                tankRect.Y = state.Tanks[i].Pos.Y - tankRect.Height;
+
+                tankRect = this->GetScaledRectangle(tankRect, quadrant, pixelsPerUM);
             }
 
-            this->sdlHelper.DrawRectangle(tankRect.X - quadrant.X, tankRect.Y - quadrant.Y, tankRect.Width, tankRect.Height, black, bitmap, NULL);
+            this->sdlHelper.DrawRectangle
+            (
+                tankRect.X,
+                tankRect.Y,
+                tankRect.Width,
+                tankRect.Height,
+                black, 
+                bitmap, 
+                NULL
+            );
 
             if(bitmap != NULL) SDL_FreeSurface(bitmap);
         }
-        /// Draw all lifes
-        this->sdlHelper.DrawRectangle(config.GetResolucion().w - 150, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
 
+        /// Draw all lifes
+        this->sdlHelper.DrawRectangle(config.GetResolucion().w - 100, 15 * i + 5, state.Tanks[i].Life * 5, 10, greenLife, NULL, NULL);
+
+        gotoxy(1,10 + i);
         printf("Tank %d point's: %d\n", i+1, state.Tanks[i].Points);
 	}
 
@@ -341,14 +364,34 @@ void BattleCityClient::RenderScreenSDL()
     /************************************************/
     for(int i = 0; i <state.Bombs.size(); i++)
 	{
-		if ( state.Bombs[i].TimeToDie >= 0 )
+        Rect bombRect = state.Bombs[i].GetRect();
+
+        bombRect = this->GetScaledRectangle(bombRect, quadrant, pixelsPerUM);
+
+        if ( state.Bombs[i].TimeToDie >= 0 )
 		{
-            Rect bombRect = state.Bombs[i].GetRect();
-			this->sdlHelper.DrawRectangle(bombRect.X - quadrant.X, bombRect.Y - quadrant.Y, bombRect.Width, bombRect.Height, blue, NULL, NULL);
+			this->sdlHelper.DrawRectangle
+            (
+                bombRect.X ,
+                bombRect.Y,
+                bombRect.Width,
+                bombRect.Height,
+                blue,
+                NULL, 
+                NULL
+            );
         }
 		else
 		{
-			this->sdlHelper.DrawCircle((int)state.Bombs[i].Pos.X - quadrant.X, (int)state.Bombs[i].Pos.Y - quadrant.Y, bombBlastRadius, red, NULL, NULL);
+			this->sdlHelper.DrawCircle
+            (
+                state.Bombs[i].Pos.X * pixelsPerUM,
+                state.Bombs[i].Pos.Y * pixelsPerUM,
+                bombBlastRadius * pixelsPerUM, 
+                red, 
+                NULL, 
+                NULL
+            );
 		}
 	}
 
@@ -358,7 +401,19 @@ void BattleCityClient::RenderScreenSDL()
     for ( int i = 0 ; i < state.Bullets.size() ; i++ )
 	{
         Rect bulletRect = state.Bullets[i].GetRect();
-		this->sdlHelper.DrawRectangle(bulletRect.X - quadrant.X, bulletRect.Y - quadrant.Y, bulletRect.Width, bulletRect.Height, green, NULL, NULL);
+
+        bulletRect = this->GetScaledRectangle(bulletRect, quadrant, pixelsPerUM);
+
+		this->sdlHelper.DrawRectangle
+        (
+            bulletRect.X,
+            bulletRect.Y,
+            bulletRect.Width,
+            bulletRect.Height,
+            green, 
+            NULL, 
+            NULL
+        );
 	}
 
 	/************************************************/
@@ -367,7 +422,11 @@ void BattleCityClient::RenderScreenSDL()
     for ( unsigned int j = 0 ; j < state.Walls.size() ; j++ )
 	{
 		Rect rect = state.Walls[j].GetRect();
+
+        rect = this->GetScaledRectangle(rect, quadrant, pixelsPerUM);
+
 		BattleCityWallTypes t = state.Walls[j].GetType();
+
 		Color wallColor;
 
         SDL_Surface * bitmap = NULL;
@@ -388,12 +447,36 @@ void BattleCityClient::RenderScreenSDL()
 				break;
 		}
 		
-		this->sdlHelper.DrawRectangle(rect.X - quadrant.X, rect.Y - quadrant.Y, rect.Width, rect.Height, wallColor, bitmap, NULL);
+		this->sdlHelper.DrawRectangle
+        (
+            rect.X, 
+            rect.Y,
+            rect.Width,
+            rect.Height,
+            wallColor, 
+            bitmap, 
+            NULL
+        );
 
         if(bitmap != NULL) SDL_FreeSurface(bitmap);
 	}
 
 	this->sdlHelper.Refresh();
+}
+
+Rect BattleCityClient::GetScaledRectangle(Rect source, Rect quadrant, int pixelsPerUM)
+{
+    Rect rect;
+
+    int x = source.X + source.Width / 2;
+    int y = source.Y + source.Height / 2;
+
+    rect.Width = source.Width * pixelsPerUM;
+    rect.Height = source.Height * pixelsPerUM;
+    rect.X = (x - quadrant.X) * pixelsPerUM - rect.Width / 2;
+    rect.Y = (y - quadrant.Y) * pixelsPerUM - rect.Height / 2;
+
+    return rect;
 }
 
 void BattleCityClient::RenderScreenChars()

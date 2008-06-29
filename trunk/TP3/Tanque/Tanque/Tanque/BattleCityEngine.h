@@ -19,6 +19,8 @@ typedef struct _BattleCityParameters
 	unsigned int TankRadius;
 	unsigned int BulletRadius;
     unsigned int BombRadius;
+
+    unsigned int PixelsPerUM;
 	
 	vector<BattleCityTank> Tanks;
 	vector<BattleCityWall> Walls;
@@ -42,6 +44,8 @@ typedef struct _BattleCityClientParameters
 	unsigned int TankRadius;
 	unsigned int BulletRadius;
     unsigned int BombRadius;
+
+    unsigned int PixelsPerUM;
 
 	unsigned int	MaxBullets;
 	double			BulletSpeed;
