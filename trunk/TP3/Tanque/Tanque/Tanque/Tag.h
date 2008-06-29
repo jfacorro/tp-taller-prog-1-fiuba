@@ -31,6 +31,7 @@ class Tag
 			this->innerText = NULL;
 			this->ParseTagString(tagString);
 		};
+        ~Tag();
 
 		/// Accessors
 		char * GetName() { return this->name; };

@@ -19,6 +19,19 @@ int StringHelper::FindFirstOcurrence(char * line, int len, int offset, char char
 	return -1;
 }
 
+int StringHelper::FindLastOcurrence(char * line, int len, char character)
+{
+	int i;
+
+	for ( i = len - 1 ; i >= 0 ; i-- )
+		if ( line[i] == character )
+		{
+			return i;
+		}
+
+    return -1;
+}
+
 char * StringHelper::Substring(char * str, int begin, int length)
 {
 	char * subStr = new char[length + 1];
@@ -41,6 +54,32 @@ void StringHelper::Copy(char * src, char * dst, int length)
 	}
 
     dst[length] = '\0';
+}
+
+void StringHelper::Copy(char * src, char * dst)
+{
+    StringHelper::Copy(src, dst, strlen(src));
+}
+
+void StringHelper::GetFileNameFromPath(char * path, char * dst)
+{
+    int indexOfLastSlash = StringHelper::FindLastOcurrence(path, strlen(path), '\\');
+
+    if(indexOfLastSlash != -1)
+    {
+        int beginIndex = indexOfLastSlash + 1;
+        int length = strlen(path) - (indexOfLastSlash + 1);
+        
+        char * filename = StringHelper::Substring(path, beginIndex, length);
+
+        StringHelper::Copy(filename, dst);
+
+        delete filename;
+    }
+    else
+    {
+        StringHelper::Copy(path, dst);
+    }
 }
 
 char * StringHelper::Trim(char * str)

@@ -1,6 +1,5 @@
-#ifndef BATTLECITYENGINE_INCLUDED
-#define BATTLECITYENGINE_INCLUDED
-
+#ifndef BattleCityEngine_h
+#define BattleCityEngine_h
 
 #define BATTLECITYENGINE_WALL_TEST
 #define FRAMES_PER_SECOND 24
@@ -21,6 +20,8 @@ typedef struct _BattleCityParameters
     unsigned int BombRadius;
 
     unsigned int PixelsPerUM;
+
+    char BackGroundTextureId[TEXTURE_NAME_MAX_LENGTH];
 	
 	vector<BattleCityTank> Tanks;
 	vector<BattleCityWall> Walls;
@@ -46,6 +47,8 @@ typedef struct _BattleCityClientParameters
     unsigned int BombRadius;
 
     unsigned int PixelsPerUM;
+
+    char BackGroundTextureId[TEXTURE_NAME_MAX_LENGTH];
 
 	unsigned int	MaxBullets;
 	double			BulletSpeed;

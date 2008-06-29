@@ -32,7 +32,7 @@ class BattleCityClient
         void AddTexture(char * name, char * filename);
         SDL_Surface * GetTexture(char * name);
 
-        void ReceiveParameters();
+        void ReceiveParametersAndTextures();
 
         static DWORD __stdcall ReceiveDataFromServer ( LPVOID param );
         static void ProcessPacket(BattleCityClient * client, BattleCityDataPacket * packet);

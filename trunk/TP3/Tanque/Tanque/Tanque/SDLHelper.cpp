@@ -3,6 +3,7 @@
 #include "conio.h"
 #include "Math.h"
 #include "SDL_rotozoom.h"
+#include "SDL_image.h"
 
 #ifndef SDLHelper_cpp
 
@@ -13,7 +14,7 @@ Texture::Texture(char * id, char * filePath)
     this->SetId(id);
     this->SetFilePath(filePath);
 
-    this->bitmap = SDLHelper::LoadBitmap(filePath);
+    this->bitmap = SDLHelper::LoadImage(filePath);
 }
 
 Texture::~Texture()
@@ -373,9 +374,9 @@ bool SDLHelper::GetPressedKey(SDL_keysym & key)
 	return keyPress;
 }
 
-SDL_Surface * SDLHelper::LoadBitmap(char * bitmap)
-{
-	return SDL_LoadBMP(bitmap);
+SDL_Surface * SDLHelper::LoadImage(char * imgPath)
+{    
+    return IMG_Load(imgPath);
 }
 
 Resolution SDLHelper::ResolutionByWidth(int width)

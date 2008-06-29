@@ -33,7 +33,7 @@ void BattleCityClient::StartPlaying()
 	bool salir = false;	
 
     /// First get the parameters from the server
-    this->ReceiveParameters();
+    this->ReceiveParametersAndTextures();
 
     /// Initialize Video
     this->sdlHelper.Initialize();
@@ -65,7 +65,7 @@ void BattleCityClient::StartPlaying()
 	}
 }
 
-void BattleCityClient::ReceiveParameters()
+void BattleCityClient::ReceiveParametersAndTextures()
 {
     bool salir = false;
 
@@ -73,13 +73,11 @@ void BattleCityClient::ReceiveParameters()
     {
         BattleCityDataPacket * packet = (BattleCityDataPacket *)BattleCityCommunicationProtocol::ReceiveDataPacket(this->socket);
 
-        BattleCityParametersPacket * parametersPacket = NULL;
-
         if(packet != NULL)
         {
             BattleCityClient::ProcessPacket(this, packet);
 
-            salir = (packet->GetType() == PARAMETERS);
+            salir = (packet->GetType() == COMMAND);
         }
 
         delete packet;
@@ -261,8 +259,6 @@ void BattleCityClient::RenderScreenSDL()
 
 	Configuration config = this->sdlHelper.GetConfiguration();
 
-	this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
-
 	int bombBlastRadius = this->parameters.BombBlastRadius;
     int pixelsPerUM = this->parameters.PixelsPerUM;
 
@@ -280,6 +276,21 @@ void BattleCityClient::RenderScreenSDL()
 
     /// Just in case the tank was not sent
     if(!receivedLocalTank) return;
+
+    SDL_Surface * background = NULL;
+
+    background = this->GetTexture(this->parameters.BackGroundTextureId);
+
+    if(background != NULL)
+    {
+        background = SDLHelper::SDLResizeBitmap(background, config.GetResolucion().w * 2,  config.GetResolucion().h * 2);
+        this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
+        SDL_FreeSurface(background);
+    }
+    else
+    {
+	    this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
+    }
 
 	/************************************************/
     /// Draw Tanks

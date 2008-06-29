@@ -1,4 +1,8 @@
+#ifndef BattleCityEngine_cpp
+#define BattleCityEngine_cpp
+
 #include "BattleCityEngine.h"
+#include "StringHelper.h"
 
 BattleCityClientParameters GetBattleCityClientParameters(BattleCityParameters params)
 {
@@ -12,6 +16,7 @@ BattleCityClientParameters GetBattleCityClientParameters(BattleCityParameters pa
     clientParameters.BombRadius = params.BombRadius;
 
     clientParameters.PixelsPerUM = params.PixelsPerUM;
+    StringHelper::Copy(params.BackGroundTextureId, clientParameters.BackGroundTextureId, strlen(params.BackGroundTextureId));
 
     clientParameters.BulletRadius = params.BulletRadius;
     clientParameters.BulletScope = params.BulletScope;
@@ -405,3 +410,5 @@ bool BattleCityEngine::ShootBullet(unsigned int tank)
 
     return true;
 }
+
+#endif
