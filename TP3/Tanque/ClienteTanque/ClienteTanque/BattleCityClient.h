@@ -37,6 +37,8 @@ class BattleCityClient
         static DWORD __stdcall ReceiveDataFromServer ( LPVOID param );
         static void ProcessPacket(BattleCityClient * client, BattleCityDataPacket * packet);
 
+        Rect GetScaledRectangle(Rect source, Rect quadrant, int pixelsPerUM);
+
         HANDLE mutex;
 
     public:

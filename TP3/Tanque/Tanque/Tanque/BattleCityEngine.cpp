@@ -11,6 +11,8 @@ BattleCityClientParameters GetBattleCityClientParameters(BattleCityParameters pa
     clientParameters.BombDelay = params.BombDelay;
     clientParameters.BombRadius = params.BombRadius;
 
+    clientParameters.PixelsPerUM = params.PixelsPerUM;
+
     clientParameters.BulletRadius = params.BulletRadius;
     clientParameters.BulletScope = params.BulletScope;
     clientParameters.BulletSpeed = params.BulletSpeed;

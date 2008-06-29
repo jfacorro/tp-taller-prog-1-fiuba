@@ -12,8 +12,8 @@
     <Tank texture="tank02" x="100" y="400"/>
   </Tanks>
   <Walls>
-    <Wall type="0" x="500" y="300" height="200" width="20"/>
-    <Wall type="1" x="100" y="500" height="30" width="300"/>
+    <Wall type="0" x="500" y="300" height="100" width="30"/>
+    <Wall type="1" x="100" y="500" height="30" width="50"/>
     <Wall type="2" x="200" y="400" height="40" width="40"/>
   </Walls>  
 </Arena>
