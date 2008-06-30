@@ -95,7 +95,7 @@ void BattleCityEngine::UpdateBombs()
 
                     BattleCityTank hittedTank = tanks[j];
 
-                    if((hittedTank.Life <= 0) && (j != bombs[i].Tank))
+                    if((hittedTank.Life <= 0 || hittedTank.Life > parameters.Tanks[j].Life) && (j != bombs[i].Tank))
                     {
                         tanks[bombs[i].Tank].Points += BATTLE_CITY_POINTS_TANK;
                     }
@@ -167,6 +167,9 @@ void BattleCityEngine::HitTank(unsigned int tank, int decrementedEnergy)
 	{
         
 	}
+
+	if ( tanks[tank].Life > parameters.Tanks[tank].Life )
+		tanks[tank].Life = 0;
 }
 
 bool BattleCityEngine::FindTankCollition(unsigned int tank, int x, int y)
