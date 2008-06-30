@@ -2,7 +2,7 @@
 #define BattleCityEngine_h
 
 #define BATTLECITYENGINE_WALL_TEST
-#define FRAMES_PER_SECOND 24
+#define FRAMES_PER_SECOND 25
 
 
 #include "BattleCityTypes.h"
