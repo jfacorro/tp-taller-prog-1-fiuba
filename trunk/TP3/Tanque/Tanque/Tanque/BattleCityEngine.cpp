@@ -87,15 +87,15 @@ void BattleCityEngine::UpdateBombs()
 		{
 			dirty = true;
 
-			for ( unsigned int i = 0 ; i < tanks.size() ; i++ )
+			for ( unsigned int j = 0 ; j < tanks.size() ; j++ )
 			{
-                if (tanks[i].Intersects(bombs[i].GetExplodedRect()) && tanks[i].Life > 0)
+                if (tanks[j].Intersects(bombs[i].GetExplodedRect()) && tanks[j].Life > 0)
                 {
-					HitTank(i, BATTLE_CITY_BOMB_HIT_ENERGY);
+					HitTank(j, BATTLE_CITY_BOMB_HIT_ENERGY);
 
-                    BattleCityTank hittedTank = tanks[i];
+                    BattleCityTank hittedTank = tanks[j];
 
-                    if((hittedTank.Life <= 0) && (i != bombs[i].Tank))
+                    if((hittedTank.Life <= 0) && (j != bombs[i].Tank))
                     {
                         tanks[bombs[i].Tank].Points += BATTLE_CITY_POINTS_TANK;
                     }

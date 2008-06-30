@@ -10,6 +10,7 @@
     <Texture id="iron" path="textures\iron.jpg" />
     <Texture id="rock" path="textures\rock.jpg" />
     <Texture id="wood" path="textures\wood.jpg" />
+	<Texture id="background" path="textures\dirt.jpg" />
   </Textures>
   <Tanks>
     <Tank texture="tank01" x="200" y="100"/>
