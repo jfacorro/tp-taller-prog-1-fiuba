@@ -87,7 +87,9 @@ void BattleCityEngine::UpdateBombs()
 		{
 			dirty = true;
 
-			for ( unsigned int j = 0 ; j < tanks.size() ; j++ )
+			unsigned int j = 0;
+
+			for ( j = 0 ; j < tanks.size() ; j++ )
 			{
                 if (tanks[j].Intersects(bombs[i].GetExplodedRect()) && tanks[j].Life > 0)
                 {
@@ -102,7 +104,7 @@ void BattleCityEngine::UpdateBombs()
                 }
 			}
 
-			for ( unsigned int j = 0 ; j < walls.size() ; j++ )
+			for ( j = 0 ; j < walls.size() ; j++ )
             {
 				if ( walls[j].Intersects(bombs[i].GetExplodedRect()))
                 {
