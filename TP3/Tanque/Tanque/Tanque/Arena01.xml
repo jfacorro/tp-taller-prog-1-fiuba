@@ -4,9 +4,9 @@
     <ExplosionTexture>explosion</ExplosionTexture>
   </Configuration>
   <Textures>
-    <Texture id="tank01" path="textures\tank01.jpg" />
-    <Texture id="tank02" path="textures\tank02.jpg" />
-    <Texture id="explosion" path="textures\explosion.jpg" />
+    <Texture id="tank01" path="textures\tank01.bmp" />
+    <Texture id="tank02" path="textures\tank02.bmp" />
+    <Texture id="explosion" path="textures\explosion.bmp" />
     <Texture id="iron" path="textures\iron.jpg" />
     <Texture id="rock" path="textures\rock.jpg" />
     <Texture id="wood" path="textures\wood.jpg" />
