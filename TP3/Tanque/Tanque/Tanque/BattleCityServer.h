@@ -54,6 +54,7 @@ private:
 	SOCKET sockets[BATTLE_CITY_MAX_PLAYERS];
 
 	HANDLE mutex;
+	DWORD lastFrame;
 };
 
 #endif
