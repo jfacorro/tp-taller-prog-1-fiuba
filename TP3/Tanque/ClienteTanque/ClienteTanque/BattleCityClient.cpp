@@ -287,8 +287,21 @@ void BattleCityClient::RenderScreenSDL()
     /// Just in case the tank was not sent
     if(!receivedLocalTank) return;
 
-    SDL_Surface * background = NULL;
+	if ( background != NULL )
+        this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
+	else
+	{
+	    background = this->GetTexture(this->parameters.BackGroundTextureId);
+		if ( background == NULL )
+		    this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
+		else
+		{
+	        background = SDLHelper::SDLResizeBitmap(background, config.GetResolucion().w * 2,  config.GetResolucion().h * 2);
+		    this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
+		}
+	}
 
+	/*
     background = this->GetTexture(this->parameters.BackGroundTextureId);
 
     if(background != NULL)
@@ -301,6 +314,7 @@ void BattleCityClient::RenderScreenSDL()
     {
 	    this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
     }
+	*/
 
 	/************************************************/
     /// Draw Tanks

@@ -43,8 +43,10 @@ class BattleCityClient
 
         HANDLE mutex;
 
+	    SDL_Surface * background;
+
     public:
-        BattleCityClient() 
+		BattleCityClient() : background(NULL)
         {
             this->mutex = CreateMutex ( NULL , FALSE , NULL );
         };
