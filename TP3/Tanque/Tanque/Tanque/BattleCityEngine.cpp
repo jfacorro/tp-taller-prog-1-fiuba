@@ -74,48 +74,47 @@ void BattleCityEngine::Start()
 
 void BattleCityEngine::UpdateBombs()
 {
-	list<BattleCityBomb> toDie;
-	list<BattleCityBomb>::iterator iter;
-	for ( iter = bombs.begin() ; iter != bombs.end() ; ++iter )
-	{
-		iter->TimeToDie -= (nextTick - lastTick);
-		if ( iter->TimeToDie < - (int) parameters.BombBlastDelay )
+	vector<BattleCityBomb> toDie;
+	for ( int i = 0 ; i < bombs.size() ; i++ )
+	{        
+		bombs[i].TimeToDie -= (nextTick - lastTick);
+		if ( bombs[i].TimeToDie < - (int) parameters.BombBlastDelay )
 		{
-			toDie.push_back(*iter);
+			toDie.push_back(bombs[i]);
 			dirty = true;
 		}
-		else if ( iter->TimeToDie <= 0 && (iter->TimeToDie + (int) nextTick - (int) lastTick) > 0)
+		else if ( bombs[i].TimeToDie <= 0 && (bombs[i].TimeToDie + (int) nextTick - (int) lastTick) > 0)
 		{
 			dirty = true;
 
 			for ( unsigned int i = 0 ; i < tanks.size() ; i++ )
 			{
-                if (tanks[i].Intersects(iter->GetExplodedRect()) && tanks[i].Life > 0)
+                if (tanks[i].Intersects(bombs[i].GetExplodedRect()) && tanks[i].Life > 0)
                 {
 					HitTank(i, BATTLE_CITY_BOMB_HIT_ENERGY);
 
                     BattleCityTank hittedTank = tanks[i];
 
-                    if((hittedTank.Life <= 0) && (i != iter->Tank))
+                    if((hittedTank.Life <= 0) && (i != bombs[i].Tank))
                     {
-                        tanks[iter->Tank].Points += BATTLE_CITY_POINTS_TANK;
+                        tanks[bombs[i].Tank].Points += BATTLE_CITY_POINTS_TANK;
                     }
                 }
 			}
 
 			for ( unsigned int j = 0 ; j < walls.size() ; j++ )
             {
-				if ( walls[j].Intersects(iter->GetExplodedRect()))
+				if ( walls[j].Intersects(bombs[i].GetExplodedRect()))
                 {
 					if ( walls[j].Blast() <= 0 )
 					{
                         switch(walls[j].GetType())
                         {
                             case WOOD:
-                                tanks[iter->Tank].Points += BATTLE_CITY_POINTS_WOOD;
+                                tanks[bombs[i].Tank].Points += BATTLE_CITY_POINTS_WOOD;
                                 break;
                             case ROCK:
-                                tanks[iter->Tank].Points += BATTLE_CITY_POINTS_ROCK;
+                                tanks[bombs[i].Tank].Points += BATTLE_CITY_POINTS_ROCK;
                                 break;
                         }
                         walls.erase(walls.begin()+j);
@@ -127,16 +126,19 @@ void BattleCityEngine::UpdateBombs()
 	}
 
 	if ( !toDie.empty() )
-		for ( iter = toDie.begin() ; iter != toDie.end() ; ++iter )
+    {
+        for ( int y = 0 ; y < toDie.size() ; y++ )
 		{
-			list<BattleCityBomb>::iterator iterToDie;
-			for ( iterToDie = bombs.begin() ; iterToDie != bombs.end() ; ++iterToDie )
-				if ( iterToDie->Pos.X == iter->Pos.X && iterToDie->Pos.Y == iter->Pos.Y )
+            for ( int iterToDie = 0 ; iterToDie < bombs.size() ; iterToDie++ )
+            {
+				if ( bombs[y].Pos.X == toDie[y].Pos.X && bombs[iterToDie].Pos.Y == toDie[y].Pos.Y )
 				{
-					bombs.erase(iterToDie);
+                    bombs.erase(bombs.begin() + iterToDie);
 					break;
 				}
+            }
 		}
+    }
 }
 
 void BattleCityEngine::UpdateNextTick()
@@ -366,12 +368,12 @@ bool BattleCityEngine::DropBomb(unsigned int tank)
 {
 	bool hasBomb = false;
 	unsigned int bombCount = 0;
-	list<BattleCityBomb>::iterator iter;
-	for ( iter = bombs.begin() ; iter != bombs.end() ; ++iter )
+
+    for (int iter = 0; iter < bombs.size() ; iter ++)
 	{
-		if ( iter->Tank == tank )
+		if ( bombs[iter].Tank == tank )
 			bombCount++;
-		if ( iter->Pos.X == (int) tanks[tank].Pos.X && iter->Pos.Y == (int) tanks[tank].Pos.Y )
+		if ( bombs[iter].Pos.X == (int) tanks[tank].Pos.X && bombs[iter].Pos.Y == (int) tanks[tank].Pos.Y )
 			hasBomb = true;
 	}
 

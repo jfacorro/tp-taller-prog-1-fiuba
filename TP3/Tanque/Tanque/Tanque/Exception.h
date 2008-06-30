@@ -32,10 +32,11 @@ class Exception
 			strcpy(this->message, msg);
 		};
 
-		char * GetMessage() const
+		char * GetMessage()
 		{
 			return this->message;
 		};
+
 	protected:
 		char * message;
 };

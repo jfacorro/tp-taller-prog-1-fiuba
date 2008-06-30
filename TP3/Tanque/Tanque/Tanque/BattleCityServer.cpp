@@ -199,70 +199,6 @@ void UpdateEngine(BattleCityEngine& e, int tecla)
 		e.ShootBullet(1);
 }
 
-void RenderScreen(BattleCityState& state)
-{
-	clrscr();
-	gotoxy((int)state.Tanks[0].Pos.X,(int)state.Tanks[0].Pos.Y); cout << "O";
-	gotoxy((int)state.Tanks[1].Pos.X,(int)state.Tanks[1].Pos.Y); cout << "O";
-
-    for ( unsigned int i = 0 ; i < state.Bombs.size() ; i++ )
-    {
-		if ( state.Bombs[i].TimeToDie >= 0 )
-		{
-			gotoxy(state.Bombs[i].Pos.X, state.Bombs[i].Pos.Y);
-			cout << "B";
-		}
-		else
-		{
-			gotoxy(state.Bombs[i].Pos.X, state.Bombs[i].Pos.Y-1);
-			cout << "*";
-			gotoxy(state.Bombs[i].Pos.X-1, state.Bombs[i].Pos.Y);
-			cout << "***";
-			gotoxy(state.Bombs[i].Pos.X, state.Bombs[i].Pos.Y+1);
-			cout << "*";
-		}
-    }
-
-	for ( unsigned int i = 0 ; i < state.Bullets.size() ; i++ )
-	{
-		gotoxy((int)state.Bullets[i].Pos.X,(int)state.Bullets[i].Pos.Y);
-		printf("*");
-	}
-
-	for ( unsigned int j = 0 ; j < state.Walls.size() ; j++ )
-	{
-		Rect rect = state.Walls[j].GetRect();
-		for ( int a = rect.X ; a < (rect.X + rect.Width) ; a++ )
-			for ( int b = rect.Y ; b < (rect.Y + rect.Height) ; b++ )
-			{
-				gotoxy(a,b);
-				int life = state.Walls[j].GetLife();
-				BattleCityWallTypes t = state.Walls[j].GetType();
-
-				if ( t == WOOD )
-				{
-					if ( life == 1 )
-						printf("w");
-					else 
-						printf("W");
-				}
-				else if ( t == ROCK )
-				{
-					if ( life == 1 )
-						printf("r");
-					else 
-						printf("R");
-				}
-				else if ( t == IRON )
-					printf ( "I" );
-			}
-	}
-
-	gotoxy ( 1 , 1 );
-	for ( unsigned int i = 0 ; i < state.Tanks[0].Life ; i++ ) printf ( "x" );
-	gotoxy ( 1 , 2 );
-	for ( unsigned int i = 0 ; i < state.Tanks[1].Life ; i++ ) printf ( "x" );
-}
 
 DWORD BattleCityServer::MainThread(LPVOID param)
 {
@@ -322,7 +258,9 @@ void BattleCityServer::UpdateClients(BattleCityState state)
     {
         Rect quadrant;
 
-        for(int i = 0; i < state.Tanks.size(); i++)
+        int i = 0;
+
+        for(i = 0; i < state.Tanks.size(); i++)
         {
             /// Send all tanks even if they are not in the current
             /// client's quadrant, so the life of all other tanks is shown
@@ -342,7 +280,7 @@ void BattleCityServer::UpdateClients(BattleCityState state)
         /************************************************/
         /* Send Bullets state                           */
         /************************************************/
-        for(int i = 0; i < state.Bullets.size(); i++)
+        for(i = 0; i < state.Bullets.size(); i++)
         {
             vector<BattleCityBullet> bullets;
 
@@ -358,7 +296,7 @@ void BattleCityServer::UpdateClients(BattleCityState state)
         /************************************************/
         /* Send Bombs state                           */
         /************************************************/
-        for(int i = 0; i < state.Bombs.size(); i++)
+        for(i = 0; i < state.Bombs.size(); i++)
         {
             vector<BattleCityBomb> bombs;
             if(state.Bombs[i].Intersects(quadrant))
@@ -372,7 +310,7 @@ void BattleCityServer::UpdateClients(BattleCityState state)
         /************************************************/
         /* Send Walls state                           */
         /************************************************/
-        for(int i = 0; i < state.Walls.size(); i++)
+        for(i = 0; i < state.Walls.size(); i++)
         {
             vector<BattleCityWall> walls;
             if(state.Walls[i].Intersects(quadrant))

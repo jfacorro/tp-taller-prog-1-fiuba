@@ -16,11 +16,7 @@ int Socket::Listen(int port, int backlog)
 
 	SOCKET sock; /* Contiene la informacion del socket */
 
-	SOCKET sockAceptado; /* Contiene la informacion del socket que acepto */   
-
 	struct sockaddr_in sockAddrIn; /* Direccion de socket */
-
-	int tamSockAddrIn; /* Se utiliza para aceptar el mensaje y obtener su info */
 
 	int codError = 0; /* Codigo de error que se evalua dentro de la funcion */
 
@@ -175,7 +171,6 @@ int Socket::Connect(const char * address, int port)
 
 int Socket::Send(SocketPacket packet) 
 {
-	int tmp;
 	int resultado = RES_ERROR_UNKNOWN;
 	int cantEnviada = 0;
    
@@ -195,7 +190,6 @@ int Socket::Send(SocketPacket packet)
 
 int Socket::Receive(SocketPacket * packet) 
 {
-    int tmp;
     int resultado = RES_ERROR_UNKNOWN;
     int cantRecibida = 0, totalRecibido = 0, tamano;   
 

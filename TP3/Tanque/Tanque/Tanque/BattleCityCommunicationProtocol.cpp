@@ -431,7 +431,6 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET sock)
                 packetData[1] = packetHeader[1];
                 packetData[2] = packetHeader[2];
 
-                int tmp;
                 int cantRecibida = 0, totalRecibido = 0;
 
                 bool successTransfer = true;

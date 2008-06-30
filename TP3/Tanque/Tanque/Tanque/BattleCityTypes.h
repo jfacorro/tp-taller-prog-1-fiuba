@@ -1,8 +1,8 @@
 #ifndef BATTLECITYTYPES_INCLUDED
 #define BATTLECITYTYPES_INCLUDED
 
-#include "list"
-#include "vector"
+#include <list>
+#include <vector>
 
 using namespace std;
 
