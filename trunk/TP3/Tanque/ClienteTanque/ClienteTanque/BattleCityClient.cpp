@@ -375,6 +375,7 @@ void BattleCityClient::RenderScreenSDL()
                 bitmap = SDLHelper::SDLResizeBitmap(bitmap, tankRect.Width, tankRect.Height);                
             }
 
+			SDL_SetColorKey ( bitmap , SDL_SRCCOLORKEY , 0xFFFFFF);
             this->sdlHelper.DrawRectangle
             (
                 tankRect.X,

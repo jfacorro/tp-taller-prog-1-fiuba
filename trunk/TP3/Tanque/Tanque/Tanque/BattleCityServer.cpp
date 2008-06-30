@@ -9,7 +9,7 @@
 #include "Socket.h"
 
 BattleCityServer::BattleCityServer(int port,BattleCityParameters parameters) 
-	: port(port), salir(false), engine(NULL), parameters(parameters)
+	: port(port), salir(false), engine(NULL), parameters(parameters) , lastFrame(0)
 {	
 	for ( int i = 0 ; i < BATTLE_CITY_MAX_PLAYERS ; i++ )
 		sockets[i] = SOCKET_ERROR;
@@ -200,6 +200,9 @@ void UpdateEngine(BattleCityEngine& e, int tecla)
 }
 
 
+#define FRAME_INTERVAL	50
+
+
 DWORD BattleCityServer::MainThread(LPVOID param)
 {
 	BattleCityServer* p = (BattleCityServer*) param;
@@ -227,7 +230,7 @@ DWORD BattleCityServer::MainThread(LPVOID param)
 
 		WaitForSingleObject ( p->mutex , INFINITE );
 		p->engine->Tick();
-		if ( p->engine->GetDirty() )
+		if ( p->engine->GetDirty() && (p->lastFrame + FRAME_INTERVAL) < GetTickCount() )
 		{
 			BattleCityState state = p->engine->GetState();
 			/// RenderScreen(state);
