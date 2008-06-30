@@ -200,7 +200,8 @@ void UpdateEngine(BattleCityEngine& e, int tecla)
 }
 
 
-#define FRAME_INTERVAL	50
+#define FRAME_INTERVAL	
+#define DELAY_GUARD		0
 
 
 DWORD BattleCityServer::MainThread(LPVOID param)
@@ -230,8 +231,9 @@ DWORD BattleCityServer::MainThread(LPVOID param)
 
 		WaitForSingleObject ( p->mutex , INFINITE );
 		p->engine->Tick();
-		if ( p->engine->GetDirty() && (p->lastFrame + FRAME_INTERVAL) < GetTickCount() )
+		if ( p->engine->GetDirty() /*&& (p->lastFrame + FRAME_INTERVAL) < GetTickCount()*/ )
 		{
+			p->lastFrame = GetTickCount();
 			BattleCityState state = p->engine->GetState();
 			/// RenderScreen(state);
 			p->UpdateClients(state);
@@ -244,6 +246,8 @@ DWORD BattleCityServer::MainThread(LPVOID param)
 
 		if ( delay != 0 )
 			Sleep ( delay );
+		else
+			Sleep ( DELAY_GUARD );
 	}
 	while ( !salir && !p->salir );
 
