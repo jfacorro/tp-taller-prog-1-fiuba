@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="SDL\include;..\..\Tanque\Tanque"
+				AdditionalIncludeDirectories="..\..\SDL\include;..\..\Tanque\Tanque"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib ws2_32.lib SDL\SDL.lib SDL\SDLmain.lib SDL\SDL_image.lib SDL\SDL_ttf.lib $(NOINHERIT)"
+				AdditionalDependencies="kernel32.lib ws2_32.lib ..\..\SDL\SDL.lib ..\..\SDL\SDLmain.lib ..\..\SDL\SDL_image.lib ..\..\SDL\SDL_ttf.lib $(NOINHERIT)"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -118,7 +118,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="SDL\include;..\..\Tanque\Tanque"
+				AdditionalIncludeDirectories="..\..\SDL\include;..\..\Tanque\Tanque"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib ws2_32.lib SDL\SDL.lib SDL\SDLmain.lib $(NOINHERIT)"
+				AdditionalDependencies="kernel32.lib ws2_32.lib ..\..\SDL\SDL.lib ..\..\SDL\SDLmain.lib ..\..\SDL\SDL_image.lib ..\..\SDL\SDL_ttf.lib $(NOINHERIT)"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"
