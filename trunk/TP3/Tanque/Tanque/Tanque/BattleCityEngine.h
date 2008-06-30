@@ -108,7 +108,7 @@ private:
 	DWORD nextTick;
 
 	vector<BattleCityTank>		tanks;
-	list<BattleCityBomb>		bombs;	
+	vector<BattleCityBomb>		bombs;	
 	vector<BattleCityBullet>	bullets;
 	vector<BattleCityWall>		walls;
 };
