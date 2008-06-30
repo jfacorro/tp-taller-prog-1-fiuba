@@ -118,6 +118,8 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
     if(packet != NULL)
     {
         WaitForSingleObject(client->mutex, INFINITE);
+		
+		int i = 0;
 
         switch(packet->GetType())
         {
@@ -137,7 +139,7 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
             case TANK:
                 BattleCityCommunicationProtocol::WriteLog("Received TANK.\n");
                 tankPacket = (BattleCityTankPacket *)packet;
-                for(int i = 0; i < tankPacket->tanks.size(); i++)
+                for(i = 0; i < tankPacket->tanks.size(); i++)
                 {
                     client->state.Tanks.push_back(tankPacket->tanks[i]);
                 }
@@ -145,7 +147,7 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
             case BULLET:
                 BattleCityCommunicationProtocol::WriteLog("Received BULLET.\n");
                 bulletPacket = (BattleCityBulletPacket *)packet;
-                for(int i = 0; i < bulletPacket->bullets.size(); i++)
+                for(i = 0; i < bulletPacket->bullets.size(); i++)
                 {
                     client->state.Bullets.push_back(bulletPacket->bullets[i]);
                 }
@@ -153,7 +155,7 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
             case BOMB:
                 BattleCityCommunicationProtocol::WriteLog("Received BOMB.\n");
                 bombPacket = (BattleCityBombPacket *)packet;
-                for(int i = 0; i < bombPacket->bombs.size(); i++)
+                for(i = 0; i < bombPacket->bombs.size(); i++)
                 {
                     client->state.Bombs.push_back(bombPacket->bombs[i]);
                 }
@@ -161,7 +163,7 @@ void BattleCityClient::ProcessPacket(BattleCityClient * client, BattleCityDataPa
             case WALL:
                 BattleCityCommunicationProtocol::WriteLog("Received WALL.\n");
                 wallPacket = (BattleCityWallPacket *)packet;
-                for(int i = 0; i < wallPacket->walls.size(); i++)
+                for(i = 0; i < wallPacket->walls.size(); i++)
                 {
                     client->state.Walls.push_back(wallPacket->walls[i]);
                 }
@@ -270,8 +272,10 @@ void BattleCityClient::RenderScreenSDL()
 
     Rect quadrant;
     bool receivedLocalTank = false;
+
+	int i = 0;
     
-    for(int i = 0; i <state.Tanks.size(); i++)    
+    for(i = 0; i <state.Tanks.size(); i++)    
     {
         if(this->clientNumber == i)
         {
@@ -301,7 +305,7 @@ void BattleCityClient::RenderScreenSDL()
 	/************************************************/
     /// Draw Tanks
     /************************************************/
-    for(int i = 0; i <state.Tanks.size(); i++)
+    for(i = 0; i <state.Tanks.size(); i++)
 	{
         /// All tanks are sent to all clients in order
         /// to show life and points
@@ -396,7 +400,7 @@ void BattleCityClient::RenderScreenSDL()
 	/************************************************/
     /// Draw Bombs
     /************************************************/
-    for(int i = 0; i <state.Bombs.size(); i++)
+    for(i = 0; i <state.Bombs.size(); i++)
 	{
         Rect bombRect = state.Bombs[i].GetRect();
 
@@ -432,7 +436,7 @@ void BattleCityClient::RenderScreenSDL()
 	/************************************************/
     /// Draw Bullets
     /************************************************/
-    for ( int i = 0 ; i < state.Bullets.size() ; i++ )
+    for (i = 0 ; i < state.Bullets.size() ; i++ )
 	{
         Rect bulletRect = state.Bullets[i].GetRect();
 
@@ -517,12 +521,14 @@ void BattleCityClient::RenderScreenChars()
 {
 	clrscr();
 
-    for(int i = 0; i <state.Tanks.size(); i++)
+    int i = 0;
+
+	for(i = 0; i <state.Tanks.size(); i++)
     {
 	    gotoxy((int)state.Tanks[i].Pos.X,(int)state.Tanks[i].Pos.Y); cout << "O";
     }
 
-    for ( unsigned int i = 0 ; i < state.Bombs.size() ; i++ )
+    for (i = 0 ; i < state.Bombs.size() ; i++ )
     {
 		if ( state.Bombs[i].TimeToDie >= 0 )
 		{
@@ -540,7 +546,7 @@ void BattleCityClient::RenderScreenChars()
 		}
     }
 
-	for ( unsigned int i = 0 ; i < state.Bullets.size() ; i++ )
+	for (i = 0 ; i < state.Bullets.size() ; i++ )
 	{
 		gotoxy((int)state.Bullets[i].Pos.X,(int)state.Bullets[i].Pos.Y);
 		printf("*");
