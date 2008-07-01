@@ -2,7 +2,7 @@
 #define BattleCityEngine_h
 
 #define BATTLECITYENGINE_WALL_TEST
-#define FRAMES_PER_SECOND 25
+#define FRAMES_PER_SECOND 20
 
 
 #include "BattleCityTypes.h"
@@ -82,6 +82,7 @@ public:
 	virtual ~BattleCityEngine();
 
 	bool GetDirty();
+	bool GetFinished();
 	BattleCityState GetState();
 
 	void Start();
@@ -104,6 +105,7 @@ private:
 	BattleCityParameters parameters;
 
 	bool dirty;
+	bool finished;
 	DWORD lastTick;
 	DWORD nextTick;
 

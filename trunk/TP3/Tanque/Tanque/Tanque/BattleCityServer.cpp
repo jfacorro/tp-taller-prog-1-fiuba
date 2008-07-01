@@ -240,14 +240,22 @@ DWORD BattleCityServer::MainThread(LPVOID param)
 		}
 		ReleaseMutex ( p->mutex );
 
-		WaitForSingleObject ( p->mutex , INFINITE );
-		int delay = p->engine->GetNextTickInterval();
-		ReleaseMutex ( p->mutex );
-
-		if ( delay != 0 )
-			Sleep ( delay );
+		if ( p->engine->GetFinished() )
+		{
+			Sleep ( 3000 );
+			p->engine->Start();
+		}
 		else
-			Sleep ( DELAY_GUARD );
+		{
+			WaitForSingleObject ( p->mutex , INFINITE );
+			int delay = p->engine->GetNextTickInterval();
+			ReleaseMutex ( p->mutex );
+
+			if ( delay != 0 )
+				Sleep ( delay );
+			else
+				Sleep ( DELAY_GUARD );
+		}
 	}
 	while ( !salir && !p->salir );
 
