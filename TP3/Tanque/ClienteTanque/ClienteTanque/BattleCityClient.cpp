@@ -329,51 +329,57 @@ void BattleCityClient::RenderScreenSDL()
 
             tankRect = this->GetScaledRectangle(tankRect, quadrant, pixelsPerUM);
 
-            SDL_Surface * bitmap = SDLHelper::SDLResizeBitmap
-            (
-                this->GetTexture(state.Tanks[i].TextureName), 
-                tankRect.Width, 
-                tankRect.Height
-            );
+			SDL_Surface * bitmap = tanks[i][state.Tanks[i].Direction];
+			if ( bitmap == NULL )
+			{
+				bitmap = SDLHelper::SDLResizeBitmap
+				(
+					this->GetTexture(state.Tanks[i].TextureName), 
+					tankRect.Width, 
+					tankRect.Height
+				);
 
-            if(state.Tanks[i].Life > 0)
-            {
-                SDL_Surface * rotatedbitmap = NULL;
+				if(state.Tanks[i].Life > 0)
+				{
+					SDL_Surface * rotatedbitmap = NULL;
 
-                switch(state.Tanks[i].Direction)
-                {
-                    case LEFT:
-                        rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 90);
-                        break;
-                    case RIGHT:
-                        rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, -90);
-                        break;
-                    case NONE:
-                    case UP:
-                        rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 0);
-                        break;
-                    case DOWN:
-                        rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 180);
-                        break;
-                }
+					switch(state.Tanks[i].Direction)
+					{
+						case LEFT:
+							rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 90);
+							break;
+						case RIGHT:
+							rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, -90);
+							break;
+						case NONE:
+						case UP:
+							rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 0);
+							break;
+						case DOWN:
+							rotatedbitmap = SDLHelper::SDLRotateBitmap(bitmap, 180);
+							break;
+					}
 
-                if(bitmap != NULL) SDL_FreeSurface(bitmap);
+					if(bitmap != NULL) SDL_FreeSurface(bitmap);
 
-                bitmap = rotatedbitmap;
-            }
-            else
-            {
-                bitmap = this->GetTexture(this->parameters.ExplosionTextureId);
-                
-                tankRect.Width = bitmap->w;
-                tankRect.Height = bitmap->h;
-                tankRect.X = state.Tanks[i].Pos.X - tankRect.Width / 2;
-                tankRect.Y = state.Tanks[i].Pos.Y - tankRect.Height / 2;
+					bitmap = rotatedbitmap;
+				}
+				else
+				{
+					bitmap = this->GetTexture(this->parameters.ExplosionTextureId);
+	                
+					tankRect.Width = bitmap->w;
+					tankRect.Height = bitmap->h;
+					tankRect.X = state.Tanks[i].Pos.X - tankRect.Width / 2;
+					tankRect.Y = state.Tanks[i].Pos.Y - tankRect.Height / 2;
 
-                tankRect = this->GetScaledRectangle(tankRect, quadrant, pixelsPerUM);
+					tankRect = this->GetScaledRectangle(tankRect, quadrant, pixelsPerUM);
 
-                bitmap = SDLHelper::SDLResizeBitmap(bitmap, tankRect.Width, tankRect.Height);                
-            }
+					bitmap = SDLHelper::SDLResizeBitmap(bitmap, tankRect.Width, tankRect.Height);                
+				}
+
+				tanks[i][state.Tanks[i].Direction] = bitmap;
+			}			
 
 			SDL_SetColorKey ( bitmap , SDL_SRCCOLORKEY , SDL_MapRGB(bitmap->format,255,255,255));
 			SDL_SetAlpha ( bitmap , 0 , 0 );
@@ -388,7 +394,7 @@ void BattleCityClient::RenderScreenSDL()
                 NULL
             );
 
-            if(bitmap != NULL) SDL_FreeSurface(bitmap);
+            //if(bitmap != NULL) SDL_FreeSurface(bitmap);
         }
 
         /// Draw all lifes
@@ -476,29 +482,32 @@ void BattleCityClient::RenderScreenSDL()
     for ( unsigned int j = 0 ; j < state.Walls.size() ; j++ )
 	{
 		Rect rect = state.Walls[j].GetRect();
-
         rect = this->GetScaledRectangle(rect, quadrant, pixelsPerUM);
 
-		BattleCityWallTypes t = state.Walls[j].GetType();
-
 		Color wallColor;
+		SDL_Surface * bitmap = walls[(rect.X << 16) + rect.Y];
 
-        SDL_Surface * bitmap = NULL;
-
-		switch(t)
+		if ( bitmap == NULL )
 		{
-			case WOOD:
-				wallColor = greyWood;
-                bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("wood"), rect.Width, rect.Height);
-				break;
-			case IRON:
-				wallColor = greyIron;
-                bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("iron"), rect.Width, rect.Height);
-				break;
-			case ROCK:
-				wallColor = greyRock;
-                bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("rock"), rect.Width, rect.Height);
-				break;
+			BattleCityWallTypes t = state.Walls[j].GetType();
+
+			switch(t)
+			{
+				case WOOD:
+					wallColor = greyWood;
+					bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("wood"), rect.Width, rect.Height);
+					break;
+				case IRON:
+					wallColor = greyIron;
+					bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("iron"), rect.Width, rect.Height);
+					break;
+				case ROCK:
+					wallColor = greyRock;
+					bitmap = SDLHelper::SDLResizeBitmap(this->GetTexture("rock"), rect.Width, rect.Height);
+					break;
+			}
+
+			walls[(rect.X << 16) + rect.Y] = bitmap;
 		}
 		
 		this->sdlHelper.DrawRectangle
@@ -512,7 +521,7 @@ void BattleCityClient::RenderScreenSDL()
             NULL
         );
 
-        if(bitmap != NULL) SDL_FreeSurface(bitmap);
+        //if(bitmap != NULL) SDL_FreeSurface(bitmap);
 	}
 
 	this->sdlHelper.Refresh();
