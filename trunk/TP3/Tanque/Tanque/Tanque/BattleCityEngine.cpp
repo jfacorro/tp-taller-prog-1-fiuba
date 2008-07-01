@@ -62,6 +62,9 @@ BattleCityState BattleCityEngine::GetState()
 
 void BattleCityEngine::Start()
 {
+	for ( int i = 0 ; i < tanks.size() ; i++ )
+		parameters.Tanks[i].Points = tanks[i].Points;
+
 	tanks.assign(parameters.Tanks.begin(),parameters.Tanks.end());
 	walls.assign(parameters.Walls.begin(),parameters.Walls.end());
 	dirty = true;
