@@ -524,7 +524,7 @@ void BattleCityClient::RenderScreenSDL()
         //if(bitmap != NULL) SDL_FreeSurface(bitmap);
 	}
 
-	for ( int i = 0 ; i < state.Tanks.size() ; i++ )
+	for ( i = 0 ; i < state.Tanks.size() ; i++ )
 		if ( state.Tanks[i].Life <= 0 || state.Tanks[i].Life > 1000 )
 		{
 			SDL_Surface* text;
