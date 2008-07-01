@@ -330,17 +330,17 @@ void BattleCityClient::RenderScreenSDL()
             tankRect = this->GetScaledRectangle(tankRect, quadrant, pixelsPerUM);
 
 			SDL_Surface * bitmap = tanks[i][state.Tanks[i].Direction];
-			if ( bitmap == NULL )
+			if(state.Tanks[i].Life > 0)
 			{
-				bitmap = SDLHelper::SDLResizeBitmap
-				(
-					this->GetTexture(state.Tanks[i].TextureName), 
-					tankRect.Width, 
-					tankRect.Height
-				);
-
-				if(state.Tanks[i].Life > 0)
+				if ( bitmap == NULL )
 				{
+					bitmap = SDLHelper::SDLResizeBitmap
+					(
+						this->GetTexture(state.Tanks[i].TextureName), 
+						tankRect.Width, 
+						tankRect.Height
+					);
+
 					SDL_Surface * rotatedbitmap = NULL;
 
 					switch(state.Tanks[i].Direction)
@@ -363,23 +363,23 @@ void BattleCityClient::RenderScreenSDL()
 					if(bitmap != NULL) SDL_FreeSurface(bitmap);
 
 					bitmap = rotatedbitmap;
-				}
-				else
-				{
-					bitmap = this->GetTexture(this->parameters.ExplosionTextureId);
+
+					tanks[i][state.Tanks[i].Direction] = bitmap;
+				}			
+			}
+			else
+			{
+				bitmap = this->GetTexture(this->parameters.ExplosionTextureId);
 	                
-					tankRect.Width = bitmap->w;
-					tankRect.Height = bitmap->h;
-					tankRect.X = state.Tanks[i].Pos.X - tankRect.Width / 2;
-					tankRect.Y = state.Tanks[i].Pos.Y - tankRect.Height / 2;
+				tankRect.Width = bitmap->w;
+				tankRect.Height = bitmap->h;
+				tankRect.X = state.Tanks[i].Pos.X - tankRect.Width / 2;
+				tankRect.Y = state.Tanks[i].Pos.Y - tankRect.Height / 2;
 
-					tankRect = this->GetScaledRectangle(tankRect, quadrant, pixelsPerUM);
+				tankRect = this->GetScaledRectangle(tankRect, quadrant, pixelsPerUM);
 
-					bitmap = SDLHelper::SDLResizeBitmap(bitmap, tankRect.Width, tankRect.Height);                
-				}
-
-				tanks[i][state.Tanks[i].Direction] = bitmap;
-			}			
+				bitmap = SDLHelper::SDLResizeBitmap(bitmap, tankRect.Width, tankRect.Height);                
+			}
 
 			SDL_SetColorKey ( bitmap , SDL_SRCCOLORKEY , SDL_MapRGB(bitmap->format,255,255,255));
 			SDL_SetAlpha ( bitmap , 0 , 0 );
