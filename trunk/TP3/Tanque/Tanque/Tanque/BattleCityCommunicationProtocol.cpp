@@ -515,6 +515,11 @@ void * BattleCityCommunicationProtocol::ReceiveDataPacket(SOCKET sock)
             }
         }
     }
+	else
+	{
+		//MessageBox ( NULL , L"Server communication lost" , L"Battle City Client" , MB_OK | MB_ICONEXCLAMATION );
+		exit ( 1 );
+	}
 
     return packet;
 }
