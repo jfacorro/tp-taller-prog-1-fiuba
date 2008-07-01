@@ -242,7 +242,7 @@ DWORD BattleCityServer::MainThread(LPVOID param)
 
 		if ( p->engine->GetFinished() )
 		{
-			Sleep ( 3000 );
+			Sleep ( 2000 );
 			p->engine->Start();
 		}
 		else
