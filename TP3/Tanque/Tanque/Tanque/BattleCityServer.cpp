@@ -158,7 +158,10 @@ DWORD BattleCityServer::ThreadProc ( LPVOID param )
             if(cmdPacket->GetCommandType() == KEYPRESSED)
             {
                 WaitForSingleObject ( p->ptr->mutex , INFINITE );
-                p->ptr->OnKey ( cmdPacket->GetClientNumber(), cmdPacket->GetAuxValue());
+				if(p->ptr->numPlayersConnected == 2)
+				{
+					p->ptr->OnKey ( cmdPacket->GetClientNumber(), cmdPacket->GetAuxValue());
+				}
                 ReleaseMutex ( p->ptr->mutex );
             }
         }
