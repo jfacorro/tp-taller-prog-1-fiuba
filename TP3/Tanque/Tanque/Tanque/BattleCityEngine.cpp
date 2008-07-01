@@ -34,17 +34,6 @@ BattleCityEngine::BattleCityEngine(BattleCityParameters parameters) : parameters
 {
 	if ( parameters.ArenaWidth == 0 || parameters.ArenaHeight == 0 )
 		throw exception("BattleCityEngine::BattleCityEngine Invalid parameters");
-
-	tanks.assign(parameters.Tanks.begin(),parameters.Tanks.end());
-	walls.assign(parameters.Walls.begin(),parameters.Walls.end());
-	dirty = true;
-
-	#ifdef BATTLECITYENGINE_WALL_TEST
-	for ( unsigned int j = 0 ; j < parameters.Walls.size() ; j++ )
-		for ( unsigned int k = j + 1 ; k < parameters.Walls.size() ; k++ )
-			if ( parameters.Walls[j].Intersects(parameters.Walls[k]) )
-				throw exception ( "BattleCityEngine::BattleCityEngine Intersecting wall found" );
-	#endif
 }
 
 BattleCityEngine::~BattleCityEngine()
@@ -54,6 +43,11 @@ BattleCityEngine::~BattleCityEngine()
 bool BattleCityEngine::GetDirty()
 {
 	return dirty;
+}
+
+bool BattleCityEngine::GetFinished()
+{
+	return finished;
 }
 
 BattleCityState BattleCityEngine::GetState()
@@ -68,6 +62,18 @@ BattleCityState BattleCityEngine::GetState()
 
 void BattleCityEngine::Start()
 {
+	tanks.assign(parameters.Tanks.begin(),parameters.Tanks.end());
+	walls.assign(parameters.Walls.begin(),parameters.Walls.end());
+	dirty = true;
+	finished = false;
+
+	#ifdef BATTLECITYENGINE_WALL_TEST
+	for ( unsigned int j = 0 ; j < parameters.Walls.size() ; j++ )
+		for ( unsigned int k = j + 1 ; k < parameters.Walls.size() ; k++ )
+			if ( parameters.Walls[j].Intersects(parameters.Walls[k]) )
+				throw exception ( "BattleCityEngine::BattleCityEngine Intersecting wall found" );
+	#endif
+
 	nextTick = GetTickCount();
 	UpdateNextTick();
 }
@@ -172,6 +178,9 @@ void BattleCityEngine::HitTank(unsigned int tank, int decrementedEnergy)
 
 	if ( tanks[tank].Life > parameters.Tanks[tank].Life )
 		tanks[tank].Life = 0;
+
+	if ( tanks[tank].Life <= 0 || tanks[tank].Life > parameters.Tanks[tank].Life )
+		finished = true;
 }
 
 bool BattleCityEngine::FindTankCollition(unsigned int tank, int x, int y)
