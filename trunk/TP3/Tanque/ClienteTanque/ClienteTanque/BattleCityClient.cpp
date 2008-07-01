@@ -524,6 +524,34 @@ void BattleCityClient::RenderScreenSDL()
         //if(bitmap != NULL) SDL_FreeSurface(bitmap);
 	}
 
+	for ( int i = 0 ; i < state.Tanks.size() ; i++ )
+		if ( state.Tanks[i].Life <= 0 || state.Tanks[i].Life > 1000 )
+		{
+			SDL_Surface* text;
+			if ( i == clientNumber )
+			{
+				SDL_Color red;
+				red.r = 0xFF;
+				red.g = 0;
+				red.b = 0;
+				TTF_Font* fnt = TTF_OpenFont ( "fonts\\cour.ttf" , 76 );
+		        text = TTF_RenderText_Solid( fnt,"YOU LOSE!!!", red );
+				TTF_CloseFont ( fnt );
+			}
+			else
+			{
+				SDL_Color blue;
+				blue.r = 0;
+				blue.g = 0;
+				blue.b = 0xFF;
+				TTF_Font* fnt = TTF_OpenFont ( "fonts\\cour.ttf" , 76 );
+				text = TTF_RenderText_Solid( fnt, "YOU WIN!!!", blue );
+				TTF_CloseFont ( fnt );
+			}
+
+		    this->sdlHelper.DrawRectangle(200, 200, text->w, text->h, greenLife, text, NULL);
+		}
+
 	this->sdlHelper.Refresh();
 }
 
