@@ -97,7 +97,7 @@ private:
 	void UpdateNextTick();
 	void UpdateBombs();
 	void UpdateTankPos(unsigned int tank,double nextX, double nextY);
-	bool UpdateBulletPos(unsigned int bullet,double currentX,double currentY,double nextX,double nextY);
+	bool UpdateBulletPos(unsigned int bullet,double currentX,double currentY,double nextX,double nextY,bool check=true);
 
 	void HitTank(unsigned int tank, int decrementedEnergy);
 	bool FindTankCollition(unsigned int tank,int x, int y);

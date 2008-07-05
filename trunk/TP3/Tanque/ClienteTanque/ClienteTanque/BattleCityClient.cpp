@@ -226,6 +226,8 @@ void BattleCityClient::UpdateEngine (int tecla)
     keyPacket.Send(this->socket.GetConnection().cxSocket);
 }
 
+int count = 0;
+
 void BattleCityClient::RenderScreenSDL()
 {
     /************************************************/
@@ -288,7 +290,11 @@ void BattleCityClient::RenderScreenSDL()
     if(!receivedLocalTank) return;
 
 	if ( background != NULL )
+	{
+		count++;
+		if ( count & 0x01 )
         this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
+	}
 	else
 	{
 	    background = this->GetTexture(this->parameters.BackGroundTextureId);

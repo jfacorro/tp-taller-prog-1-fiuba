@@ -18,13 +18,13 @@ BattleCityParameters ParseParameters(char * arenaFileName)
 
     double tankSpeed = 70;
 	
-    p.ArenaWidth = 800;
-	p.ArenaHeight = 600;
+    p.ArenaWidth = 1600;
+	p.ArenaHeight = 1200;
 	p.TankRadius = 10;
 	p.BulletRadius = 1;
     p.BombRadius = 2;
 
-    p.PixelsPerUM = 2;
+    p.PixelsPerUM = 1;
 
     p.MaxBullets = 5;
 	p.BulletSpeed = tankSpeed * 3;
