@@ -228,7 +228,7 @@ void BattleCityEngine::UpdateTankPos(unsigned int tank,double nextX,double nextY
 	}
 }
 
-bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,double currentY,double nextX,double nextY)
+bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,double currentY,double nextX,double nextY,bool check)
 {
 	bool hit = false;
     BattleCityBullet currentBullet = bullets[bullet];
@@ -238,10 +238,38 @@ bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,doubl
     nextRect.X = nextX;
     nextRect.Y = nextY;
 
+	if ( currentX < nextX )
+	{
+		nextRect.X = currentX;
+		nextRect.Width += (nextX - currentX);
+	}
+	else
+	{
+		nextRect.X = nextX;
+		nextRect.Width += (currentX - nextX);
+	}
+
+	if ( currentY < nextY )
+	{
+		nextRect.Y = currentY;
+		nextRect.Height += (nextY - currentY);
+	}
+	else
+	{
+		nextRect.Y = nextY;
+		nextRect.Height += (currentY - nextY);
+	}
+
 	for ( unsigned int i = 0 ; i < tanks.size() && !hit ; i++ )
     {
         if (tanks[i].Intersects(currentRect) && tanks[i].Intersects(nextRect) && tanks[i].Life > 0)
 		{
+			if ( !check && bullets[bullet].Tank == i )
+			{
+
+			}
+			else
+			{
 			HitTank(i, BATTLE_CITY_BULLET_HIT_ENERGY);
 
             BattleCityTank hittedTank = tanks[i];
@@ -254,10 +282,61 @@ bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,doubl
 			hit = true;
 		}
     }
+    }
+
+
+
+	/*
+	for ( unsigned int j = 0 ; j < walls.size() && !hit ; j++ )
+	{
+		if ( walls[j].GetType() == IRON )
+		{
+			switch(bullets[bullet].Direction)
+			{
+				case LEFT:
+
+					bullets[bullet].Direction = RIGHT;
+					break;
+				case RIGHT:
+    				bullets[bullet].Direction = LEFT;
+					break;
+				case UP:
+    				bullets[bullet].Direction = DOWN;
+					break;
+				case DOWN:
+					bullets[bullet].Direction = UP;
+				break;
+			}
+		}
+		else 
+		{
+			if ( walls[j].Intersects(nextRect))
+			{
+				hit = true;
+				if ( walls[j].Shoot() <= 0 )
+				{
+					switch(walls[j].GetType())
+					{
+						case WOOD:
+							tanks[bullets[bullet].Tank].Points += BATTLE_CITY_POINTS_WOOD;
+							break;
+						case ROCK:
+							tanks[bullets[bullet].Tank].Points += BATTLE_CITY_POINTS_ROCK;
+							break;
+					}
+
+					walls.erase(walls.begin() + j);
+					j--;
+				}
+			}
+		}
+	}
+	*/
 
 	if ( !hit )
 	{
 		for ( unsigned int j = 0 ; j < walls.size() && !hit ; j++ )
+		{
             if ( walls[j].Intersects(nextRect))
 			{
 				if ( walls[j].GetType() == IRON )
@@ -277,6 +356,9 @@ bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,doubl
     						bullets[bullet].Direction = UP;
                             break;
                     }
+
+						nextX = currentX;
+						nextY = currentY;
 				}
 				else 
 				{
@@ -298,6 +380,8 @@ bool BattleCityEngine::UpdateBulletPos(unsigned int bullet,double currentX,doubl
 					}
 				}
 			}
+		
+		}
 	}
 
 	if ( !hit )
@@ -329,6 +413,9 @@ void BattleCityEngine::Tick()
 	dirty = false;
 
 	double dt = (double) (nextTick - lastTick) / 1000.0;
+
+	/*
+	double dt = (double) (nextTick - lastTick) / 1000.0;
 	for ( i = 0 ; i < tanks.size() ; i++ )
 	{
         if(tanks[i].Life > 0)
@@ -343,6 +430,7 @@ void BattleCityEngine::Tick()
 			    UpdateTankPos ( i , tanks[i].Pos.X , tanks[i].Pos.Y + dt * tanks[i].Speed );
         }
 	}
+	*/
 
 	list<unsigned long> bulletsToDie;
 	for ( i = 0 ; i < bullets.size() ; i++ )
@@ -365,6 +453,21 @@ void BattleCityEngine::Tick()
 	list<unsigned long>::iterator iter;
 	for ( iter = bulletsToDie.begin() ; iter != bulletsToDie.end() ; ++iter, bulletsToDieCount++ )
 		bullets.erase(bullets.begin() + *iter - bulletsToDieCount);
+
+	for ( i = 0 ; i < tanks.size() ; i++ )
+	{
+        if(tanks[i].Life > 0)
+        {
+            if ( tanks[i].Direction == LEFT ) 
+			    UpdateTankPos ( i , tanks[i].Pos.X - dt * tanks[i].Speed , tanks[i].Pos.Y );
+		    else if ( tanks[i].Direction == RIGHT ) 
+			    UpdateTankPos ( i , tanks[i].Pos.X + dt * tanks[i].Speed , tanks[i].Pos.Y );
+		    else if ( tanks[i].Direction == UP ) 
+			    UpdateTankPos ( i , tanks[i].Pos.X , tanks[i].Pos.Y - dt * tanks[i].Speed );
+		    else if ( tanks[i].Direction == DOWN )
+			    UpdateTankPos ( i , tanks[i].Pos.X , tanks[i].Pos.Y + dt * tanks[i].Speed );
+        }
+	}
 
 	UpdateNextTick();
 	UpdateBombs();
@@ -434,23 +537,30 @@ bool BattleCityEngine::ShootBullet(unsigned int tank)
 	b.DistanceToDie = parameters.BulletScope;
 	b.Direction = tanks[tank].Direction;
 
+    bullets.push_back(b);
+
+	double nextX = b.Pos.X;
+	double nextY = b.Pos.Y;
     switch(b.Direction)
     {
         case LEFT:
-            b.Pos.X -= this->parameters.TankRadius + b.GetRect().Width / 2 + 1;
+            nextX -= this->parameters.TankRadius + b.GetRect().Width / 2 + 1;
             break;
         case RIGHT:
-            b.Pos.X += this->parameters.TankRadius + b.GetRect().Width / 2 + 1;
+            nextX += this->parameters.TankRadius + b.GetRect().Width / 2 + 1;
             break;
         case UP:
-            b.Pos.Y -= this->parameters.TankRadius + b.GetRect().Height / 2 + 1;
+            nextY -= this->parameters.TankRadius + b.GetRect().Height / 2 + 1;
             break;
         case DOWN:
-            b.Pos.Y += this->parameters.TankRadius + b.GetRect().Height / 2 + 1;
+            nextY += this->parameters.TankRadius + b.GetRect().Height / 2 + 1;
             break;
     }
 
-    bullets.push_back(b);
+	if ( UpdateBulletPos ( bullets.size() - 1 , b.Pos.X , b.Pos.Y , nextX , nextY , false ) )
+		bullets.pop_back();
+
+    //bullets.push_back(b);
 
     return true;
 }
