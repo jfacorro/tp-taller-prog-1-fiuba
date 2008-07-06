@@ -47,11 +47,13 @@ void BattleCityClient::StartPlaying()
     /// Start receiving data and rendering thread
     CreateThread (NULL, 0, ReceiveDataFromServer, (void *) this, 0, NULL);
 
-    /// Handle key presses
+	/// Handle key presses
     while ( !salir )
-	{
+	{		
+		Sleep(50);
+
 		SDL_keysym keyPressed;
-		if(this->sdlHelper.GetPressedKey(keyPressed))
+		if(this->sdlHelper.GetKeyPress(keyPressed))
 		{
 			if(keyPressed.sym == SDLK_ESCAPE)
 			{
@@ -63,6 +65,7 @@ void BattleCityClient::StartPlaying()
 			}
 		}
 	}
+
 
     TTF_CloseFont(this->sdlFont);
 }

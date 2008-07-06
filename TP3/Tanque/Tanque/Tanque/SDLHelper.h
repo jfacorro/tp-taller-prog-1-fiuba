@@ -104,7 +104,7 @@ class SDLHelper
 		void Refresh();
 
 		void WaitForKey();
-		bool GetPressedKey(SDL_keysym & key);
+		bool GetKeyPress(SDL_keysym & key);
 
 		Configuration GetConfiguration() { return this->configuration; };
 

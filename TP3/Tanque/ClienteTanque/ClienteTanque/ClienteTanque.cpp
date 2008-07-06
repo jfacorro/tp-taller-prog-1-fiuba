@@ -1,12 +1,11 @@
 // ClienteTanque.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #include "BattleCityCommunicationProtocol.h"
 #include "BattleCityClient.h"
 #include "SDL.h"
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
     int nroTanque = 0;
 
@@ -18,7 +17,7 @@ int _tmain(int argc, _TCHAR* argv[])
     scanf("%s", ip);
     
     client.Connect(ip, BATTLE_CITY_SOCKET);
-    
+
     if(client.IsConnected())
     {
         printf("Connect to %s\n", ip);
