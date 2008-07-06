@@ -101,6 +101,8 @@ class SDLHelper
 		void DrawRectangle ( int x , int y , int b , int h , Color color , SDL_Surface* texture , char * nodeId );
 		void DrawSegment ( int x1 , int y1 , int x2 , int y2 , Color color , char * nodeId );
 
+		SDL_PixelFormat * GetPixelFormat() { return this->screen->format; };
+
 		void Refresh();
 
 		void WaitForKey();
