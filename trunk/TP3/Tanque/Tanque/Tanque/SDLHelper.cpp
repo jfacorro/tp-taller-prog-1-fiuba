@@ -393,20 +393,22 @@ void SDLHelper::WaitForKey()
     }
 }
 
-bool SDLHelper::GetPressedKey(SDL_keysym & key)
+bool SDLHelper::GetKeyPress(SDL_keysym & key)
 {
 	SDL_Event event;
 	bool keyPress = false;
 
-	SDL_PollEvent( &event );
-    switch( event.type )
+	if(SDL_PollEvent( &event ))
 	{
-        /* Keyboard event */
-        case SDL_KEYDOWN:
-			keyPress = true;
-			key = event.key.keysym;
-            break;
-    }
+		switch( event.type )
+		{
+			/* Keyboard event */
+			case SDL_KEYDOWN:
+				keyPress = true;
+				key = event.key.keysym;
+				break;
+		}
+	}
 
 	return keyPress;
 }
