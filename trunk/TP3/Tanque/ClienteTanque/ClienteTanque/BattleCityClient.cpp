@@ -294,9 +294,8 @@ void BattleCityClient::RenderScreenSDL()
 
 	if ( background != NULL )
 	{
-		count++;
-		if ( count & 0x01 )
-        this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
+		///count++;				if ( count & 0x01 )
+			this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
 	}
 	else
 	{
@@ -306,24 +305,16 @@ void BattleCityClient::RenderScreenSDL()
 		else
 		{
 	        background = SDLHelper::SDLResizeBitmap(background, config.GetResolucion().w * 2,  config.GetResolucion().h * 2);
-		    this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
+			
+			
+			SDL_Surface * convertedBackGrnd = SDL_ConvertSurface(background, this->sdlHelper.GetPixelFormat(), SDL_SWSURFACE );			
+			SDL_FreeSurface(background);			
+			background = convertedBackGrnd;
+
+			this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
 		}
 	}
 
-	/*
-    background = this->GetTexture(this->parameters.BackGroundTextureId);
-
-    if(background != NULL)
-    {
-        background = SDLHelper::SDLResizeBitmap(background, config.GetResolucion().w * 2,  config.GetResolucion().h * 2);
-        this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
-        SDL_FreeSurface(background);
-    }
-    else
-    {
-	    this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, NULL, NULL);
-    }
-	*/
 
 	/************************************************/
     /// Draw Tanks
@@ -642,12 +633,5 @@ void BattleCityClient::RenderScreenChars()
 					printf ( "I" );
 			}
 	}
-    /*
-    for(int y = 0; y <state.Tanks.size(); y++)
-    {
-	    gotoxy ( 1 , y + 1 );
-        for ( unsigned int i = 0 ; i < state.Tanks[y].Life ; i++ ) printf ( "x" );
-    }
-    */
 }
 #endif
