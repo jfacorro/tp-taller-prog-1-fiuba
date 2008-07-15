@@ -308,7 +308,7 @@ void BattleCityClient::RenderScreenSDL()
 			
 			
 			SDL_Surface * convertedBackGrnd = SDL_ConvertSurface(background, this->sdlHelper.GetPixelFormat(), SDL_SWSURFACE );			
-			SDL_FreeSurface(background);			
+			SDL_FreeSurface(background);
 			background = convertedBackGrnd;
 
 			this->sdlHelper.DrawRectangle(0, 0, config.GetResolucion().w, config.GetResolucion().h, white, background, NULL);
@@ -340,6 +340,10 @@ void BattleCityClient::RenderScreenSDL()
 						tankRect.Width, 
 						tankRect.Height
 					);
+
+					SDL_Surface * convertedBackGrnd = SDL_ConvertSurface(bitmap, this->sdlHelper.GetPixelFormat(), SDL_SWSURFACE );			
+					SDL_FreeSurface(bitmap);
+					bitmap = convertedBackGrnd;
 
 					SDL_Surface * rotatedbitmap = NULL;
 
